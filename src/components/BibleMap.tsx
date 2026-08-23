@@ -107,7 +107,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     leafletMapInstance.current = map;
 
     // Use full CartoDB Positron just like Prism (light_all includes modern lines for extreme detail/context)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png').addTo(map);
 
     // Add historical labels
     const labels = getHistoricalLabels(locale);
