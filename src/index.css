@@ -606,13 +606,10 @@ video::-webkit-media-controls-overlay-play-button {
    ═══════════════════════════════════════════════════ */
 
 /* ── custom pins ── */
-.bible-map-marker { background: none !important; border: none !important; }
-.bm-pin {
   width: 40px; height: 40px;
   display: flex; align-items: center; justify-content: center;
   position: relative; cursor: pointer;
 }
-.bm-pin::after {
   content: ''; position: absolute;
   bottom: -4px; left: 50%; transform: translateX(-50%);
   width: 0; height: 0;
@@ -620,7 +617,6 @@ video::-webkit-media-controls-overlay-play-button {
   border-right: 6px solid transparent;
   border-top: 8px solid #c4a35a;
 }
-.bm-pin__icon {
   width: 34px; height: 34px;
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem;
@@ -630,37 +626,25 @@ video::-webkit-media-controls-overlay-play-button {
   box-shadow: 0 3px 12px rgba(0,0,0,.45);
   transition: transform .2s, box-shadow .2s;
 }
-.bm-pin:hover .bm-pin__icon {
   transform: scale(1.2);
   box-shadow: 0 4px 20px rgba(196,163,90,.6);
 }
-.bm-pin--heavenly .bm-pin__icon {
   background: linear-gradient(135deg, #e8d5a0 0%, #f5ecd0 50%, #c4a35a 100%);
   border-color: #f5ecd0;
   box-shadow: 0 0 18px rgba(245,236,208,.5);
 }
-.bm-pin--heavenly::after { border-top-color: #f5ecd0; }
 
 /* ── popups ── */
-.bm-popup-wrapper .leaflet-popup-content-wrapper {
   background: hsl(220 20% 12%);
   border: 1px solid hsl(220 15% 22%);
   border-radius: .75rem;
   box-shadow: 0 8px 30px rgba(0,0,0,.5);
   padding: 0; color: #e8e0d4;
 }
-.bm-popup-wrapper .leaflet-popup-tip { background: hsl(220 20% 12%); }
-.bm-popup-wrapper .leaflet-popup-close-button { color: #999 !important; top: 6px !important; right: 8px !important; }
-.bm-popup { display: flex; gap: .65rem; padding: .5rem; }
-.bm-popup__img {
   width: 70px; height: 70px;
   border-radius: .5rem; object-fit: cover;
   flex-shrink: 0;
 }
-.bm-popup__body { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
-.bm-popup__name { font-size: .85rem; font-weight: 600; color: #e8e0d4; }
-.bm-popup__region { font-size: .7rem; color: #999; margin: 0; font-style: italic; }
-.bm-popup__btn {
   margin-top: .35rem; padding: .3rem .65rem;
   background: linear-gradient(135deg, #c4a35a, #a68832);
   color: #1a1a1a; border: none; border-radius: .4rem;
@@ -668,7 +652,6 @@ video::-webkit-media-controls-overlay-play-button {
   cursor: pointer; text-align: center;
   transition: opacity .15s;
 }
-.bm-popup__btn:hover { opacity: .85; }
 
 /* ── Leaflet overrides ── */
   background: hsl(220 20% 15%) !important;
