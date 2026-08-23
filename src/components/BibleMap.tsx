@@ -273,7 +273,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       >
         
         {/* LEFT PANE - Dynamic Layout */}
-        <div className="h-full flex flex-col border-b md:border-b-0 md:border-r border-line-warm bg-surface relative">
+        <div className="h-full flex flex-col min-h-0 border-b md:border-b-0 md:border-r border-line-warm bg-surface relative">
             
             {/* 1. LIST VIEW */}
             {!isSidebarDetailOpen && (
@@ -288,7 +288,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                     />
                 </div>
                 
-                <div className="flex-1 overflow-y-auto overscroll-contain p-2">
+                <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-2">
                     <p className="px-2 text-xs font-bold text-ink-muted mb-2 uppercase">
                         {filteredList.length} {locale === "nl" ? "locaties gevonden" : "locations found"}
                     </p>
@@ -319,7 +319,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
 
             {/* 2. DETAIL VIEW (The "Prism Story" panel) */}
             {isSidebarDetailOpen && activeItemData && (
-              <div className="flex-1 overflow-y-auto overscroll-contain flex flex-col bg-paper absolute inset-0 z-10 animate-in fade-in slide-in-from-right-4 duration-300">
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col bg-paper absolute inset-0 z-10 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div className="px-5 py-4 flex items-center justify-between border-b border-line-warm bg-surface sticky top-0 z-20 shadow-sm">
                     <span className="font-display text-sm font-bold tracking-wide text-ink-muted uppercase">
                         {isNl ? "Locatie Details" : "Location Details"}
