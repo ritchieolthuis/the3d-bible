@@ -620,9 +620,6 @@ video::-webkit-media-controls-overlay-play-button {
 .custom-map-tooltip::before {
     border-top-color: var(--line-strong) !important;
 }
-.antique-tiles {
-    filter: sepia(0.5) hue-rotate(-10deg) saturate(0.8) contrast(1.2) opacity(0.8);
-}
 
 .historical-map-label {
     background: transparent !important;
@@ -643,7 +640,4 @@ video::-webkit-media-controls-overlay-play-button {
 }
 .custom-map-tooltip::before {
     border-top-color: var(--line-strong) !important;
-}
-.antique-tiles {
-    filter: sepia(0.3) hue-rotate(-5deg) saturate(1.1) contrast(1.15);
 }
