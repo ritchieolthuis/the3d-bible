@@ -11,22 +11,40 @@ interface MapPin {
   offsetY?: number;
 }
 
+// Coordinates calibrated for the vertical bible-map.png (Bronze Age Map)
 const PINS: MapPin[] = [
-  // Geographically accurate Web Mercator projection coordinates (Europe / Middle East Map)
-  { id: "eden_fall",       x: 81.43, y: 65.74 },
-  { id: "noahs_ark",       x: 77.57, y: 44.77 },
-  { id: "tower_babel",     x: 77.74, y: 62.19 },
-  { id: "parting_sea",     x: 60.79, y: 68.47 },
-  { id: "tabernacle",      x: 62.82, y: 71.30 },
-  { id: "walls_jericho",   x: 64.92, y: 62.70, offsetX: 5, offsetY: -10 },
+  // Babylon/Mesopotamia (Right side)
+  { id: "eden_fall",       x: 88, y: 45 },
+  { id: "tower_babel",     x: 84, y: 35 },
+  { id: "noahs_ark",       x: 75, y: 12 },
   
-  // Jerusalem Cluster (Spread out pixel-wise so they don't overlap)
-  { id: "solomon_temple",  x: 64.62, y: 63.95, offsetX: -16, offsetY: 0 },
-  { id: "herods_temple",   x: 64.62, y: 63.95, offsetX: -6, offsetY: 16 },
-  { id: "ezekiel_temple",  x: 64.62, y: 63.95, offsetX: -6, offsetY: -16 },
-  { id: "mount_of_olives", x: 64.62, y: 63.95, offsetX: 16, offsetY: 0 },
-  { id: "golgotha",        x: 64.62, y: 63.95, offsetX: -28, offsetY: -8 },
-  { id: "new_jerusalem",   x: 64.62, y: 63.95, offsetX: 0, offsetY: -32 },
+  // Egypt & Sinai (Bottom Left)
+  { id: "parting_sea",     x: 28, y: 68 },
+  { id: "tabernacle",      x: 35, y: 78 },
+  
+  // Canaan / Israel (Center-Left)
+  { id: "walls_jericho",   x: 48, y: 52 },
+  
+  // Jerusalem Cluster (Spread out slightly around the center of Judah)
+  { id: "solomon_temple",  x: 46, y: 55, offsetX: -16, offsetY: 0 },
+  { id: "herods_temple",   x: 46, y: 55, offsetX: -6, offsetY: 16 },
+  { id: "ezekiel_temple",  x: 46, y: 55, offsetX: -6, offsetY: -16 },
+  { id: "mount_of_olives", x: 46, y: 55, offsetX: 16, offsetY: 0 },
+  { id: "golgotha",        x: 46, y: 55, offsetX: -28, offsetY: -8 },
+  { id: "new_jerusalem",   x: 46, y: 55, offsetX: 0, offsetY: -32 },
+];
+
+// High detail historical region labels to overlay on the map
+const REGIONS = [
+  { name: "KONINKRIJK ISRAËL", x: 45, y: 44, color: "#3C5E70" }, // Northern kingdom
+  { name: "KONINKRIJK JUDA", x: 42, y: 58, color: "#c4a35a" },   // Southern kingdom
+  { name: "MOAB", x: 52, y: 60, color: "#9aa7af" },
+  { name: "EDOM", x: 48, y: 66, color: "#9aa7af" },
+  { name: "AMMON", x: 53, y: 54, color: "#9aa7af" },
+  { name: "FILISTIJNEN", x: 37, y: 57, color: "#9aa7af" },
+  { name: "EGYPTE", x: 20, y: 75, color: "#3C5E70" },
+  { name: "ASSYRISCHE RIJK", x: 75, y: 25, color: "#9aa7af" },
+  { name: "BABYLONIË", x: 80, y: 40, color: "#c4a35a" },
 ];
 
 export default function BibleMap({ onSelectStructure, onClose }: { onSelectStructure: (id: string) => void, onClose: () => void }) {
@@ -38,25 +56,39 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   return (
     <ModalShell
       title={locale === "nl" ? "Interactieve Bijbelkaart" : "Interactive Bible Map"}
-      kicker={locale === "nl" ? "Exacte Geografische Locaties" : "Exact Geographic Locations"}
+      kicker={locale === "nl" ? "Historische Geografie" : "Historical Geography"}
       onClose={onClose}
       wide={true}
     >
-      <div className="relative mx-auto w-full max-w-[1000px] overflow-hidden rounded-xl border border-line shadow-inner bg-paper" style={{ aspectRatio: '1400/800', minHeight: "400px" }}>
+      {/* Container matches the aspect ratio of the original vertical bible-map.png */}
+      <div className="relative mx-auto w-full max-w-[627px] overflow-hidden rounded-xl border-2 border-line-warm bg-paper shadow-inner" style={{ aspectRatio: '627/1024', maxHeight: "75vh" }}>
         
-        {/* Real Geographic Map Background (Southern Europe / Middle East) */}
+        {/* The user's original highly detailed map image */}
         <img 
-          src={`${base}img/real-map-bg.jpg`}
-          alt="Geographic Map of the Biblical World"
-          className="absolute inset-0 h-full w-full object-cover mix-blend-multiply opacity-80"
+          src={`${base}img/bible-map.png`}
+          alt="Historical Bible Map"
+          className="absolute inset-0 h-full w-full object-cover"
         />
 
-        {/* Large Decorative Labels */}
+        {/* High-detail Historical Region Labels overlaid on the map */}
         <div className="absolute inset-0 pointer-events-none">
-            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '30%', top: '35%', fontSize: '1.8rem' }}>EUROPE</span>
-            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '50%', top: '75%', fontSize: '1.5rem' }}>EGYPT</span>
-            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '60%', top: '65%', fontSize: '1.0rem' }}>CANAAN</span>
-            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '72%', top: '55%', fontSize: '1.3rem' }}>MESOPOTAMIA</span>
+            {REGIONS.map((region, i) => (
+                <span 
+                    key={i} 
+                    className="absolute font-serif font-bold tracking-widest text-center" 
+                    style={{ 
+                        left: `${region.x}%`, 
+                        top: `${region.y}%`, 
+                        color: region.color,
+                        transform: 'translate(-50%, -50%)',
+                        fontSize: 'clamp(0.6rem, 1.5vw, 1rem)',
+                        textShadow: '0 0 4px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.5)',
+                        opacity: 0.9
+                    }}
+                >
+                    {region.name}
+                </span>
+            ))}
         </div>
 
         {/* Interactive Pins */}
@@ -95,7 +127,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                 {/* Hover Ring */}
                 {isHovered && (
                   <div 
-                    className={`absolute inset-[-8px] rounded-full border transition-all duration-500 animate-ping opacity-30 ${
+                    className={`absolute inset-[-8px] rounded-full border transition-all duration-500 animate-ping opacity-40 ${
                       isHeavenly ? "border-[#FFD700]" : "border-[#3C5E70]"
                     }`}
                   />
