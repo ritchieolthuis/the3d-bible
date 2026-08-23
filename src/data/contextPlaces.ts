@@ -11,7 +11,7 @@ export interface ContextPlace {
 const CONTEXT_PLACES: ContextPlace[] = [
     {
       id: "promised_land",
-      coords: [31.500, 35.000],
+      coords: [31.7772, 35.2345],
       name: { nl: "Het Beloofde Land", en: "The Promised Land" },
       region: { nl: "Kanaän", en: "Canaan" },
       desc: { nl: "Het land dat God aan Abraham en zijn nageslacht beloofde.", en: "The land promised by God to Abraham and his descendants." },

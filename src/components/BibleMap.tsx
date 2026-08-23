@@ -158,12 +158,12 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       zoomSnap: 0.5
     });
     
-    const allCoords = [
-        ...PINS.filter(p => !p.hideOnMap).map(p => p.coords), 
-        ...CONTEXT_PLACES.map(p => p.coords)
-    ];
-    const bounds = L.latLngBounds(allCoords as [number, number][]);
-    map.fitBounds(bounds, { padding: [40, 40] });
+    // Hardcoded initial bounds to match the user's requested overview of the Middle East
+    const initialBounds = L.latLngBounds([
+      [27.5, 30.5], // South-West (Egypt/Sinai area)
+      [38.5, 47.0]  // North-East (Turkey/Iraq area)
+    ]);
+    map.fitBounds(initialBounds, { padding: [10, 10] });
     
     leafletMapInstance.current = map;
 
@@ -370,7 +370,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                                 onSelectStructure(activeItemData.id);
                                 onClose();
                             }}
-                            className="w-full py-3 bg-slateblueblue text-white hover:bg-gold transition-colors rounded shadow font-bold text-sm uppercase flex items-center justify-center gap-2"
+                            className="w-full py-3 text-white rounded shadow-md font-bold text-sm uppercase flex items-center justify-center gap-2 transition-transform hover:scale-[1.02] hover:shadow-lg"
+                            style={{ background: 'linear-gradient(90deg, #efcd41 0%, #9cc330 33%, #48aaea 66%, #3c5e70 100%)', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
                         >
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                             {isNl ? "Open 3D Model" : "Open 3D Model"}
