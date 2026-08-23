@@ -130,7 +130,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
 
     // === DRAW ROUTES ===
     // 1. The Route of the Exodus
-    const exodusLine = L.polyline(EXODUS_ROUTE, {
+    L.polyline(EXODUS_ROUTE, {
         color: '#3C5E70',
         weight: 3,
         opacity: 0.6,
