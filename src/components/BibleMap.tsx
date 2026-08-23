@@ -233,9 +233,10 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
           </div>
         `;
         
-        marker.bindTooltip(tooltipHtml, { direction: 'top', offset: [pin.offset?.[0] || 0, (pin.offset?.[1] || 0) - (isSelected ? 14 : 10)], className: 'custom-map-tooltip' });
+        marker.bindTooltip(tooltipHtml, { direction: 'top', offset: [pin.offset?.[0] || 0, (pin.offset?.[1] || 0) - (isSelected ? 14 : 10)], className: 'custom-map-tooltip', interactive: true });
         
         marker.on('click', () => handleMapPinClick(pin.id, pin.coords as [number, number]));
+        marker.on('tooltipclick', () => handleMapPinClick(pin.id, pin.coords as [number, number]));
         markers.push(marker);
       });
 
@@ -252,8 +253,9 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
             </div>
           `;
 
-          marker.bindTooltip(tooltipHtml, { direction: 'top', offset: [0, isSelected ? -10 : -6], className: 'custom-map-tooltip' });
+          marker.bindTooltip(tooltipHtml, { direction: 'top', offset: [0, isSelected ? -10 : -6], className: 'custom-map-tooltip', interactive: true });
           marker.on('click', () => handleMapPinClick(cp.id, cp.coords as [number, number]));
+        marker.on('tooltipclick', () => handleMapPinClick(cp.id, cp.coords as [number, number]));
           markers.push(marker);
       });
 
