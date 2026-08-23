@@ -9,6 +9,7 @@ interface MapPin {
   id: string;
   coords: [number, number];
   offset?: [number, number]; 
+  hideOnMap?: boolean;
 }
 
 // 1. Existing 3D Structures
@@ -24,7 +25,7 @@ const PINS: MapPin[] = [
   { id: "ezekiel_temple",  coords: [31.778, 35.235], offset: [-15, 15] },
   { id: "mount_of_olives", coords: [31.778, 35.235], offset: [15, 15] },
   { id: "golgotha",        coords: [31.778, 35.235], offset: [-30, 0] },
-  { id: "new_jerusalem",   coords: [31.778, 35.235], offset: [0, -30] },
+  { id: "new_jerusalem",   coords: [31.778, 35.235], hideOnMap: true }, // In index, but hidden on map
 ];
 
 // 2. Map-Only Context Places (No 3D models, just map pins & info)
@@ -37,7 +38,6 @@ interface ContextPlace {
 }
 
 const CONTEXT_PLACES: ContextPlace[] = [
-    // Exodus specific
     { id: "rameses", coords: [30.800, 31.830], name: { nl: "Rameses (Gosen)", en: "Rameses (Goshen)" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "Startpunt van de Exodus.", en: "Starting point of the Exodus." } },
     { id: "succoth", coords: [30.550, 32.100], name: { nl: "Sukkoth", en: "Succoth" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "De eerste pleisterplaats na Rameses.", en: "The first encampment after Rameses." } },
     { id: "etham", coords: [30.450, 32.350], name: { nl: "Etham", en: "Etham" }, region: { nl: "Woestijn", en: "Wilderness" }, desc: { nl: "Aan de rand van de woestijn.", en: "On the edge of the wilderness." } },
@@ -47,8 +47,6 @@ const CONTEXT_PLACES: ContextPlace[] = [
     { id: "marah", coords: [29.350, 32.950], name: { nl: "Mara", en: "Marah" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Plaats van het bittere water.", en: "Place of bitter water." } },
     { id: "elim", coords: [29.100, 33.100], name: { nl: "Elim", en: "Elim" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Oase met 12 waterbronnen en 70 palmbomen.", en: "Oasis with 12 springs and 70 palm trees." } },
     { id: "rephidim", coords: [28.700, 33.700], name: { nl: "Rafidim", en: "Rephidim" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Water uit de rots; strijd tegen Amalek.", en: "Water from the rock; battle with Amalek." } },
-    
-    // Patriarchs & General
     { id: "ur", coords: [30.960, 46.100], name: { nl: "Ur der Chaldeeën", en: "Ur of the Chaldeans" }, region: { nl: "Mesopotamië", en: "Mesopotamia" }, desc: { nl: "De geboorteplaats van Abraham.", en: "The birthplace of Abraham." } },
     { id: "haran", coords: [36.860, 39.030], name: { nl: "Haran", en: "Haran" }, region: { nl: "Mesopotamië", en: "Mesopotamia" }, desc: { nl: "Waar Abraham verbleef voordat hij naar Kanaän ging.", en: "Where Abraham stayed before entering Canaan." } },
     { id: "shechem", coords: [32.213, 35.282], name: { nl: "Sichem", en: "Shechem" }, region: { nl: "Kanaän", en: "Canaan" }, desc: { nl: "God beloofde hier het land aan Abrahams nageslacht.", en: "God promised the land to Abraham's offspring here." } },
@@ -73,7 +71,7 @@ const EXODUS_ROUTE: [number, number][] = [
 ];
 
 function createCustomIcon(isHeavenly: boolean, isSelected: boolean = false, offset: [number, number] = [0, 0], isMapOnly: boolean = false) {
-  const bgColor = isMapOnly ? '#8B5CF6' : (isHeavenly ? '#FFD700' : '#3C5E70'); // Purple for map-only, Prism style
+  const bgColor = isMapOnly ? '#8B5CF6' : (isHeavenly ? '#FFD700' : '#3C5E70');
   const size = isMapOnly ? (isSelected ? '16px' : '10px') : (isSelected ? '20px' : '14px');
   const anchorOffset = isMapOnly ? (isSelected ? 8 : 5) : (isSelected ? 10 : 7);
 
@@ -122,7 +120,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
           coords: pin.coords,
           name: s ? s.name : pin.id,
           regionLabel: s ? s.geography.regionLabel : "",
-          isStructure: true
+          isStructure: true,
+          hideOnMap: pin.hideOnMap
       };
     }).filter(p => structures.some(s => s.id === p.id)),
     ...CONTEXT_PLACES.map(cp => ({
@@ -130,7 +129,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         coords: cp.coords,
         name: isNl ? cp.name.nl : cp.name.en,
         regionLabel: isNl ? cp.region.nl : cp.region.en,
-        isStructure: false
+        isStructure: false,
+        hideOnMap: false
     }))
   ];
 
@@ -140,10 +140,18 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       return item.name.toLowerCase().includes(q) || item.regionLabel.toLowerCase().includes(q);
   });
 
-  const handleSidebarClick = (id: string, coords: [number, number]) => {
-      setActiveMapId(id);
-      if (leafletMapInstance.current) {
-          leafletMapInstance.current.flyTo(coords, 10, { duration: 1.5 });
+  const handleSidebarClick = (item: typeof allListItems[0]) => {
+      setActiveMapId(item.id);
+      
+      if (item.hideOnMap) {
+          // If the item (like New Jerusalem) does not physically exist on the Earth map,
+          // simply bypass map flight and load the 3D model directly!
+          if (item.isStructure) {
+              onSelectStructure(item.id);
+              onClose();
+          }
+      } else if (leafletMapInstance.current) {
+          leafletMapInstance.current.flyTo(item.coords, 10, { duration: 1.5 });
       }
   };
 
@@ -177,7 +185,11 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       zoomSnap: 0.5
     });
     
-    const allCoords = [...PINS.map(p => p.coords), ...CONTEXT_PLACES.map(p => p.coords)];
+    // Bounds calculations must ignore hidden items (New Jerusalem) to prevent broken views
+    const allCoords = [
+        ...PINS.filter(p => !p.hideOnMap).map(p => p.coords), 
+        ...CONTEXT_PLACES.map(p => p.coords)
+    ];
     const bounds = L.latLngBounds(allCoords as [number, number][]);
     map.fitBounds(bounds, { padding: [40, 40] });
     
@@ -186,7 +198,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
     L.polyline(EXODUS_ROUTE, {
-        color: '#8B5CF6', // Matching purple
+        color: '#8B5CF6',
         weight: 3,
         opacity: 0.5,
         dashArray: '5, 10',
@@ -207,13 +219,15 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
 
       // 1. Render Structures (3D models)
       PINS.forEach(pin => {
+        if (pin.hideOnMap) return; // Do not render New Jerusalem on the Earth map!
+        
         const struct = structures.find(s => s.id === pin.id);
         if (!struct) return;
-        const isHeavenly = pin.id === "new_jerusalem";
+        
         const isSelected = activeMapId === pin.id;
         
         const marker = L.marker(pin.coords as [number, number], { 
-            icon: createCustomIcon(isHeavenly, isSelected, pin.offset, false) 
+            icon: createCustomIcon(false, isSelected, pin.offset, false) 
         }).addTo(map);
         
         const tooltipHtml = `
@@ -303,7 +317,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                     return (
                         <button
                             key={item.id}
-                            onClick={() => handleSidebarClick(item.id, item.coords as [number, number])}
+                            onClick={() => handleSidebarClick(item)}
                             className={`w-full text-left px-3 py-3 rounded-lg mb-1 flex items-center gap-3 transition-colors ${isActive ? 'bg-paper shadow-sm border border-line-warm' : 'hover:bg-paper border border-transparent'}`}
                         >
                             {item.isStructure ? (
@@ -341,7 +355,6 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         </div>
 
       </div>
-      <div className="hidden custom-map-tooltip custom-bible-pin historical-map-label"></div>
     </ModalShell>
   );
 }
