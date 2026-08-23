@@ -12,7 +12,8 @@ interface Props {
  *  locale (Statenvertaling for nl, KJV for en). */
 export function ScriptureText({ text }: Props) {
   const { locale } = useLocale();
-  const matches = findScriptureReferences(text, locale).map(m => ({ ...m, kind: "scripture" as const }));
+  type MatchSpan = { start: number; end: number; url: string; kind: "scripture" | "quote" };
+  const matches: MatchSpan[] = findScriptureReferences(text, locale).map(m => ({ ...m, kind: "scripture" as const }));
   
   const quoteRegex = /«(.*?)»/g;
   let match;
