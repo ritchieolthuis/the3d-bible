@@ -117,7 +117,7 @@ export default function BibleMap({ onSelectStructure, onClose }: BibleMapProps) 
                   onMouseEnter={() => setHoveredId(pin.id)}
                   onMouseLeave={() => setHoveredId(null)}
                   onClick={() => { onSelectStructure(pin.id); onClose(); }}
-                  style={{ cursor: "pointer" }}
+                  style={{  }}
                 >
                   <g transform={`translate(${pin.offsetX || 0}, ${pin.offsetY || 0})`}>
                     {/* The Dot / Pin Base */}
