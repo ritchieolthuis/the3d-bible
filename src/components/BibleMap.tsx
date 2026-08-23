@@ -1,5 +1,3 @@
-/** Interactive Bible Map — antique-style map with clickable structure pins.
- *  Uses Leaflet CRS.Simple with a custom image overlay (no external tiles). */
 import { useEffect, useRef, useCallback } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -7,39 +5,34 @@ import { useLocale } from "@/i18n/locale";
 import { structuresFor } from "@/data";
 import { ModalShell } from "./ModalShell";
 
-/* ── image dimensions ── */
-const W = 627;
-const H = 1024;
-const BOUNDS: L.LatLngBoundsLiteral = [[0, 0], [H, W]];
-
-/* ── pin positions on bible-map.png [y, x] where [0,0]=bottom-left ── */
+/* ── real-world coordinates [lat, lng] ── */
 interface MapPin {
   id: string;
-  y: number;
-  x: number;
+  lat: number;
+  lng: number;
   icon: string;
 }
 
 const PINS: MapPin[] = [
-  // Babylon/Mesopotamia locations placed at the eastern/northern edges
-  { id: "eden_fall",       y: 800, x: 580, icon: "🌳" },
-  { id: "noahs_ark",      y: 950, x: 550,  icon: "🚢" },
-  { id: "tower_babel",    y: 700, x: 580, icon: "🗼" },
+  // Babylon/Mesopotamia
+  { id: "eden_fall",       lat: 31.000, lng: 47.000, icon: "🌳" }, // Confluence of Tigris/Euphrates
+  { id: "noahs_ark",      lat: 39.700, lng: 44.300, icon: "🚢" }, // Mount Ararat
+  { id: "tower_babel",    lat: 32.536, lng: 44.420, icon: "🗼" }, // Babylon
   
   // Egypt & Sinai
-  { id: "parting_sea",    y: 300, x: 250,  icon: "🌊" },
-  { id: "tabernacle",     y: 250, x: 300,  icon: "⛺" },
+  { id: "parting_sea",    lat: 29.800, lng: 32.550, icon: "🌊" }, // Gulf of Suez / Pi-Hahiroth
+  { id: "tabernacle",     lat: 28.539, lng: 33.975, icon: "⛺" }, // Near Mt Sinai
   
   // Canaan / Israel
-  { id: "walls_jericho",  y: 440, x: 410,  icon: "🏰" },
-  { id: "solomon_temple", y: 420, x: 400,  icon: "🏛️" },
-  { id: "ezekiel_temple", y: 410, x: 390,  icon: "🏛️" },
-  { id: "herods_temple",  y: 425, x: 410,  icon: "🏛️" },
-  { id: "mount_of_olives",y: 428, x: 420,  icon: "⛰️" },
-  { id: "golgotha",       y: 415, x: 395,  icon: "✝️" },
+  { id: "walls_jericho",  lat: 31.870, lng: 35.444, icon: "🏰" },
+  { id: "solomon_temple", lat: 31.778, lng: 35.235, icon: "🏛️" },
+  { id: "ezekiel_temple", lat: 31.782, lng: 35.236, icon: "🏛️" },
+  { id: "herods_temple",  lat: 31.777, lng: 35.235, icon: "🏛️" },
+  { id: "mount_of_olives",lat: 31.779, lng: 35.245, icon: "⛰️" },
+  { id: "golgotha",       lat: 31.779, lng: 35.229, icon: "✝️" },
   
   // Heavenly
-  { id: "new_jerusalem",  y: 480, x: 400,  icon: "✨" },
+  { id: "new_jerusalem",  lat: 31.780, lng: 35.240, icon: "✨" },
 ];
 
 /* ── component ── */
@@ -65,28 +58,28 @@ export default function BibleMap({ onSelectStructure, onClose }: BibleMapProps) 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
+    // Standard coordinate system (EPSG:3857)
     const map = L.map(containerRef.current, {
-      crs: L.CRS.Simple,
-      minZoom: -1,
-      maxZoom: 3,
-      zoomSnap: 0.25,
-      zoomDelta: 0.5,
-      attributionControl: false,
+      minZoom: 4,
+      maxZoom: 12,
       zoomControl: false,
     });
 
-    /* fit the image */
-    map.fitBounds(BOUNDS);
-    map.setMaxBounds(L.latLngBounds([-50, -50], [H + 50, W + 50]));
+    // Start centered on Israel, zoomed out to see Egypt and Mesopotamia
+    map.setView([31.7, 35.2], 5);
 
-    /* image overlay */
-    const base = import.meta.env.BASE_URL || "/";
-    L.imageOverlay(`${base}img/bible-map.png`, BOUNDS).addTo(map);
+    // Use a clean physical base map with antique CSS filters applied via index.css
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 20
+    }).addTo(map);
 
     /* zoom control bottom-right */
     L.control.zoom({ position: "bottomright" }).addTo(map);
 
     /* markers */
+    const base = import.meta.env.BASE_URL || "/";
     for (const pin of PINS) {
       const struct = structures.find((s) => s.id === pin.id);
       if (!struct) continue;
@@ -104,7 +97,7 @@ export default function BibleMap({ onSelectStructure, onClose }: BibleMapProps) 
         popupAnchor: [0, -42],
       });
 
-      const marker = L.marker([pin.y, pin.x], { icon: markerIcon }).addTo(map);
+      const marker = L.marker([pin.lat, pin.lng], { icon: markerIcon }).addTo(map);
 
       const popupContent = `
         <div class="bm-popup">
@@ -155,12 +148,11 @@ export default function BibleMap({ onSelectStructure, onClose }: BibleMapProps) 
     >
       <div 
         ref={containerRef} 
-        className="w-full rounded-xl border border-line-warm bg-surface shadow-inner"
-        style={{ height: "65vh", minHeight: "500px", background: "#dcd1b6" }}
+        className="bm-leaflet w-full rounded-xl border border-line-warm bg-surface shadow-inner"
+        style={{ height: "65vh", minHeight: "500px" }}
       />
     </ModalShell>
   );
 }
-
 // NOTE for CSS checker: dynamically used classes
 // className="bm-leaflet bible-map-marker bm-pin bm-pin__icon bm-pin--heavenly bm-popup-wrapper bm-popup bm-popup__img bm-popup__body bm-popup__name bm-popup__region bm-popup__btn"
