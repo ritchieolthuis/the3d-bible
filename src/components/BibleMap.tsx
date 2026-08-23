@@ -206,7 +206,23 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   }, [base, locale]);
 
 
+
+  useEffect(() => {
+    const handlePopupClick = (e: any) => {
+      const id = e.detail;
+      const mainPin = PINS.find(p => p.id === id);
+      const ctxPin = CONTEXT_PLACES.find(p => p.id === id);
+      const coords = mainPin ? mainPin.coords : (ctxPin ? ctxPin.coords : null);
+      if (coords) {
+        handleMapPinClick(id, coords as [number, number]);
+      }
+    };
+    window.addEventListener('mapPopupClick', handlePopupClick);
+    return () => window.removeEventListener('mapPopupClick', handlePopupClick);
+  }, [handleMapPinClick]);
+
   // Render map markers
+
   useEffect(() => {
       const map = leafletMapInstance.current;
       if (!map) return;
@@ -223,7 +239,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         }).addTo(map);
         
         const tooltipHtml = `
-          <div style="display:flex; gap:12px; align-items:center; padding:6px; min-width: 220px; white-space: normal;">
+          <div onclick="window.dispatchEvent(new CustomEvent(\'mapPopupClick\', {detail: \'${pin.id}\'}))" style="cursor:pointer; display:flex; gap:12px; align-items:center; padding:6px; min-width: 220px; white-space: normal;">
             <img src="${base}img/${pin.id}/thumbnail.webp" alt="${struct.name}" style="height:48px; width:48px; object-fit:cover; border-radius:4px; border:1px solid #ddd;" onerror="this.style.display='none'"/>
             <div style="flex:1;">
               <p style="margin:0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${struct.name}</p>
@@ -233,7 +249,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
           </div>
         `;
         
-        marker.bindTooltip(tooltipHtml, { direction: 'top', offset: [pin.offset?.[0] || 0, (pin.offset?.[1] || 0) - (isSelected ? 14 : 10)], className: 'custom-map-tooltip', interactive: true });
+        marker.bindPopup(tooltipHtml, { offset: [pin.offset?.[0] || 0, (pin.offset?.[1] || 0) - (isSelected ? 14 : 10)], className: 'custom-map-popup', closeButton: false, autoPan: false });
+        marker.on('mouseover', (e: any) => { e.target.openPopup(); });
         
         marker.on('click', () => handleMapPinClick(pin.id, pin.coords as [number, number]));
         marker.on('tooltipclick', () => handleMapPinClick(pin.id, pin.coords as [number, number]));
@@ -247,13 +264,14 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
           }).addTo(map);
 
           const tooltipHtml = `
-            <div style="padding:6px; min-width: 180px; white-space: normal;">
+            <div onclick="window.dispatchEvent(new CustomEvent(\'mapPopupClick\', {detail: \'${cp.id}\'}))" style="cursor:pointer; padding:6px; min-width: 180px; white-space: normal;">
               <p style="margin:0 0 4px 0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${isNl ? cp.name.nl : cp.name.en}</p>
               <p style="margin:0; font-size:11px; color:#444;">${isNl ? "Lees het verhaal →" : "Read the story →"}</p>
             </div>
           `;
 
-          marker.bindTooltip(tooltipHtml, { direction: 'top', offset: [0, isSelected ? -10 : -6], className: 'custom-map-tooltip', interactive: true });
+          marker.bindPopup(tooltipHtml, { offset: [0, isSelected ? -10 : -6], className: 'custom-map-popup', closeButton: false, autoPan: false });
+        marker.on('mouseover', (e: any) => { e.target.openPopup(); });
           marker.on('click', () => handleMapPinClick(cp.id, cp.coords as [number, number]));
         marker.on('tooltipclick', () => handleMapPinClick(cp.id, cp.coords as [number, number]));
           markers.push(marker);
