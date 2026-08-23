@@ -269,7 +269,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     >
       <div 
         ref={mapContainerRef}
-        className="mx-auto w-full h-full flex-1 min-h-[400px] grid grid-cols-1 md:grid-cols-[400px_1fr] overflow-hidden bg-paper rounded-xl border border-line-strong shadow-inner"
+        className="mx-auto w-full h-[75vh] min-h-[600px] flex-1 grid grid-cols-1 md:grid-cols-[400px_1fr] overflow-hidden bg-paper rounded-xl border border-line-strong shadow-inner"
       >
         
         {/* LEFT PANE - Dynamic Layout */}
@@ -335,14 +335,14 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                 
                 <div className="p-5 flex-1">
                     {activeItemData.isStructure && (
-                        <img src={`${base}img/${activeItemData.id}/thumbnail.webp`} alt="" className="w-full aspect-square object-contain rounded-xl mb-5 border border-line-warm shadow-sm bg-surface" />
+                        <img src={`${base}img/${activeItemData.id}/thumbnail.webp`} alt="" className="w-full h-56 object-contain rounded-xl mb-4 border border-line-warm shadow-sm bg-paper-deep p-2" />
                     )}
                     
-                    <h2 className="font-display mt-2 text-[1.5rem] font-bold leading-none text-ink">{activeItemData.name}</h2>
-                    <p className="font-serif mt-1.5 text-[1.02rem] italic text-terracotta">{activeItemData.regionLabel}</p>
+                    <h2 className="font-display text-[1.5rem] font-bold leading-none text-ink">{activeItemData.name}</h2>
+                    <p className="font-serif mt-0.5 mb-4 text-[1rem] italic text-terracotta">{activeItemData.regionLabel}</p>
                     
                     {/* Rich text formatting */}
-                    <div className="prose text-[0.85rem] prose-slate max-w-none text-ink-soft leading-relaxed mt-6">
+                    <div className="prose text-[0.85rem] prose-slate max-w-none text-ink-soft leading-relaxed mt-4">
                         {activeItemData.story.split('\n').map((paragraph: string, idx: number) => {
                             if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
                                 return <h3 key={idx} className="font-bold text-ink text-sm mt-4 mb-2 uppercase">{paragraph.replace(/\*\*/g, '')}</h3>;
@@ -374,7 +374,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                     </div>
 
                     {activeItemData.verses && activeItemData.verses.length > 0 && (
-                        <div className="mt-6 pt-6 border-t border-line-warm">
+                        <div className="mt-4 pt-6 border-t border-line-warm">
                             <h3 className="font-bold text-ink text-xs uppercase mb-3">{isNl ? "Genoemd in o.a." : "Mentioned in"}</h3>
                             <div className="flex flex-wrap gap-2">
                                 {activeItemData.verses.slice(0, 15).map((v: string, i: number) => (
