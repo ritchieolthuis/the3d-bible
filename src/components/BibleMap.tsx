@@ -464,8 +464,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         </div>
 
         {/* RIGHT PANE */}
-        <div className="relative flex-1 h-full bg-paper">
-            <div ref={mapRef} style={{ width: "100%", height: "100%", zIndex: 1 }} />
+        <div className="relative flex-1 h-full min-h-[400px] bg-paper">
+            <div ref={mapRef} className="absolute inset-0" style={{ zIndex: 1 }} />
         </div>
 
       </div>
