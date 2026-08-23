@@ -25,7 +25,6 @@
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-leaflet": "^5.0.0",
     "tailwind-merge": "^3.4.0",
     "three": "^0.185.1",
     "three-mesh-bvh": "^0.9.14"
