@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useLocale } from "@/i18n/locale";
 import { structuresFor } from "@/data";
 import { ModalShell } from "./ModalShell";
