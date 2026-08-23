@@ -5,7 +5,6 @@ import { ModalShell } from "./ModalShell";
 import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 
-// Coordinates [lat, lng]
 interface MapPin {
   id: string;
   coords: [number, number];
@@ -26,21 +25,6 @@ const PINS: MapPin[] = [
   { id: "golgotha",        coords: [31.778, 35.235], offset: [-30, 0] },
   { id: "new_jerusalem",   coords: [31.778, 35.235], offset: [0, -30] },
 ];
-
-function getHistoricalLabels(locale: string) {
-  const isNl = locale === "nl";
-  return [
-    { text: isNl ? "KONINKRIJK JUDA" : "KINGDOM OF JUDAH", coords: [31.4, 35.0], color: "#c4a35a", size: "12px" },
-    { text: isNl ? "KONINKRIJK ISRAËL" : "KINGDOM OF ISRAEL", coords: [32.3, 35.2], color: "#3C5E70", size: "12px" },
-    { text: "MOAB", coords: [31.5, 35.8], color: "#9aa7af", size: "11px" },
-    { text: "EDOM", coords: [30.4, 35.4], color: "#9aa7af", size: "11px" },
-    { text: "AMMON", coords: [31.9, 36.1], color: "#9aa7af", size: "11px" },
-    { text: isNl ? "FILISTIJNEN" : "PHILISTIA", coords: [31.5, 34.5], color: "#9aa7af", size: "10px" },
-    { text: "ARAM", coords: [33.5, 36.3], color: "#9aa7af", size: "11px" },
-    { text: isNl ? "BABYLONIË" : "BABYLONIA", coords: [32.0, 45.0], color: "#c4a35a", size: "16px" },
-    { text: isNl ? "ASSYRIË" : "ASSYRIA", coords: [35.0, 43.0], color: "#9aa7af", size: "14px" },
-  ];
-}
 
 function createCustomIcon(isHeavenly: boolean, isSelected: boolean = false, offset: [number, number] = [0, 0]) {
   return L.divIcon({
@@ -71,12 +55,10 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   const base = import.meta.env.BASE_URL || "/";
   const mapRef = useRef<HTMLDivElement>(null);
   
-  // State for Split Pane feature
   const [searchQuery, setSearchQuery] = useState("");
   const [activeMapId, setActiveMapId] = useState<string | null>(null);
   const leafletMapInstance = useRef<L.Map | null>(null);
 
-  // Filter structures for sidebar
   const filteredPins = PINS.filter(pin => {
       const struct = structures.find(s => s.id === pin.id);
       if (!struct) return false;
@@ -95,7 +77,6 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   useEffect(() => {
     if (!mapRef.current) return;
     
-    // Initialize map
     const map = L.map(mapRef.current, {
       center: [31.8, 36.5],
       zoom: 6,
@@ -106,19 +87,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     
     leafletMapInstance.current = map;
 
-    // Use full CartoDB Positron just like Prism (light_all includes modern lines for extreme detail/context)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png').addTo(map);
-
-    // Add historical labels
-    const labels = getHistoricalLabels(locale);
-    labels.forEach(lbl => {
-      const icon = L.divIcon({ className: 'dummy-label-icon', html: '' });
-      const marker = L.marker(lbl.coords as [number, number], { icon, interactive: false }).addTo(map);
-      marker.bindTooltip(
-        `<span style="color: ${lbl.color}; font-size: ${lbl.size}; font-family: serif; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 5px #f4f6f7, 0 0 10px #f4f6f7;">${lbl.text}</span>`,
-        { permanent: true, direction: 'center', className: 'historical-map-label' }
-      );
-    });
+    // Use exact CartoDB Positron base map without ANY CSS filters
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
     return () => {
       map.remove();
@@ -126,7 +96,6 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     };
   }, [base, locale]);
 
-  // Handle dynamic marker re-renders without destroying the map
   useEffect(() => {
       const map = leafletMapInstance.current;
       if (!map) return;
@@ -157,12 +126,10 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         marker.bindTooltip(tooltipHtml, { direction: 'top', offset: [pin.offset?.[0] || 0, (pin.offset?.[1] || 0) - (isSelected ? 14 : 10)], className: 'custom-map-tooltip' });
         
         marker.on('click', () => {
-          // If already active, open it
           if (activeMapId === pin.id) {
               onSelectStructure(pin.id);
               onClose();
           } else {
-              // Otherwise just select & fly to it
               setActiveMapId(pin.id);
               map.flyTo(pin.coords as [number, number], 9, { duration: 1.0 });
           }
@@ -185,7 +152,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     >
       <div className="mx-auto w-full max-w-[1200px] flex flex-col md:flex-row overflow-hidden rounded-xl border border-line-strong shadow-inner bg-paper" style={{ height: "75vh", minHeight: "550px" }}>
         
-        {/* LEFT PANE: Search & List Sidebar */}
+        {/* LEFT PANE */}
         <div className="w-full md:w-80 h-full flex flex-col border-b md:border-b-0 md:border-r border-line-warm bg-surface">
             <div className="p-4 border-b border-line-warm">
                 <input 
@@ -199,7 +166,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
             
             <div className="flex-1 overflow-y-auto p-2">
                 <p className="px-2 text-xs font-bold text-ink-muted mb-2 uppercase">
-                    {filteredPins.length} {locale === "nl" ? "plaatsen gevonden" : "places found"}
+                    {filteredPins.length} {locale === "nl" ? "bouwwerken gevonden" : "structures found"}
                 </p>
                 {filteredPins.map(pin => {
                     const struct = structures.find(s => s.id === pin.id)!;
@@ -225,18 +192,13 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
             </div>
         </div>
 
-        {/* RIGHT PANE: Map Engine */}
+        {/* RIGHT PANE */}
         <div className="relative flex-1 h-full">
-            {/* React 19 compatible raw Leaflet mount point */}
             <div ref={mapRef} style={{ width: "100%", height: "100%", background: "#f8f9fa", zIndex: 1 }} />
-            
-            {/* Soft sepia blend to make the very white CARTO map fit the ivory app style perfectly */}
-            <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0, zIndex: 400, background: 'rgba(212, 197, 169, 0.1)', mixBlendMode: 'multiply' }}></div>
         </div>
 
       </div>
-      
-      <div className="hidden historical-map-label custom-map-tooltip custom-bible-pin"></div>
+      <div className="hidden custom-map-tooltip custom-bible-pin"></div>
     </ModalShell>
   );
 }
