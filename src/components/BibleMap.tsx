@@ -3,6 +3,7 @@ import { useLocale } from "@/i18n/locale";
 import { structuresFor } from "@/data";
 import { ModalShell } from "./ModalShell";
 import L from "leaflet";
+import CONTEXT_PLACES from "@/data/contextPlaces";
 import 'leaflet/dist/leaflet.css';
 
 interface MapPin {
@@ -187,6 +188,14 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     setTimeout(fixMapSize, 500);
 
     const resizeObserver = new ResizeObserver(() => {
+        map.invalidateSize();
+    });
+    if (mapContainerRef.current) {
+        resizeObserver.observe(mapContainerRef.current);
+    }
+
+
+    const resizeObserver = new ResizeObserver(() => {
        fixMapSize();
     });
     if (mapContainerRef.current) {
@@ -270,7 +279,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       >
         
         {/* LEFT PANE - Dynamic Layout */}
-        <div className="w-full md:w-80 h-full flex flex-col border-b md:border-b-0 md:border-r border-line-warm bg-surface relative">
+        <div className="w-full md:w-80 flex-none h-full flex flex-col border-b md:border-b-0 md:border-r border-line-warm bg-surface relative">
             
             {/* 1. LIST VIEW */}
             {!isSidebarDetailOpen && (
