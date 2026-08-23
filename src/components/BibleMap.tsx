@@ -84,8 +84,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
 
     // Add TileLayer (Antique/Historical Base)
     // We use World_Shaded_Relief for terrain detail. The CSS class handles the antique coloring.
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', { 
-        className: 'antique-tiles' 
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', { 
+        className: '' 
     }).addTo(map);
 
     // Add labels
