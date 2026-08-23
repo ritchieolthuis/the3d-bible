@@ -12,21 +12,21 @@ interface MapPin {
 }
 
 const PINS: MapPin[] = [
-  // Geographically accurate Web Mercator projection coordinates
-  { id: "eden_fall",       x: 94.74, y: 70.77 },
-  { id: "noahs_ark",       x: 80.53, y: 2.50 },
-  { id: "tower_babel",     x: 81.16, y: 59.23 },
-  { id: "parting_sea",     x: 18.68, y: 79.66 },
-  { id: "tabernacle",      x: 26.18, y: 88.89 },
-  { id: "walls_jericho",   x: 33.92, y: 62.00, offsetX: 10, offsetY: -10 },
+  // Geographically accurate Web Mercator projection coordinates (Europe / Middle East Map)
+  { id: "eden_fall",       x: 81.43, y: 65.74 },
+  { id: "noahs_ark",       x: 77.57, y: 44.77 },
+  { id: "tower_babel",     x: 77.74, y: 62.19 },
+  { id: "parting_sea",     x: 60.79, y: 68.47 },
+  { id: "tabernacle",      x: 62.82, y: 71.30 },
+  { id: "walls_jericho",   x: 64.92, y: 62.70, offsetX: 5, offsetY: -10 },
   
   // Jerusalem Cluster (Spread out pixel-wise so they don't overlap)
-  { id: "solomon_temple",  x: 32.82, y: 64.95, offsetX: -16, offsetY: 0 },
-  { id: "herods_temple",   x: 32.82, y: 64.97, offsetX: -6, offsetY: 16 },
-  { id: "ezekiel_temple",  x: 32.82, y: 64.92, offsetX: -6, offsetY: -16 },
-  { id: "mount_of_olives", x: 32.87, y: 64.94, offsetX: 16, offsetY: 0 },
-  { id: "golgotha",        x: 32.78, y: 64.94, offsetX: -28, offsetY: -8 },
-  { id: "new_jerusalem",   x: 32.82, y: 64.94, offsetX: 0, offsetY: -32 },
+  { id: "solomon_temple",  x: 64.62, y: 63.95, offsetX: -16, offsetY: 0 },
+  { id: "herods_temple",   x: 64.62, y: 63.95, offsetX: -6, offsetY: 16 },
+  { id: "ezekiel_temple",  x: 64.62, y: 63.95, offsetX: -6, offsetY: -16 },
+  { id: "mount_of_olives", x: 64.62, y: 63.95, offsetX: 16, offsetY: 0 },
+  { id: "golgotha",        x: 64.62, y: 63.95, offsetX: -28, offsetY: -8 },
+  { id: "new_jerusalem",   x: 64.62, y: 63.95, offsetX: 0, offsetY: -32 },
 ];
 
 export default function BibleMap({ onSelectStructure, onClose }: { onSelectStructure: (id: string) => void, onClose: () => void }) {
@@ -42,20 +42,21 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       onClose={onClose}
       wide={true}
     >
-      <div className="relative mx-auto w-full max-w-[1000px] overflow-hidden rounded-xl border border-line shadow-inner bg-paper" style={{ aspectRatio: '1024/704', minHeight: "400px" }}>
+      <div className="relative mx-auto w-full max-w-[1000px] overflow-hidden rounded-xl border border-line shadow-inner bg-paper" style={{ aspectRatio: '1400/800', minHeight: "400px" }}>
         
-        {/* Real Geographic Map Background (Canvas Light Gray) */}
+        {/* Real Geographic Map Background (Southern Europe / Middle East) */}
         <img 
           src={`${base}img/real-map-bg.jpg`}
-          alt="Geographic Map of the Middle East"
+          alt="Geographic Map of the Biblical World"
           className="absolute inset-0 h-full w-full object-cover mix-blend-multiply opacity-80"
         />
 
         {/* Large Decorative Labels */}
         <div className="absolute inset-0 pointer-events-none">
-            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '15%', top: '65%', fontSize: '1.5rem' }}>EGYPT</span>
-            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '38%', top: '60%', fontSize: '1.2rem' }}>CANAAN</span>
-            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '60%', top: '45%', fontSize: '1.5rem' }}>MESOPOTAMIA</span>
+            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '30%', top: '35%', fontSize: '1.8rem' }}>EUROPE</span>
+            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '50%', top: '75%', fontSize: '1.5rem' }}>EGYPT</span>
+            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '60%', top: '65%', fontSize: '1.0rem' }}>CANAAN</span>
+            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '72%', top: '55%', fontSize: '1.3rem' }}>MESOPOTAMIA</span>
         </div>
 
         {/* Interactive Pins */}
