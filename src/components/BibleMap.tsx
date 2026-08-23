@@ -11,12 +11,13 @@ interface MapPin {
   offset?: [number, number]; 
 }
 
+// 1. Existing 3D Structures
 const PINS: MapPin[] = [
   { id: "eden_fall",       coords: [31.000, 47.000] },
   { id: "noahs_ark",       coords: [39.700, 44.300] },
   { id: "tower_babel",     coords: [32.536, 44.420] },
-  { id: "parting_sea",     coords: [29.800, 32.550] }, // Pi-Hahiroth / Red Sea Crossing
-  { id: "tabernacle",      coords: [28.539, 33.975] }, // Mount Sinai
+  { id: "parting_sea",     coords: [29.800, 32.550] },
+  { id: "tabernacle",      coords: [28.539, 33.975] },
   { id: "walls_jericho",   coords: [31.870, 35.444] },
   { id: "solomon_temple",  coords: [31.778, 35.235], offset: [-15, -15] },
   { id: "herods_temple",   coords: [31.778, 35.235], offset: [15, -15] },
@@ -26,42 +27,81 @@ const PINS: MapPin[] = [
   { id: "new_jerusalem",   coords: [31.778, 35.235], offset: [0, -30] },
 ];
 
-// Historical routes to draw on the map
-const EXODUS_ROUTE: [number, number][] = [
-    [30.800, 31.830], // Goshen (Rameses)
-    [30.550, 32.100], // Succoth
-    [30.450, 32.350], // Etham
-    [29.800, 32.550], // Parting of the Sea (Pin)
-    [29.350, 32.950], // Marah
-    [29.100, 33.100], // Elim
-    [28.539, 33.975], // Mount Sinai (Tabernacle Pin)
+// 2. Map-Only Context Places (No 3D models, just map pins & info)
+interface ContextPlace {
+    id: string;
+    coords: [number, number];
+    name: { nl: string; en: string };
+    desc: { nl: string; en: string };
+    region: { nl: string; en: string };
+}
+
+const CONTEXT_PLACES: ContextPlace[] = [
+    // Exodus specific
+    { id: "rameses", coords: [30.800, 31.830], name: { nl: "Rameses (Gosen)", en: "Rameses (Goshen)" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "Startpunt van de Exodus.", en: "Starting point of the Exodus." } },
+    { id: "succoth", coords: [30.550, 32.100], name: { nl: "Sukkoth", en: "Succoth" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "De eerste pleisterplaats na Rameses.", en: "The first encampment after Rameses." } },
+    { id: "etham", coords: [30.450, 32.350], name: { nl: "Etham", en: "Etham" }, region: { nl: "Woestijn", en: "Wilderness" }, desc: { nl: "Aan de rand van de woestijn.", en: "On the edge of the wilderness." } },
+    { id: "pi_hahiroth", coords: [29.800, 32.400], name: { nl: "Pi-Hachiroth", en: "Pi-Hahiroth" }, region: { nl: "Rode Zee", en: "Red Sea" }, desc: { nl: "Kampement voor de doortocht.", en: "Encampment before the crossing." } },
+    { id: "migdol", coords: [30.850, 32.350], name: { nl: "Migdol", en: "Migdol" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "Egyptisch fort / wachttoren.", en: "Egyptian fort / watchtower." } },
+    { id: "baal_zephon", coords: [31.100, 32.500], name: { nl: "Baäl-Zefon", en: "Baal-Zephon" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "Plaats aan de overkant van Pi-Hachiroth.", en: "Place opposite Pi-Hahiroth." } },
+    { id: "marah", coords: [29.350, 32.950], name: { nl: "Mara", en: "Marah" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Plaats van het bittere water.", en: "Place of bitter water." } },
+    { id: "elim", coords: [29.100, 33.100], name: { nl: "Elim", en: "Elim" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Oase met 12 waterbronnen en 70 palmbomen.", en: "Oasis with 12 springs and 70 palm trees." } },
+    { id: "rephidim", coords: [28.700, 33.700], name: { nl: "Rafidim", en: "Rephidim" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Water uit de rots; strijd tegen Amalek.", en: "Water from the rock; battle with Amalek." } },
+    
+    // Patriarchs & General
+    { id: "ur", coords: [30.960, 46.100], name: { nl: "Ur der Chaldeeën", en: "Ur of the Chaldeans" }, region: { nl: "Mesopotamië", en: "Mesopotamia" }, desc: { nl: "De geboorteplaats van Abraham.", en: "The birthplace of Abraham." } },
+    { id: "haran", coords: [36.860, 39.030], name: { nl: "Haran", en: "Haran" }, region: { nl: "Mesopotamië", en: "Mesopotamia" }, desc: { nl: "Waar Abraham verbleef voordat hij naar Kanaän ging.", en: "Where Abraham stayed before entering Canaan." } },
+    { id: "shechem", coords: [32.213, 35.282], name: { nl: "Sichem", en: "Shechem" }, region: { nl: "Kanaän", en: "Canaan" }, desc: { nl: "God beloofde hier het land aan Abrahams nageslacht.", en: "God promised the land to Abraham's offspring here." } },
+    { id: "hebron", coords: [31.532, 35.099], name: { nl: "Hebron", en: "Hebron" }, region: { nl: "Juda", en: "Judah" }, desc: { nl: "Rustplaats van Abraham, Isaäk en Jakob.", en: "Resting place of Abraham, Isaac, and Jacob." } },
+    { id: "beersheba", coords: [31.250, 34.790], name: { nl: "Beër-Sjeba", en: "Beersheba" }, region: { nl: "Kanaän", en: "Canaan" }, desc: { nl: "Zuidelijke grens van Israël, put van de eed.", en: "Southern border of Israel, well of the oath." } },
+    { id: "damascus", coords: [33.513, 36.292], name: { nl: "Damascus", en: "Damascus" }, region: { nl: "Aram", en: "Aram" }, desc: { nl: "Oude stad; Paulus kwam hier tot bekering.", en: "Ancient city; Paul was converted here." } },
+    { id: "nineveh", coords: [36.360, 43.150], name: { nl: "Ninevé", en: "Nineveh" }, region: { nl: "Assyrië", en: "Assyria" }, desc: { nl: "Hoofdstad van Assyrië, bezocht door Jona.", en: "Capital of Assyria, visited by Jonah." } },
+    { id: "nazareth", coords: [32.700, 35.297], name: { nl: "Nazareth", en: "Nazareth" }, region: { nl: "Galilea", en: "Galilee" }, desc: { nl: "De woonplaats van Jezus waar Hij opgroeide.", en: "The hometown where Jesus grew up." } },
+    { id: "capernaum", coords: [32.880, 35.575], name: { nl: "Kafarnaüm", en: "Capernaum" }, region: { nl: "Galilea", en: "Galilee" }, desc: { nl: "Het centrum van Jezus' bediening rondom het meer.", en: "The center of Jesus' ministry around the sea." } },
 ];
 
-function createCustomIcon(isHeavenly: boolean, isSelected: boolean = false, offset: [number, number] = [0, 0]) {
+const EXODUS_ROUTE: [number, number][] = [
+    [30.800, 31.830], // Rameses
+    [30.550, 32.100], // Succoth
+    [30.450, 32.350], // Etham
+    [29.800, 32.400], // Pi-Hahiroth
+    [29.800, 32.550], // Parting of the Sea
+    [29.350, 32.950], // Marah
+    [29.100, 33.100], // Elim
+    [28.700, 33.700], // Rephidim
+    [28.539, 33.975], // Mount Sinai
+];
+
+function createCustomIcon(isHeavenly: boolean, isSelected: boolean = false, offset: [number, number] = [0, 0], isMapOnly: boolean = false) {
+  const bgColor = isMapOnly ? '#8B5CF6' : (isHeavenly ? '#FFD700' : '#3C5E70'); // Purple for map-only, Prism style
+  const size = isMapOnly ? (isSelected ? '16px' : '10px') : (isSelected ? '20px' : '14px');
+  const anchorOffset = isMapOnly ? (isSelected ? 8 : 5) : (isSelected ? 10 : 7);
+
   return L.divIcon({
     className: 'custom-bible-pin',
     html: `
       <div style="
-        width: ${isSelected ? '20px' : '14px'}; 
-        height: ${isSelected ? '20px' : '14px'}; 
-        background: ${isHeavenly ? '#FFD700' : '#3C5E70'}; 
-        border: 2px solid ${isHeavenly ? '#ffffff' : '#f4f6f7'}; 
+        width: ${size}; 
+        height: ${size}; 
+        background: ${bgColor}; 
+        border: ${isMapOnly ? '1.5px' : '2px'} solid ${isHeavenly ? '#ffffff' : '#f4f6f7'}; 
         border-radius: 50%; 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         transform: translate(${offset[0]}px, ${offset[1]}px);
         transition: all 0.2s ease-in-out;
       ">
         ${isHeavenly ? `<div style="position:absolute; inset:-6px; border: 1px solid #FFD700; border-radius:50%; animation: pulse 2s infinite;"></div>` : ''}
-        ${isSelected ? `<div style="position:absolute; inset:-8px; border: 2px solid #3C5E70; border-radius:50%; opacity: 0.5;"></div>` : ''}
+        ${isSelected && !isMapOnly ? `<div style="position:absolute; inset:-8px; border: 2px solid ${bgColor}; border-radius:50%; opacity: 0.5;"></div>` : ''}
       </div>
     `,
-    iconSize: isSelected ? [20, 20] : [14, 14],
-    iconAnchor: isSelected ? [10, 10] : [7, 7]
+    iconSize: [parseInt(size), parseInt(size)],
+    iconAnchor: [anchorOffset, anchorOffset]
   });
 }
 
 export default function BibleMap({ onSelectStructure, onClose }: { onSelectStructure: (id: string) => void, onClose: () => void }) {
   const { locale } = useLocale();
+  const isNl = locale === "nl";
   const structures = structuresFor(locale);
   const base = import.meta.env.BASE_URL || "/";
   
@@ -73,27 +113,44 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   const [isFullscreen, setIsFullscreen] = useState(false);
   const leafletMapInstance = useRef<L.Map | null>(null);
 
-  const filteredPins = PINS.filter(pin => {
-      const struct = structures.find(s => s.id === pin.id);
-      if (!struct) return false;
+  // Combine structures and map-only places for search and rendering
+  const allListItems = [
+    ...PINS.map(pin => {
+      const s = structures.find(x => x.id === pin.id);
+      return {
+          id: pin.id,
+          coords: pin.coords,
+          name: s ? s.name : pin.id,
+          regionLabel: s ? s.geography.regionLabel : "",
+          isStructure: true
+      };
+    }).filter(p => structures.some(s => s.id === p.id)),
+    ...CONTEXT_PLACES.map(cp => ({
+        id: cp.id,
+        coords: cp.coords,
+        name: isNl ? cp.name.nl : cp.name.en,
+        regionLabel: isNl ? cp.region.nl : cp.region.en,
+        isStructure: false
+    }))
+  ];
+
+  const filteredList = allListItems.filter(item => {
       if (!searchQuery) return true;
       const q = searchQuery.toLowerCase();
-      return struct.name.toLowerCase().includes(q) || struct.geography.regionLabel.toLowerCase().includes(q);
+      return item.name.toLowerCase().includes(q) || item.regionLabel.toLowerCase().includes(q);
   });
 
   const handleSidebarClick = (id: string, coords: [number, number]) => {
       setActiveMapId(id);
       if (leafletMapInstance.current) {
-          leafletMapInstance.current.flyTo(coords, 9, { duration: 1.5 });
+          leafletMapInstance.current.flyTo(coords, 10, { duration: 1.5 });
       }
   };
 
   const toggleFullscreen = () => {
       if (!containerRef.current) return;
       if (!document.fullscreenElement) {
-          containerRef.current.requestFullscreen().catch(err => {
-              console.error("Error attempting to enable fullscreen:", err);
-          });
+          containerRef.current.requestFullscreen().catch(err => console.error(err));
       } else {
           document.exitFullscreen();
       }
@@ -120,31 +177,21 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       zoomSnap: 0.5
     });
     
-    const bounds = L.latLngBounds(PINS.map(pin => pin.coords as [number, number]));
+    const allCoords = [...PINS.map(p => p.coords), ...CONTEXT_PLACES.map(p => p.coords)];
+    const bounds = L.latLngBounds(allCoords as [number, number][]);
     map.fitBounds(bounds, { padding: [40, 40] });
     
     leafletMapInstance.current = map;
 
-    // Exact CartoDB Positron base map without ANY CSS filters
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-    // === DRAW ROUTES ===
-    // 1. The Route of the Exodus
     L.polyline(EXODUS_ROUTE, {
-        color: '#3C5E70',
+        color: '#8B5CF6', // Matching purple
         weight: 3,
-        opacity: 0.6,
+        opacity: 0.5,
         dashArray: '5, 10',
         lineCap: 'round',
     }).addTo(map);
-
-    // Add a small route label (Goshen) at the start
-    const routeIcon = L.divIcon({ className: 'dummy-label-icon', html: '' });
-    L.marker(EXODUS_ROUTE[0], { icon: routeIcon, interactive: false })
-      .bindTooltip(
-        `<span style="color: #3C5E70; font-size: 11px; font-weight: bold; background: #fff; padding: 2px 4px; border-radius: 4px; border: 1px solid #dbe2e8;">${locale === "nl" ? "Gosen (Exodus)" : "Goshen (Exodus)"}</span>`, 
-        { permanent: true, direction: 'right', className: 'historical-map-label' }
-      ).addTo(map);
 
     return () => {
       map.remove();
@@ -152,12 +199,13 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     };
   }, [base, locale]);
 
+  // Render all markers dynamically
   useEffect(() => {
       const map = leafletMapInstance.current;
       if (!map) return;
-
       const markers: L.Marker[] = [];
 
+      // 1. Render Structures (3D models)
       PINS.forEach(pin => {
         const struct = structures.find(s => s.id === pin.id);
         if (!struct) return;
@@ -165,7 +213,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         const isSelected = activeMapId === pin.id;
         
         const marker = L.marker(pin.coords as [number, number], { 
-            icon: createCustomIcon(isHeavenly, isSelected, pin.offset) 
+            icon: createCustomIcon(isHeavenly, isSelected, pin.offset, false) 
         }).addTo(map);
         
         const tooltipHtml = `
@@ -174,7 +222,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
             <div style="flex:1;">
               <p style="margin:0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${struct.name}</p>
               <p style="margin:2px 0 0 0; font-size:10px; font-style:italic; color:#666;">${struct.geography.regionLabel}</p>
-              <p style="margin:4px 0 0 0; font-size:10px; font-weight:bold; color:#3C5E70;">${locale === "nl" ? "Klik om te openen →" : "Click to open →"}</p>
+              <p style="margin:4px 0 0 0; font-size:10px; font-weight:bold; color:#3C5E70;">${isNl ? "Klik om model te openen →" : "Click to open model →"}</p>
             </div>
           </div>
         `;
@@ -187,11 +235,33 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
               onClose();
           } else {
               setActiveMapId(pin.id);
-              map.flyTo(pin.coords as [number, number], 9, { duration: 1.0 });
+              map.flyTo(pin.coords as [number, number], 10, { duration: 1.0 });
           }
         });
-
         markers.push(marker);
+      });
+
+      // 2. Render Context Places (Map-only)
+      CONTEXT_PLACES.forEach(cp => {
+          const isSelected = activeMapId === cp.id;
+          const marker = L.marker(cp.coords as [number, number], {
+              icon: createCustomIcon(false, isSelected, [0,0], true)
+          }).addTo(map);
+
+          const tooltipHtml = `
+            <div style="padding:6px; min-width: 180px; white-space: normal;">
+              <p style="margin:0 0 4px 0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${isNl ? cp.name.nl : cp.name.en}</p>
+              <p style="margin:0; font-size:11px; color:#444;">${isNl ? cp.desc.nl : cp.desc.en}</p>
+            </div>
+          `;
+
+          marker.bindTooltip(tooltipHtml, { direction: 'top', offset: [0, isSelected ? -10 : -6], className: 'custom-map-tooltip' });
+
+          marker.on('click', () => {
+             setActiveMapId(cp.id);
+             map.flyTo(cp.coords as [number, number], 10, { duration: 1.0 });
+          });
+          markers.push(marker);
       });
 
       return () => {
@@ -226,25 +296,26 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
             
             <div className="flex-1 overflow-y-auto p-2">
                 <p className="px-2 text-xs font-bold text-ink-muted mb-2 uppercase">
-                    {filteredPins.length} {locale === "nl" ? "bouwwerken gevonden" : "structures found"}
+                    {filteredList.length} {locale === "nl" ? "locaties gevonden" : "locations found"}
                 </p>
-                {filteredPins.map(pin => {
-                    const struct = structures.find(s => s.id === pin.id)!;
-                    const isActive = activeMapId === pin.id;
+                {filteredList.map(item => {
+                    const isActive = activeMapId === item.id;
                     return (
                         <button
-                            key={pin.id}
-                            onClick={() => handleSidebarClick(pin.id, pin.coords as [number, number])}
+                            key={item.id}
+                            onClick={() => handleSidebarClick(item.id, item.coords as [number, number])}
                             className={`w-full text-left px-3 py-3 rounded-lg mb-1 flex items-center gap-3 transition-colors ${isActive ? 'bg-paper shadow-sm border border-line-warm' : 'hover:bg-paper border border-transparent'}`}
                         >
-                            <img 
-                                src={`${base}img/${pin.id}/thumbnail.webp`} 
-                                alt=""
-                                className="w-10 h-10 object-cover rounded shadow-sm flex-none"
-                            />
+                            {item.isStructure ? (
+                                <img src={`${base}img/${item.id}/thumbnail.webp`} alt="" className="w-8 h-8 object-cover rounded flex-none" />
+                            ) : (
+                                <div className="w-8 h-8 rounded flex items-center justify-center bg-[#8B5CF6] bg-opacity-20 flex-none border border-[#8B5CF6]">
+                                    <span className="text-[#8B5CF6] font-bold text-xs">P</span>
+                                </div>
+                            )}
                             <div className="flex-1 overflow-hidden">
-                                <p className={`truncate text-sm font-bold ${isActive ? 'text-ink' : 'text-ink-muted'}`}>{struct.name}</p>
-                                <p className="truncate text-[10px] text-ink-light">{struct.geography.regionLabel}</p>
+                                <p className={`truncate text-sm font-bold ${isActive ? 'text-ink' : 'text-ink-muted'}`}>{item.name}</p>
+                                <p className="truncate text-[10px] text-ink-light">{item.regionLabel}</p>
                             </div>
                         </button>
                     )
@@ -270,7 +341,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         </div>
 
       </div>
-      <div className="hidden custom-map-tooltip custom-bible-pin historical-map-label"></div>
+      <div className="hidden custom-map-tooltip custom-bible-pin"></div>
     </ModalShell>
   );
 }
