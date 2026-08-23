@@ -138,7 +138,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0, zIndex: 400, background: 'rgba(212, 197, 169, 0.15)', mixBlendMode: 'multiply' }}></div>
       </div>
       
-      <div className="hidden historical-map-label custom-map-tooltip custom-bible-pin"></div>
+      <div className="hidden historical-map-label custom-map-tooltip custom-bible-pin antique-tiles"></div>
       <p className="mt-4 text-center text-xs italic text-ink-muted">
         {locale === "nl" 
           ? "Sleep om de kaart te verplaatsen. Scroll om in te zoomen. Klik op een locatie om te openen." 
