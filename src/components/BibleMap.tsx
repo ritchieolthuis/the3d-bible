@@ -48,7 +48,6 @@ export default function BibleMap({ onSelectStructure, onClose }: BibleMapProps) 
   const structures = structuresFor(locale);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  const base = import.meta.env.BASE_URL || "/";
 
   // Filter out any missing structures
   const activePins = useMemo(() => {
@@ -87,7 +86,7 @@ export default function BibleMap({ onSelectStructure, onClose }: BibleMapProps) 
                     strokeWidth={0.5}
                     style={{
                       default: { outline: "none" },
-                      hover: { fill: "#423c34", outline: "none", cursor: "pointer" },
+                      hover: { fill: "#423c34", outline: "none" },
                       pressed: { fill: "#36312a", outline: "none" },
                     }}
                   />
