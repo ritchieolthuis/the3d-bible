@@ -198,7 +198,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         </div>
 
       </div>
-      <div className="hidden custom-map-tooltip custom-bible-pin"></div>
+      <div className="hidden custom-map-tooltip custom-bible-pin historical-map-label"></div>
     </ModalShell>
   );
 }
