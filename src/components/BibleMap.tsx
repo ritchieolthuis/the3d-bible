@@ -53,10 +53,13 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   const { locale } = useLocale();
   const structures = structuresFor(locale);
   const base = import.meta.env.BASE_URL || "/";
+  
   const mapRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [activeMapId, setActiveMapId] = useState<string | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const leafletMapInstance = useRef<L.Map | null>(null);
 
   const filteredPins = PINS.filter(pin => {
@@ -74,20 +77,45 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       }
   };
 
+  const toggleFullscreen = () => {
+      if (!containerRef.current) return;
+      if (!document.fullscreenElement) {
+          containerRef.current.requestFullscreen().catch(err => {
+              console.error("Error attempting to enable fullscreen:", err);
+          });
+      } else {
+          document.exitFullscreen();
+      }
+  };
+
+  useEffect(() => {
+      const handleFullscreenChange = () => {
+          setIsFullscreen(!!document.fullscreenElement);
+          setTimeout(() => {
+              leafletMapInstance.current?.invalidateSize();
+          }, 100);
+      };
+      document.addEventListener('fullscreenchange', handleFullscreenChange);
+      return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
   useEffect(() => {
     if (!mapRef.current) return;
     
     const map = L.map(mapRef.current, {
-      center: [31.8, 36.5],
-      zoom: 6,
-      minZoom: 4,
+      minZoom: 3,
       maxZoom: 12,
-      attributionControl: false
+      attributionControl: false,
+      zoomSnap: 0.5
     });
+    
+    // Auto-calculate bounds so ALL pins (from Noah's Ark to Eden to Sinai) fit perfectly on the screen
+    const bounds = L.latLngBounds(PINS.map(pin => pin.coords as [number, number]));
+    map.fitBounds(bounds, { padding: [40, 40] });
     
     leafletMapInstance.current = map;
 
-    // Use exact CartoDB Positron base map without ANY CSS filters
+    // Exact CartoDB Positron base map without ANY CSS filters
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
     return () => {
@@ -150,7 +178,11 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       onClose={onClose}
       wide={true}
     >
-      <div className="mx-auto w-full max-w-[1200px] flex flex-col md:flex-row overflow-hidden rounded-xl border border-line-strong shadow-inner bg-paper" style={{ height: "75vh", minHeight: "550px" }}>
+      <div 
+        ref={containerRef}
+        className={`mx-auto w-full flex flex-col md:flex-row overflow-hidden bg-paper ${isFullscreen ? '' : 'max-w-[1200px] rounded-xl border border-line-strong shadow-inner'}`} 
+        style={isFullscreen ? { height: "100vh", width: "100vw" } : { height: "75vh", minHeight: "550px" }}
+      >
         
         {/* LEFT PANE */}
         <div className="w-full md:w-80 h-full flex flex-col border-b md:border-b-0 md:border-r border-line-warm bg-surface">
@@ -193,12 +225,25 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         </div>
 
         {/* RIGHT PANE */}
-        <div className="relative flex-1 h-full">
-            <div ref={mapRef} style={{ width: "100%", height: "100%", background: "#f8f9fa", zIndex: 1 }} />
+        <div className="relative flex-1 h-full bg-paper">
+            <div ref={mapRef} style={{ width: "100%", height: "100%", zIndex: 1 }} />
+            
+            {/* Custom Fullscreen Button (Bottom Right) */}
+            <button 
+                onClick={toggleFullscreen}
+                className="absolute bottom-4 right-4 z-[400] bg-surface text-ink hover:text-gold p-2.5 rounded shadow-lg border border-line flex items-center justify-center transition-colors"
+                title={locale === "nl" ? "Volledig Scherm" : "Fullscreen"}
+            >
+                {isFullscreen ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
+                ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                )}
+            </button>
         </div>
 
       </div>
-      <div className="hidden custom-map-tooltip custom-bible-pin historical-map-label"></div>
+      <div className="hidden custom-map-tooltip custom-bible-pin"></div>
     </ModalShell>
   );
 }
