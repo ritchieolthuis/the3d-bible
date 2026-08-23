@@ -158,12 +158,17 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       zoomSnap: 0.5
     });
     
-    // Hardcoded initial bounds to match the user's requested overview of the Middle East
-    const initialBounds = L.latLngBounds([
-      [27.5, 30.5], // South-West (Egypt/Sinai area)
-      [38.5, 47.0]  // North-East (Turkey/Iraq area)
+    // Set exact overview as requested (fits Egypt up to Turkey, and Mediterranean to Iran)
+    const allCoords = [
+        ...PINS.filter(p => !p.hideOnMap).map(p => p.coords),
+        ...CONTEXT_PLACES.map(p => p.coords)
+    ];
+    // Start with a strict bounding box that perfectly aligns with the requested view
+    const viewBounds = L.latLngBounds([
+        [25.0, 23.5], 
+        [41.5, 51.5]
     ]);
-    map.fitBounds(initialBounds, { padding: [10, 10] });
+    map.fitBounds(viewBounds, { padding: [10, 10] });
     
     leafletMapInstance.current = map;
 
@@ -282,7 +287,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                         placeholder={locale === "nl" ? "Zoek plaatsen..." : "Search places..."}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full p-2 text-sm border border-line-warm rounded bg-paper focus:outline-none focus:border-gold"
+                        className="w-full p-2.5 pl-4 text-sm border border-line-warm rounded-lg bg-paper focus:outline-none focus:border-terracotta text-ink-soft transition-colors shadow-inner"
                     />
                 </div>
                 
@@ -300,8 +305,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                                 {item.isStructure ? (
                                     <img src={`${base}img/${item.id}/thumbnail.webp`} alt="" className="w-8 h-8 object-cover rounded flex-none" />
                                 ) : (
-                                    <div className="w-8 h-8 rounded flex items-center justify-center bg-[#3C5E70] bg-opacity-10 flex-none border border-[#3C5E70]/30">
-                                        <span className="text-[#3C5E70] font-bold text-xs">P</span>
+                                    <div className="w-8 h-8 rounded flex items-center justify-center bg-paper-deep flex-none border border-line-warm shadow-sm">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-ink-muted"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                                     </div>
                                 )}
                                 <div className="flex-1 overflow-hidden">
@@ -318,26 +323,29 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
             {/* 2. DETAIL VIEW (The "Prism Story" panel) */}
             {isSidebarDetailOpen && activeItemData && (
               <div className="flex-1 overflow-y-auto flex flex-col bg-paper absolute inset-0 z-10 animate-in fade-in slide-in-from-right-4 duration-300">
-                <div className="p-4 border-b border-line-warm bg-surface sticky top-0 z-20 flex justify-between items-center shadow-sm">
+                <div className="px-5 py-4 flex items-center justify-between border-b border-line-warm bg-surface sticky top-0 z-20 shadow-sm">
+                    <span className="font-display text-sm font-bold tracking-wide text-ink-muted uppercase">
+                        {isNl ? "Locatie Details" : "Location Details"}
+                    </span>
                     <button 
                         onClick={() => setIsSidebarDetailOpen(false)}
-                        className="text-sm text-slateblue hover:text-gold flex items-center gap-1 font-bold transition-colors"
+                        className="rounded-md p-1.5 text-ink-muted transition-colors hover:bg-paper-deep hover:text-ink" 
+                        aria-label="Sluiten"
                     >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        {isNl ? "Terug naar overzicht" : "Back to list"}
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
                     </button>
                 </div>
                 
                 <div className="p-5 flex-1">
                     {activeItemData.isStructure && (
-                        <img src={`${base}img/${activeItemData.id}/thumbnail.webp`} alt="" className="w-full h-32 object-cover rounded-lg mb-4 border border-line-warm shadow-sm" />
+                        <img src={`${base}img/${activeItemData.id}/thumbnail.webp`} alt="" className="w-full h-40 object-cover rounded-xl mb-5 border border-line-warm shadow-sm" />
                     )}
                     
-                    <h2 className="text-xl font-bold text-ink uppercase mb-1 font-serif">{activeItemData.name}</h2>
-                    <p className="text-xs font-bold uppercase tracking-wider mb-6" style={{ color: "#9cc330" }}>{activeItemData.regionLabel}</p>
+                    <h2 className="font-display mt-2 text-[1.9rem] font-bold leading-none text-ink">{activeItemData.name}</h2>
+                    <p className="font-serif mt-1.5 text-[1.02rem] italic text-terracotta">{activeItemData.regionLabel}</p>
                     
                     {/* Rich text formatting */}
-                    <div className="prose prose-sm prose-slate max-w-none text-ink-muted leading-relaxed">
+                    <div className="prose prose-sm prose-slate max-w-none text-ink-soft leading-relaxed mt-6">
                         {activeItemData.story.split('\n').map((paragraph: string, idx: number) => {
                             if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
                                 return <h3 key={idx} className="font-bold text-ink text-sm mt-4 mb-2 uppercase">{paragraph.replace(/\*\*/g, '')}</h3>;
@@ -370,7 +378,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                                 onSelectStructure(activeItemData.id);
                                 onClose();
                             }}
-                            className="w-full py-3 bg-slateblue text-white rounded shadow font-bold text-sm uppercase flex items-center justify-center gap-2 transition-colors hover:bg-terracotta"
+                            className="btn-primary w-full !py-3 !rounded-xl !text-[0.95rem] !font-bold uppercase"
                         >
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                             {isNl ? "Open 3D Model" : "Open 3D Model"}
