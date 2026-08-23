@@ -32,6 +32,8 @@ export function ModalShell({ title, kicker, onClose, children, wide, allowFullsc
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
+      // Dispatch a window resize event to force Leaflet (and other components) to recalculate
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
     };
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
@@ -58,7 +60,7 @@ export function ModalShell({ title, kicker, onClose, children, wide, allowFullsc
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`modal-panel bible-scroll flex flex-col overflow-y-auto ${fullscreenClasses} ${fullscreenPadding}`}
+        className={`modal-panel bible-scroll flex flex-col overflow-hidden ${fullscreenClasses} ${fullscreenPadding}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex-none flex items-start justify-between gap-4 border-b border-line-warm pb-4">
@@ -90,7 +92,8 @@ export function ModalShell({ title, kicker, onClose, children, wide, allowFullsc
           </div>
         </div>
         
-        <div className={`flex-1 min-h-0 ${isFullscreen ? 'flex flex-col' : ''}`}>
+        {/* We guarantee this takes the remaining vertical space properly */}
+        <div className="flex-1 min-h-0 flex flex-col relative">
            {children}
         </div>
       </div>

@@ -93,7 +93,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       region: { nl: "Juda", en: "Judah" }, 
       desc: { nl: "Rustplaats van Abraham, Isaäk en Jakob.", en: "Resting place of Abraham, Isaac, and Jacob." },
       story: {
-        nl: "**Historische Context**\nHebron is een belangrijke patriarchale stad in de hooglanden van Juda. Abraham kocht hier de grot van Machpela om Sara te begraven. Later werden Abraham zelf, Isaäk, Rebekka, Jakob en Lea hier bijgezet.\n\n**Theologische Betekenis**\nDavid werd in Hebron tot koning gezalfd en regeerde de eerste zeven jaar van zijn koningschap vanuit deze stad, voordat hij Jeruzalem veroverde. Het is een symbool van Gods trouw aan de aartsvaders en de geboorte van het Davidische verbond.",
+        nl: "**Historische Context**\nHebron is een belangrijke patriarchale stad in de hooglanden van Juda. Abraham kocht hier de grot van Machpela om Sara te begraven. Later werden Abraham zelf, Isaäk, Rebekka, Jakob en Lea hier bijgezet.\n\n**Theologische Betekenis**\nDavid werd in Hebron tot koning gezalfd en regeerde de eerste zeven jaar van zijn koningschap vanuit deze stad, voordat Jeruzalem veroverd werd. Het is een symbool van Gods trouw aan de aartsvaders.",
         en: "**Historical Context**\nA major patriarchal city where Abraham, Isaac, and Jacob are buried. David ruled here for seven years before conquering Jerusalem."
       },
       verses: ["Genesis 13:18", "Genesis 23:2", "2 Samuël 2:1", "2 Samuël 5:3"]
@@ -156,6 +156,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   const base = import.meta.env.BASE_URL || "/";
   
   const mapRef = useRef<HTMLDivElement>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [activeMapId, setActiveMapId] = useState<string | null>(null);
@@ -258,11 +259,22 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         lineCap: 'round',
     }).addTo(map);
 
-    // Watch for size changes (like fullscreen toggle) and redraw
+    const fixMapSize = () => {
+        map.invalidateSize();
+    };
+    
+    // Leaflet needs to know its container size. If rendered inside a flex/modal layout, 
+    // it sometimes calculates 0x0 on the exact mount frame.
+    setTimeout(fixMapSize, 50);
+    setTimeout(fixMapSize, 250);
+    setTimeout(fixMapSize, 500);
+
     const resizeObserver = new ResizeObserver(() => {
-       map.invalidateSize();
+       fixMapSize();
     });
-    resizeObserver.observe(mapRef.current);
+    if (mapContainerRef.current) {
+        resizeObserver.observe(mapContainerRef.current);
+    }
 
     return () => {
       resizeObserver.disconnect();
@@ -336,7 +348,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       allowFullscreen={true}
     >
       <div 
-        className="mx-auto w-full h-full min-h-[550px] flex flex-col md:flex-row overflow-hidden bg-paper rounded-xl border border-line-strong shadow-inner"
+        ref={mapContainerRef}
+        className="mx-auto w-full flex-1 min-h-[550px] flex flex-col md:flex-row overflow-hidden bg-paper rounded-xl border border-line-strong shadow-inner"
       >
         
         {/* LEFT PANE - Dynamic Layout */}
