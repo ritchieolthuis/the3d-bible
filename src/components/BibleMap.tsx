@@ -15,8 +15,8 @@ const PINS: MapPin[] = [
   { id: "eden_fall",       coords: [31.000, 47.000] },
   { id: "noahs_ark",       coords: [39.700, 44.300] },
   { id: "tower_babel",     coords: [32.536, 44.420] },
-  { id: "parting_sea",     coords: [29.800, 32.550] },
-  { id: "tabernacle",      coords: [28.539, 33.975] },
+  { id: "parting_sea",     coords: [29.800, 32.550] }, // Pi-Hahiroth / Red Sea Crossing
+  { id: "tabernacle",      coords: [28.539, 33.975] }, // Mount Sinai
   { id: "walls_jericho",   coords: [31.870, 35.444] },
   { id: "solomon_temple",  coords: [31.778, 35.235], offset: [-15, -15] },
   { id: "herods_temple",   coords: [31.778, 35.235], offset: [15, -15] },
@@ -24,6 +24,17 @@ const PINS: MapPin[] = [
   { id: "mount_of_olives", coords: [31.778, 35.235], offset: [15, 15] },
   { id: "golgotha",        coords: [31.778, 35.235], offset: [-30, 0] },
   { id: "new_jerusalem",   coords: [31.778, 35.235], offset: [0, -30] },
+];
+
+// Historical routes to draw on the map
+const EXODUS_ROUTE: [number, number][] = [
+    [30.800, 31.830], // Goshen (Rameses)
+    [30.550, 32.100], // Succoth
+    [30.450, 32.350], // Etham
+    [29.800, 32.550], // Parting of the Sea (Pin)
+    [29.350, 32.950], // Marah
+    [29.100, 33.100], // Elim
+    [28.539, 33.975], // Mount Sinai (Tabernacle Pin)
 ];
 
 function createCustomIcon(isHeavenly: boolean, isSelected: boolean = false, offset: [number, number] = [0, 0]) {
@@ -109,7 +120,6 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       zoomSnap: 0.5
     });
     
-    // Auto-calculate bounds so ALL pins (from Noah's Ark to Eden to Sinai) fit perfectly on the screen
     const bounds = L.latLngBounds(PINS.map(pin => pin.coords as [number, number]));
     map.fitBounds(bounds, { padding: [40, 40] });
     
@@ -117,6 +127,24 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
 
     // Exact CartoDB Positron base map without ANY CSS filters
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+
+    // === DRAW ROUTES ===
+    // 1. The Route of the Exodus
+    const exodusLine = L.polyline(EXODUS_ROUTE, {
+        color: '#3C5E70',
+        weight: 3,
+        opacity: 0.6,
+        dashArray: '5, 10',
+        lineCap: 'round',
+    }).addTo(map);
+
+    // Add a small route label (Goshen) at the start
+    const routeIcon = L.divIcon({ className: 'dummy-label-icon', html: '' });
+    L.marker(EXODUS_ROUTE[0], { icon: routeIcon, interactive: false })
+      .bindTooltip(
+        `<span style="color: #3C5E70; font-size: 11px; font-weight: bold; background: #fff; padding: 2px 4px; border-radius: 4px; border: 1px solid #dbe2e8;">${locale === "nl" ? "Gosen (Exodus)" : "Goshen (Exodus)"}</span>`, 
+        { permanent: true, direction: 'right', className: 'historical-map-label' }
+      ).addTo(map);
 
     return () => {
       map.remove();
@@ -228,7 +256,6 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         <div className="relative flex-1 h-full bg-paper">
             <div ref={mapRef} style={{ width: "100%", height: "100%", zIndex: 1 }} />
             
-            {/* Custom Fullscreen Button (Bottom Right) */}
             <button 
                 onClick={toggleFullscreen}
                 className="absolute bottom-4 right-4 z-[400] bg-surface text-ink hover:text-gold p-2.5 rounded shadow-lg border border-line flex items-center justify-center transition-colors"
