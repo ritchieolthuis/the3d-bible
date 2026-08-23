@@ -273,7 +273,7 @@ export default function App() {
     try {
       if (typeof window !== "undefined") {
         const url = new URL(window.location.href);
-        url.searchParams.set("structure", panelStructure.id);
+        url.pathname = url.pathname.replace(/\/index\.html$/, "/"); url.searchParams.set("structure", panelStructure.id);
         window.history.replaceState({}, "", url.toString());
       }
     } catch {}
