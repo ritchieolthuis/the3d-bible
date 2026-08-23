@@ -267,11 +267,11 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     >
       <div 
         ref={mapContainerRef}
-        className="mx-auto w-full flex-1 min-h-[550px] flex flex-col md:flex-row overflow-hidden bg-paper rounded-xl border border-line-strong shadow-inner"
+        className="mx-auto w-full flex-1 min-h-[550px] grid grid-cols-1 md:grid-cols-[320px_1fr] overflow-hidden bg-paper rounded-xl border border-line-strong shadow-inner"
       >
         
         {/* LEFT PANE - Dynamic Layout */}
-        <div className="w-full md:w-80 flex-none h-full flex flex-col border-b md:border-b-0 md:border-r border-line-warm bg-surface relative">
+        <div className="h-full flex flex-col border-b md:border-b-0 md:border-r border-line-warm bg-surface relative">
             
             {/* 1. LIST VIEW */}
             {!isSidebarDetailOpen && (
@@ -382,8 +382,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         </div>
 
         {/* RIGHT PANE */}
-        <div className="flex-1 flex flex-col min-h-[400px] bg-paper relative z-0">
-            <div ref={mapRef} className="flex-1 w-full" />
+        <div className="h-full min-h-[400px] bg-paper relative z-0">
+            <div ref={mapRef} className="absolute inset-0" />
         </div>
 
       </div>
