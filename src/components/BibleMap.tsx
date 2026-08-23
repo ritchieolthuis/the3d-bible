@@ -335,7 +335,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                 
                 <div className="p-5 flex-1">
                     {activeItemData.isStructure && (
-                        <img src={`${base}img/${activeItemData.id}/thumbnail.webp`} alt="" className="w-full h-56 object-contain rounded-xl mb-4 border border-line-warm shadow-sm bg-paper-deep p-2" />
+                        <img src={`${base}img/${activeItemData.id}/thumbnail.webp`} alt="" className="w-full h-auto max-h-[250px] object-contain rounded-xl mb-4 border border-line-warm shadow-sm" />
                     )}
                     
                     <h2 className="font-display text-[1.5rem] font-bold leading-none text-ink">{activeItemData.name}</h2>
