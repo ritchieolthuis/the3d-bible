@@ -57,7 +57,7 @@ export function DescriptionText({ text, links, onLinkClick }: Props) {
     } else if (m.kind === "quote") {
       nodes.push(
         <span key={`l${i}`} className="italic text-slateblue font-serif">
-          "{text.slice(m.start + 1, m.end - 1)}"
+          {text.slice(m.start + 1, m.end - 1)}
         </span>
       );
     } else {

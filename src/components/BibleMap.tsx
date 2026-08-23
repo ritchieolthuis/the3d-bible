@@ -269,7 +269,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     >
       <div 
         ref={mapContainerRef}
-        className="mx-auto w-full h-full flex-1 min-h-[400px] grid grid-cols-1 md:grid-cols-[320px_1fr] overflow-hidden bg-paper rounded-xl border border-line-strong shadow-inner"
+        className="mx-auto w-full h-full flex-1 min-h-[400px] grid grid-cols-1 md:grid-cols-[400px_1fr] overflow-hidden bg-paper rounded-xl border border-line-strong shadow-inner"
       >
         
         {/* LEFT PANE - Dynamic Layout */}
@@ -335,20 +335,41 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                 
                 <div className="p-5 flex-1">
                     {activeItemData.isStructure && (
-                        <img src={`${base}img/${activeItemData.id}/thumbnail.webp`} alt="" className="w-full h-40 object-cover rounded-xl mb-5 border border-line-warm shadow-sm" />
+                        <img src={`${base}img/${activeItemData.id}/thumbnail.webp`} alt="" className="w-full aspect-square object-contain rounded-xl mb-5 border border-line-warm shadow-sm bg-surface" />
                     )}
                     
-                    <h2 className="font-display mt-2 text-[1.9rem] font-bold leading-none text-ink">{activeItemData.name}</h2>
+                    <h2 className="font-display mt-2 text-[1.5rem] font-bold leading-none text-ink">{activeItemData.name}</h2>
                     <p className="font-serif mt-1.5 text-[1.02rem] italic text-terracotta">{activeItemData.regionLabel}</p>
                     
                     {/* Rich text formatting */}
-                    <div className="prose prose-sm prose-slate max-w-none text-ink-soft leading-relaxed mt-6">
+                    <div className="prose text-[0.85rem] prose-slate max-w-none text-ink-soft leading-relaxed mt-6">
                         {activeItemData.story.split('\n').map((paragraph: string, idx: number) => {
                             if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
                                 return <h3 key={idx} className="font-bold text-ink text-sm mt-4 mb-2 uppercase">{paragraph.replace(/\*\*/g, '')}</h3>;
                             }
                             if (paragraph.trim() === '') return null;
-                            return <p key={idx} className="mb-3">{paragraph}</p>;
+                            
+                            // Parse quotes if present so they render as blue/italic without visible arrows
+                            const parts = [];
+                            let lastIndex = 0;
+                            const quoteRegex = /«(.*?)»/g;
+                            let match;
+                            while ((match = quoteRegex.exec(paragraph)) !== null) {
+                                if (match.index > lastIndex) {
+                                    parts.push(paragraph.slice(lastIndex, match.index));
+                                }
+                                parts.push(
+                                    <span key={match.index} className="italic text-slateblue font-serif">
+                                        {match[1]}
+                                    </span>
+                                );
+                                lastIndex = match.index + match[0].length;
+                            }
+                            if (lastIndex < paragraph.length) {
+                                parts.push(paragraph.slice(lastIndex));
+                            }
+                            
+                            return <p key={idx} className="mb-3">{parts.length > 0 ? parts : paragraph}</p>;
                         })}
                     </div>
 
