@@ -159,10 +159,6 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     });
     
     // Set exact overview as requested (fits Egypt up to Turkey, and Mediterranean to Iran)
-    const allCoords = [
-        ...PINS.filter(p => !p.hideOnMap).map(p => p.coords),
-        ...CONTEXT_PLACES.map(p => p.coords)
-    ];
     // Start with a strict bounding box that perfectly aligns with the requested view
     const viewBounds = L.latLngBounds([
         [25.0, 23.5], 
