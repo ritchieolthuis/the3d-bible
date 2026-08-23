@@ -188,15 +188,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     setTimeout(fixMapSize, 500);
 
     const resizeObserver = new ResizeObserver(() => {
-        map.invalidateSize();
-    });
-    if (mapContainerRef.current) {
-        resizeObserver.observe(mapContainerRef.current);
-    }
-
-
-    const resizeObserver = new ResizeObserver(() => {
-       fixMapSize();
+        fixMapSize();
     });
     if (mapContainerRef.current) {
         resizeObserver.observe(mapContainerRef.current);
