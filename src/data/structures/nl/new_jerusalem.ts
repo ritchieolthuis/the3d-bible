@@ -13,11 +13,18 @@ export const new_jerusalem: Structure = {
   modelPath: "/models/new_jerusalem_v2.glb",
   tint: "#ffffff",
   modelVariants: [
-    { id: "default", label: "Standaard", path: "/models/new_jerusalem_v2.glb" },
+    { id: "default", label: "Standaard", path: "/models/new_jerusalem_v2.glb",
+      anchors: { lamb: null },
+    },
     { id: "throne", label: "De Troon en het Lam", path: "/models/new_jerusalem_throne.glb",
-      // A separate, close-up export of just the throne and the Lamb; the
-      // wider city's river and gates do not exist as distinct geometry here.
-      anchors: { river: null, gates: null, throne: [0.5, 0.55, 0.5] },
+      camera: { azimuth: 0, elevation: 18, dist: 1.1, targetY: 0.35 },
+      anchors: {
+        cube: null,
+        gates: null,
+        river: null,
+        throne: [0.5, 0.40, 0.70],
+        lamb: [0.5, 0.75, 0.65],
+      },
     },
   ],
   camera: { azimuth: -45, elevation: 30, dist: 1.2, targetY: 0.4 },
@@ -60,12 +67,21 @@ export const new_jerusalem: Structure = {
     },
     {
       id: "throne",
-      title: "De troon en het licht",
-      short: "Het centrale middelpunt",
-      detail: "Helemaal bovenaan de heuvel/gelaagde structuur staat de verlichte troon als het centrale middelpunt van de stad.",
+      title: "De Troon van God",
+      short: "De troon der heerlijkheid",
+      detail: "De troon van God en des Lams staat als het eeuwige middelpunt van heerschappij, vanwaar de rivier van levend water ontspringt (Openbaring 22:1).",
       category: "roof",
       anchor: [0.5, 0.95, 0.5],
-      snap: "roof",
+      snap: "none",
+    },
+    {
+      id: "lamb",
+      title: "Het Lam Gods",
+      short: "Het Lam is haar Kaars",
+      detail: "Het Lam staat op de troon als het middelpunt van aanbidding en heerlijkheid. De Heere God, de Almachtige, en het Lam zijn haar tempel, en het Lam is het licht van de stad (Openbaring 21:23, 22:3-4).",
+      category: "interior",
+      anchor: [0.5, 0.75, 0.65],
+      snap: "none",
     },
   ],
   interior: {

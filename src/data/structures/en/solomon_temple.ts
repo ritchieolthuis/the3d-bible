@@ -27,10 +27,13 @@ export const solomon_temple: Structure = {
       // reoriented export; 90 faces into the open cutaway instead.
       camera: { azimuth: 90, elevation: 30, dist: 1.2, targetY: 0.32 },
       anchors: {
-        boaz_pillar: null, jachin_pillar: null, porch: null,
+        boaz_pillar: null,
+        jachin_pillar: null,
+        porch: null,
         side_chambers: null, molten_lavers: null, brasen_sea: null,
+        brazen_altar: null,
         oracle: [0.28, 0.75, 0.49],
-        candlesticks: [0.60, 0.62, 0.62],
+        candlesticks: [0.66, 0.30, 0.28],
       },
     },
   ],
@@ -71,6 +74,15 @@ export const solomon_temple: Structure = {
       detail: "The porch before the temple of the house, twenty cubits was the length thereof, and ten cubits was the breadth thereof before the house (1 Kings 6:3).",
       category: "entrance",
       anchor: [0.5,0.20,0.44],
+      snap: "none",
+    },
+    {
+      id: "brazen_altar",
+      title: "The Brazen Altar of Burnt Offering",
+      short: "Altar of twenty cubits with the continual flame",
+      detail: "Moreover he made an altar of brass, twenty cubits the length thereof, and twenty cubits the breadth thereof, and ten cubits the height thereof (2 Chronicles 4:1 KJV). On this monumental altar in the inner court before the porch, the holy fire burned continually for sacrifices.",
+      category: "court",
+      anchor: [0.22, 0.16, 0.93],
       snap: "none",
     },
     {

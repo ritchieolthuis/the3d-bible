@@ -15,6 +15,7 @@ import {
   OccupantsIcon,
   ArrowRightIcon,
   PlayIcon,
+  PauseIcon,
   VaseIcon,
   QuizIcon,
   CrossIcon,
@@ -25,8 +26,7 @@ const FACT_ICONS = { period: PeriodIcon, region: MapPinIcon, materials: Material
 
 interface Props {
   structure: Structure;
-  /** Laid out in the page flow rather than in the fixed-height desktop rail:
-   *  the panel takes whatever height its content needs and scrolls with the
+  /** When true the panel is rendering in the single-column bottom-of-the-
    *  page instead of inside itself. */
   flow?: boolean;
   animating: boolean;
@@ -35,11 +35,28 @@ interface Props {
   onArtifacts: () => void;
   onQuiz: () => void;
   onDescriptionLink: (target: DescriptionLinkTarget) => void;
+  onPlayVideo?: () => void;
+  isVideoActive?: boolean;
+  isVideoPaused?: boolean;
 }
 
-export const InfoPanel = memo(function InfoPanel({ structure, flow = false, animating, onLesson, onToggleAnimate, onArtifacts, onQuiz, onDescriptionLink }: Props) {
+export const InfoPanel = memo(function InfoPanel({
+  structure,
+  flow = false,
+  animating,
+  onLesson,
+  onToggleAnimate,
+  onArtifacts,
+  onQuiz,
+  onDescriptionLink,
+  onPlayVideo,
+  isVideoActive = false,
+  isVideoPaused = false,
+}: Props) {
   const { locale } = useLocale();
   const t = useStrings(locale).info;
+  const isPlayingNow = isVideoActive && !isVideoPaused;
+
   return (
     <div
       className={`bible-card flex w-full flex-col overflow-hidden ${flow ? "" : "h-full"}`}
@@ -68,7 +85,7 @@ export const InfoPanel = memo(function InfoPanel({ structure, flow = false, anim
           {/* the illustration is the artefact here  -  show all of it rather
               than cropping it to a fixed ratio */}
           <div
-            className={`mt-4 overflow-hidden rounded-xl border border-line-warm bg-paper-deep ${
+            className={`group relative mt-4 overflow-hidden rounded-xl border border-line-warm bg-paper-deep ${
               flow ? "sm:w-[44%] sm:flex-none" : ""
             }`}
           >
@@ -79,6 +96,24 @@ export const InfoPanel = memo(function InfoPanel({ structure, flow = false, anim
               loading="lazy"
               draggable={false}
             />
+            {onPlayVideo && (
+              <button
+                type="button"
+                onClick={onPlayVideo}
+                aria-label={isPlayingNow ? "Video pauzeren" : "Video afspelen"}
+                className={`absolute inset-0 m-auto flex h-14 w-14 items-center justify-center rounded-full shadow-xl backdrop-blur-md transition-all duration-300 hover:scale-110 focus:outline-none group-hover:scale-105 border ${
+                  isPlayingNow
+                    ? "bg-terracotta text-white border-terracotta shadow-terracotta/40 hover:bg-terracotta-dark"
+                    : "bg-white/90 text-terracotta border-line-warm shadow-warm hover:bg-terracotta hover:text-white hover:border-terracotta"
+                }`}
+              >
+                {isPlayingNow ? (
+                  <PauseIcon className="h-6 w-6" />
+                ) : (
+                  <PlayIcon className="h-6 w-6 translate-x-0.5" />
+                )}
+              </button>
+            )}
           </div>
 
           <div className={flow ? "min-w-0 sm:flex-1" : ""}>

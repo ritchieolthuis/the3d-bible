@@ -13,23 +13,24 @@ export const tabernacle: Structure = {
   ],
   modelPath: "/models/tabernacle.glb?v=2",
   modelVariants: [
-    { id: "default", label: "Outside", path: "/models/tabernacle.glb?v=2" },
-    { id: "inside", label: "Inside", path: "/models/tabernacle_inside.glb?v=3",
-      // A separate export, turned a quarter turn and framed on the court, so
-      // the default anchors land in the wrong places here. Measured against
-      // this model's own geometry.
-      // The default exterior azimuth (-45) shows the back of this reoriented
-      // export; +135 (a half turn from -45) faces the front/entrance side instead.
-      camera: { azimuth: 135, elevation: 25, dist: 0.75, targetY: 0.3 },
+    { id: "default", label: "Outside", path: "/models/tabernacle.glb?v=2",
       anchors: {
-        curtains: [0.428, 0.96, 0.346],
-        brazen_altar: [0.685, 0.30, 0.635],
-        laver: [0.421, 0.29, 0.529],
-        // the gate screen and the perimeter fence are exterior-only
-        // features of the court; this cutaway is framed on the tent's
-        // interior, so both are hidden here rather than mis-pinned
+        ark_testimony: null,
+        menorah: null,
+        showbread_table: null,
+      },
+    },
+    { id: "inside", label: "Inside", path: "/models/tabernacle_inside.glb?v=3",
+      camera: { azimuth: 28, elevation: 24, dist: 1.05, targetY: 0.35 },
+      anchors: {
+        curtains: null,
+        brazen_altar: null,
+        laver: [0.42, 0.29, 0.53],
         court_gate: null,
         court_hangings: null,
+        ark_testimony: [0.21, 0.56, 0.46],
+        menorah: [0.63, 0.44, 0.62],
+        showbread_table: [0.68, 0.40, 0.46],
       },
     }
   ],
@@ -88,6 +89,33 @@ export const tabernacle: Structure = {
       detail: "And thou shalt make the court of the tabernacle... hangings for the court of fine twined linen (Exodus 27:9).",
       category: "court",
       anchor: [0.02, 0.20, 0.45],
+      snap: "none",
+    },
+    {
+      id: "ark_testimony",
+      title: "The Ark of the Testimony",
+      short: "In the Most Holy Place",
+      detail: "And thou shalt put the mercy seat above upon the ark; and in the ark thou shalt put the testimony that I shall give thee (Exodus 25:21 KJV). The golden cherubims stretched forth their wings covering the mercy seat.",
+      category: "artifact-zone",
+      anchor: [0.21, 0.56, 0.46],
+      snap: "none",
+    },
+    {
+      id: "menorah",
+      title: "The Golden Candlestick",
+      short: "Seven lamps of pure gold",
+      detail: "And thou shalt make a candlestick of pure gold: of beaten work shall the candlestick be made (Exodus 25:31 KJV). Its seven lamps burned continually with pure olive oil to give light in the Holy Place.",
+      category: "artifact-zone",
+      anchor: [0.51, 0.50, 0.65],
+      snap: "none",
+    },
+    {
+      id: "showbread_table",
+      title: "The Table of Shewbread",
+      short: "Twelve loaves continually before the LORD",
+      detail: "Thou shalt also make a table of shittim wood... And thou shalt set upon the table shewbread before me alway (Exodus 25:23, 30 KJV). Twelve fresh cakes were set in two rows every sabbath.",
+      category: "artifact-zone",
+      anchor: [0.68, 0.44, 0.46],
       snap: "none",
     },
   ],

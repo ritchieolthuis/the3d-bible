@@ -27,10 +27,13 @@ export const solomon_temple: Structure = {
       // reoriented export; 90 faces into the open cutaway instead.
       camera: { azimuth: 90, elevation: 30, dist: 1.2, targetY: 0.32 },
       anchors: {
-        boaz_pillar: null, jachin_pillar: null, porch: null,
+        boaz_pillar: null,
+        jachin_pillar: null,
+        porch: null,
         side_chambers: null, molten_lavers: null, brasen_sea: null,
+        brazen_altar: null,
         oracle: [0.28, 0.75, 0.49],
-        candlesticks: [0.60, 0.62, 0.62],
+        candlesticks: [0.66, 0.30, 0.28],
       },
     },
   ],
@@ -71,6 +74,15 @@ export const solomon_temple: Structure = {
       detail: "Het voorhuis nu, voor aan den tempel van het huis, twintig ellen was zijn lengte, voor de breedte van het huis; tien ellen was zijn breedte, voor het huis (1 Koningen 6:3).",
       category: "entrance",
       anchor: [0.5,0.20,0.44],
+      snap: "none",
+    },
+    {
+      id: "brazen_altar",
+      title: "Het Koperen Brandofferaltaar",
+      short: "Altaar van twintig ellen met het heilige vuur",
+      detail: "Ook maakte hij een koperen altaar; twintig ellen was zijn lengte, en twintig ellen zijn breedte, en tien ellen zijn hoogte (2 Kronieken 4:1 SV). Op dit monumentale altaar voor het voorhuis brandde het heilige vuur dag en nacht voor de offers des Heeren.",
+      category: "court",
+      anchor: [0.22, 0.16, 0.93],
       snap: "none",
     },
     {

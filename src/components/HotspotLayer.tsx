@@ -104,7 +104,7 @@ export const HotspotLayer = memo(function HotspotLayer({
         }
 
         // the tooltip rides the hovered pin, flipping to stay in frame
-        if (isHover && !occluded) {
+        if (!activeId && isHover && !occluded) {
           const tip = tipRef.current;
           if (tip) {
             const th = tip.offsetHeight || 78;
@@ -142,7 +142,7 @@ export const HotspotLayer = memo(function HotspotLayer({
     };
   }, [structure.id, visible]);
 
-  const hovered = structure.hotspots.find((h) => h.id === hoverId) ?? null;
+  const hovered = !activeId ? (structure.hotspots.find((h) => h.id === hoverId) ?? null) : null;
 
   return (
     /* kept mounted while hidden so the pins fade with the dwelling rather
@@ -166,11 +166,24 @@ export const HotspotLayer = memo(function HotspotLayer({
           }}
           aria-label={`${hs.title}: ${hs.short}`}
           aria-pressed={activeId === hs.id}
-          onMouseEnter={() => onHover(hs.id)}
+          onPointerDown={() => onHover(null)}
+          onMouseEnter={() => {
+            if (!activeId && typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches) {
+              onHover(hs.id);
+            }
+          }}
           onMouseLeave={() => onHover(null)}
-          onFocus={() => onHover(hs.id)}
+          onFocus={() => {
+            if (!activeId && typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches) {
+              onHover(hs.id);
+            }
+          }}
           onBlur={() => onHover(null)}
-          onClick={() => onActivate(activeId === hs.id ? null : hs.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onHover(null);
+            onActivate(activeId === hs.id ? null : hs.id);
+          }}
         >
           <span className="pulse" />
           <span className="rim" />
@@ -178,22 +191,20 @@ export const HotspotLayer = memo(function HotspotLayer({
         </button>
       ))}
 
-      <div
-        ref={tipRef}
-        className={`hs-tip ${hovered ? "is-shown" : ""}`}
-        role="tooltip"
-        aria-hidden={!hovered}
-        style={{ width: TIP_W }}
-      >
-        {hovered && (
-          <>
-            <span className="cat">{catLabel[hovered.category]}</span>
-            <span className="t">{hovered.title}</span>
-            <span className="d">{hovered.short}</span>
-            <span className="hint">{t.clickToExplore}</span>
-          </>
-        )}
-      </div>
+      {!activeId && hovered && (
+        <div
+          ref={tipRef}
+          className="hs-tip is-shown"
+          role="tooltip"
+          aria-hidden={false}
+          style={{ width: TIP_W }}
+        >
+          <span className="cat">{catLabel[hovered.category]}</span>
+          <span className="t">{hovered.title}</span>
+          <span className="d">{hovered.short}</span>
+          <span className="hint">{t.clickToExplore}</span>
+        </div>
+      )}
     </div>
   );
 });

@@ -7,10 +7,23 @@ const STORAGE_KEY = "bible-locale";
 
 function detectInitialLocale(): Locale {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "en" || stored === "nl") return stored;
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname.toLowerCase();
+      const search = window.location.search.toLowerCase();
+      
+      // Explicit URL path detection (e.g. /3dBible or /3dBijbel)
+      if (path.includes("3dbible") || search.includes("lang=en") || search.includes("locale=en")) {
+        return "en";
+      }
+      if (path.includes("3dbijbel") || search.includes("lang=nl") || search.includes("locale=nl")) {
+        return "nl";
+      }
+
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored === "en" || stored === "nl") return stored;
+    }
   } catch {
-    /* localStorage unavailable */
+    /* localStorage or window unavailable */
   }
   return "nl";
 }

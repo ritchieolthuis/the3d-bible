@@ -13,11 +13,18 @@ export const new_jerusalem: Structure = {
   modelPath: "/models/new_jerusalem_v2.glb",
   tint: "#ffffff",
   modelVariants: [
-    { id: "default", label: "Default", path: "/models/new_jerusalem_v2.glb" },
+    { id: "default", label: "Default", path: "/models/new_jerusalem_v2.glb",
+      anchors: { lamb: null },
+    },
     { id: "throne", label: "The Throne and the Lamb", path: "/models/new_jerusalem_throne.glb",
-      // A separate, close-up export of just the throne and the Lamb; the
-      // wider city's river and gates do not exist as distinct geometry here.
-      anchors: { river: null, gates: null, throne: [0.5, 0.55, 0.5] },
+      camera: { azimuth: 0, elevation: 18, dist: 1.1, targetY: 0.35 },
+      anchors: {
+        cube: null,
+        gates: null,
+        river: null,
+        throne: [0.5, 0.40, 0.70],
+        lamb: [0.5, 0.75, 0.65],
+      },
     },
   ],
   camera: { azimuth: -45, elevation: 30, dist: 1.2, targetY: 0.4 },
@@ -60,12 +67,21 @@ export const new_jerusalem: Structure = {
     },
     {
       id: "throne",
-      title: "The throne and the light",
-      short: "The central focal point",
-      detail: "At the very top of the hill/layered structure stands the illuminated throne as the central focal point of the city.",
+      title: "The Throne of God",
+      short: "The throne of eternal glory",
+      detail: "The throne of God and of the Lamb sits at the eternal center of dominion, out of which proceeds the pure river of water of life (Revelation 22:1).",
       category: "roof",
       anchor: [0.5, 0.95, 0.5],
-      snap: "roof",
+      snap: "none",
+    },
+    {
+      id: "lamb",
+      title: "The Lamb of God",
+      short: "The Lamb is its Light",
+      detail: "The Lamb stands upon the throne as the focal point of worship and glory. The Lord God Almighty and the Lamb are the temple of it, and the Lamb is the light thereof (Revelation 21:23, 22:3-4).",
+      category: "interior",
+      anchor: [0.5, 0.75, 0.65],
+      snap: "none",
     },
   ],
   interior: {

@@ -42,28 +42,6 @@ export const IS_LOW_MEMORY_DEVICE =
 /** dwellings kept parsed in memory at once (~2MB of source geometry each) */
 const MAX_RESIDENT = IS_LOW_MEMORY_DEVICE ? 2 : 6;
 
-/** Above this file size, a .glb reliably crash-loops low-memory devices
- *  (see IS_LOW_MEMORY_DEVICE) well before the browser's actual OOM ceiling -
- *  the download itself, the decoded texture upload, and the rest of the
- *  scene already on stage all add up. Desktop has no such limit.
- *
- *  Scaled by `navigator.deviceMemory` (RAM in GB) where the browser exposes
- *  it - Chrome/Android does, Safari/iOS never does. A flat 90MB limit was
- *  observed too high for at least one real low-memory device (a stalled
- *  load that Safari then killed with "A problem repeatedly occurred"), so
- *  devices that don't report their memory get a more conservative default
- *  rather than the old flat ceiling. */
-function lowMemoryModelByteLimit(): number {
-  const MB = 1024 * 1024;
-  const deviceMemory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
-  if (typeof deviceMemory === "number") {
-    // Roughly: a 4GB-RAM phone gets ~60MB, 8GB gets ~90MB, capped both ends.
-    return Math.max(30, Math.min(90, deviceMemory * 15)) * MB;
-  }
-  // Unknown RAM (notably all of iOS Safari): assume the low end.
-  return 45 * MB;
-}
-
 export class ModelTooHeavyError extends Error {
   byteSize: number;
   constructor(byteSize: number) {
@@ -73,19 +51,6 @@ export class ModelTooHeavyError extends Error {
   }
 }
 
-/** For a resolved `/models/<file>.glb` path, points at the pre-compressed
- *  mobile counterpart in `/models/mobile/<file>.glb`, if one could exist.
- *  Callers still HEAD-check it since not every model has a mobile build. */
-function toMobilePath(resolvedPath: string): string | null {
-  // A modelPath may carry a cache-busting query string (e.g. "?v=3"), which
-  // must round-trip onto the mobile URL too, or the browser/CDN never sees
-  // it as a different resource from whatever it cached before the bump.
-  const [path, query] = resolvedPath.split(/(?=\?)/);
-  const m = path.match(/^(.*)\/models\/([^/]+\.glb)$/);
-  if (!m) return null;
-  const [, prefix, file] = m;
-  return `${prefix}/models/mobile/${file}${query || ""}`;
-}
 const TARGET_SIZE = 2.0; // normalized model footprint, world units
 const UP = new THREE.Vector3(0, 1, 0);
 const DOWN = new THREE.Vector3(0, -1, 0);
@@ -629,6 +594,11 @@ export class ViewerEngine {
     // the darkened directional lights and nothing visibly changes.
     const envIntensity = 0.08 + (0.4 - 0.05 * duskFactor - 0.08) * dayFactor;
 
+    const dayFog = new THREE.Color(0xeef2f4);
+    const duskFog = new THREE.Color(0xdf9a68);
+    const nightFog = new THREE.Color(0x0c1222);
+    const fogTo = nightFog.clone().lerp(dayFog, dayFactor).lerp(duskFog, duskFactor * 0.6);
+
     const keyTo = keyBase.clone().lerp(tint, 0.16);
     const rimTo = rimBase.clone().lerp(tint, 0.45);
     const bounceTo = bounceBase.clone().lerp(tint, 0.35);
@@ -640,6 +610,7 @@ export class ViewerEngine {
       if (this.bounceLight) { this.bounceLight.color.copy(bounceTo); this.bounceLight.intensity = bounceIntensity; }
       if (this.hemiLight) { this.hemiLight.color.copy(hemiSky); this.hemiLight.groundColor.copy(hemiGround); this.hemiLight.intensity = hemiIntensity; }
       if (this.fillLight) this.fillLight.intensity = 0.08 + 0.14 * dayFactor;
+      if (this.scene.fog) (this.scene.fog as THREE.Fog).color.copy(fogTo);
       this.scene.environmentIntensity = envIntensity;
       (this.rimColor.value as THREE.Color).copy(rimGlowTo);
     };
@@ -654,6 +625,7 @@ export class ViewerEngine {
         keyI: this.keyLight?.intensity ?? keyIntensity, rimI: this.rimLight?.intensity ?? rimIntensity,
         bounceI: this.bounceLight?.intensity ?? bounceIntensity, hemiI: this.hemiLight?.intensity ?? hemiIntensity,
         fillI: this.fillLight?.intensity ?? 0.22, rimGlow: (this.rimColor.value as THREE.Color).clone(),
+        fog: (this.scene.fog as THREE.Fog)?.color.clone() ?? dayFog.clone(),
         envI: this.scene.environmentIntensity,
       };
       gsap.to(proxy, {
@@ -669,6 +641,7 @@ export class ViewerEngine {
             this.hemiLight.intensity = from.hemiI + (hemiIntensity - from.hemiI) * s;
           }
           if (this.fillLight) this.fillLight.intensity = from.fillI + ((0.08 + 0.14 * dayFactor) - from.fillI) * s;
+          if (this.scene.fog && from.fog) (this.scene.fog as THREE.Fog).color.copy(from.fog).lerp(fogTo, s);
           this.scene.environmentIntensity = from.envI + (envIntensity - from.envI) * s;
           (this.rimColor.value as THREE.Color).copy(from.rimGlow).lerp(rimGlowTo, s);
           this.markShadowDirty(2);
@@ -757,59 +730,15 @@ export class ViewerEngine {
     const cacheKey = `${structure.id}:${desktopPath}`;
     const cached = this.cache.get(cacheKey);
     if (cached) return cached;
-    const p = (async (): Promise<LoadedModel> => {
-      let targetPath = desktopPath;
-      // Low-memory devices (phones/tablets) reliably crash on very large
-      // .glb files well before the browser reports an out-of-memory error.
-      // Heavy models (>~140MB) are pre-compressed (Draco geometry + WebP
-      // textures, same visual quality, no simplification) into
-      // /models/mobile/<file>. On a low-memory device, prefer that file when
-      // it exists; desktop always gets the original, full-quality asset.
-      if (IS_LOW_MEMORY_DEVICE && !targetPath.endsWith(".obj")) {
-        const mobilePath = toMobilePath(targetPath);
-        if (mobilePath) {
-          try {
-            const head = await fetch(toFetchPath(mobilePath), { method: "HEAD" });
-            // A bare `head.ok` check isn't enough: some dev servers (Vite's
-            // SPA fallback) and misconfigured static hosts answer a missing
-            // file with 200 + index.html instead of a real 404, which then
-            // sends GLTFLoader an HTML document to parse as glTF binary and
-            // fails the load entirely. Require the content-type to actually
-            // look like a model response before trusting the mobile path.
-            const type = head.headers.get("content-type") || "";
-            if (head.ok && !type.includes("text/html")) targetPath = mobilePath;
-          } catch {
-            /* mobile variant unreachable  -  fall through to the desktop path */
-          }
-        }
-        try {
-          const head = await fetch(toFetchPath(targetPath), { method: "HEAD" });
-          const type = head.headers.get("content-type") || "";
-          if (!head.ok || type.includes("text/html")) {
-            throw new Error(`model not found at ${targetPath}`);
-          }
-          const len = Number(head.headers.get("content-length") || 0);
-          if (len > lowMemoryModelByteLimit()) {
-            throw new ModelTooHeavyError(len);
-          }
-        } catch (e) {
-          if (e instanceof ModelTooHeavyError) throw e;
-          // A real network failure (offline, server quirk) shouldn't block
-          // loading  -  let the real load attempt surface its own error. But
-          // if we just proved the file doesn't exist there, retry against
-          // the desktop path instead of feeding GLTFLoader an HTML response.
-          if (targetPath === mobilePath) targetPath = desktopPath;
-        }
-      }
-      return this.loadInner(structure, targetPath, cacheKey);
-    })();
+    const p = this.loadInner(structure, desktopPath, cacheKey);
     this.cache.set(cacheKey, p);
     return p;
   }
 
   private loadInner(structure: Structure, targetPath: string, cacheKey: string): Promise<LoadedModel> {
     return new Promise<LoadedModel>((resolve, reject) => {
-      const isObj = targetPath.endsWith('.obj');
+      const [cleanPath] = targetPath.split(/(?=\?)/);
+      const isObj = cleanPath.endsWith('.obj');
       // .obj geometry carries no material of its own, so it always needs its
       // external /img/{id}/texture_*.png maps applied.
       const needsExternalTextures = isObj;
@@ -1103,7 +1032,7 @@ export class ViewerEngine {
    *  against blank textures and never picks up the real image once it
    *  arrives  -  the mesh renders as flat, textureless material forever
    *  (see the noahs_ark default variant regression this fixed). */
-  private applyRim(mesh: THREE.Mesh, structureId: string, cacheKey?: string): Promise<void> {
+  private applyRim(mesh: THREE.Mesh, structureId: string, _cacheKey?: string): Promise<void> {
     // new_jerusalem's embedded texture is already correct for its model's UV
     // atlas; the external /img/new_jerusalem/texture_*.webp files were a
     // different, incompatible bake and have been removed. Do not re-add an
@@ -1119,7 +1048,6 @@ export class ViewerEngine {
     // Opt IN by exact model path instead of opting OUT by variant id, so a
     // newly added variant is safe by default even if no one remembers to
     // exclude it here.
-    const isNoahsArkDefaultVariant = structureId === "noahs_ark" && !!cacheKey?.endsWith("/models/noahs_ark.glb");
     try {
       const src = mesh.material as THREE.MeshStandardMaterial;
       const nm = new THREE.MeshStandardNodeMaterial();
@@ -1132,26 +1060,6 @@ export class ViewerEngine {
       nm.roughness = src.roughness ?? 0.8;
       nm.metalness = src.metalness ?? 0.1;
       mesh.material = nm;
-
-      if (isNoahsArkDefaultVariant) {
-        const texLoader = new THREE.TextureLoader();
-
-        return Promise.all([
-          texLoader.loadAsync(withBase("/img/noahs_ark/texture_diffuse.webp")),
-          texLoader.loadAsync(withBase("/img/noahs_ark/texture_normal.webp")),
-          texLoader.loadAsync(withBase("/img/noahs_ark/texture_pbr.webp")),
-        ]).then(([diffuse, normal, pbr]) => {
-          diffuse.colorSpace = THREE.SRGBColorSpace;
-          diffuse.flipY = false;
-          normal.flipY = false;
-          pbr.flipY = false;
-          nm.map = diffuse;
-          nm.normalMap = normal;
-          nm.roughnessMap = pbr;
-          nm.metalnessMap = pbr;
-          nm.roughness = 1.0;
-        });
-      }
       /* tower_babel intentionally has no override here (removed): the
          external /img/tower_babel/texture_*.webp files were baked against
          the old model's UV atlas. The current model (swapped in for a

@@ -16,22 +16,14 @@ export interface Hotspot {
   /** longer educational description shown when activated */
   detail: string;
   category: "structure" | "roof" | "court" | "entrance" | "interior" | "artifact-zone" | "facade";
-  /** Placed against the model's bounding box; the viewer snaps it onto the
-   *  nearest real surface so the pin sits on the building, not in the air. */
+  /** Placed against the model's bounding box normalized [0, 1] in 3D (X, Y, Z). */
   anchor: Vec3;
-  /** Which kind of surface the pin belongs on. The viewer resolves this
-   *  against the model's own geometry, so a pin lands on the feature it
-   *  names whatever the dwelling's shape:
-   *  - "roof"  the highest built mass nearest the anchor
-   *  - "court" the open low ground enclosed by that mass
-   *  - "wall"  the outer skin, met by coming in horizontally from outside
-   *  - "none"  the anchor *is* the spot; nothing is searched for
-   *  The anchor then only steers *which* roof, court or wall.
-   *
-   *  Use "none" for a free-standing object inside an open court (a basin,
-   *  an altar): "roof"/"court" would run a height-field search that lands
-   *  on whatever mass is tallest nearby  -  a flame, a tent ridge  -  and
-   *  "wall" would slide the pin sideways onto the perimeter fence. */
+  /** Surface snapping strategy:
+   *  - "none"  (Recommended for exact 3D positioning): Anchor is exact 3D coordinates [X, Y, Z] directly on the feature.
+   *  - "roof"  Snaps to the highest mesh surface near the anchor.
+   *  - "court" Snaps to the low ground level.
+   *  - "wall"  Raycasts horizontally from bounding box inward.
+   *  Tip: Use `snap: "none"` with exact [x, y, z] to place pins with 100% precision on doors, statues, and specific features. */
   snap?: "roof" | "court" | "wall" | "none";
   /** @deprecated Annotations now appear on hover at the pin, so labels no
    *  longer float at a fixed offset. Retained so existing data still type-checks. */

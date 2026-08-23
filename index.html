@@ -1,49 +1,242 @@
 <!doctype html>
-<html lang="en">
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="The 3D Bible — an interactive 3D encyclopedia of biblical structures described in the King James Bible." />
-    <!-- Safari (especially iOS) doesn't reliably use SVG for the tab/bookmark icon and can fall
-         back to a stale cached icon for the domain instead — a plain .ico plus sized PNGs as the
-         primary rel="icon" entries make sure Safari always has a real bitmap to read. -->
-    <link rel="icon" href="/favicon.ico?v=1" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=1" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=1" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=1" />
-    <!-- iOS ignores SVG for apple-touch-icon (falls back to a screenshot or
-         a stale/unrelated icon it has cached for the domain otherwise) -
-         it needs a real opaque PNG, 180x180 being Apple's current spec. -->
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1" />
+    <title>De Bijbel Online | De Bijbel Lezen &amp; Verkennen in 3D (Online Bijbel) — The 3D Bible</title>
+    
+    <!-- Core SEO & High-Volume Bible Search Keywords -->
+    <meta name="description" content="De Bijbel online lezen, bestuderen en interactief ontdekken in 3D. De complete online Bijbel met Bijbelverzen, Bijbelteksten, de Statenvertaling, King James Bible en 3D-bouwwerken. Verken de Bijbel gratis online." />
+    <meta name="keywords" content="de bijbel, bijbel online, online bijbel, de bijbel online, bijbel, bijbel vers, bijbel tekst, bijbelteksten, bijbelverzen, bijbel in gewone taal, gratis bijbel online, statenvertaling, statenvertaling online, heilige schrift, de heilige bijbel, bible online, online bible, the bible, the bible online, holy bible, king james bible, bible verses, bible study, de bijbel in 3d, bible in 3d, 3d bijbel, 3d bible, the 3d bible, interactieve bijbel, interactive bible, bijbelse bouwwerken 3d, tempel van salomo 3d, ark van noach 3d, tabernakel 3d, tweede tempel 3d, golgotha 3d, toren van babel 3d, nieuwe jeruzalem 3d" />
+    <meta name="author" content="De Samenkomst / The 3D Bible" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+    <!-- Canonical & Dual Language Paths (3dBijbel & 3dBible) -->
+    <link rel="canonical" href="https://desamenkomst.nl/3dBijbel/" />
+    <link rel="alternate" hreflang="nl" href="https://desamenkomst.nl/3dBijbel/" />
+    <link rel="alternate" hreflang="en" href="https://desamenkomst.nl/3dBible/" />
+    <link rel="alternate" hreflang="x-default" href="https://desamenkomst.nl/3dBijbel/" />
+
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Link preview card. og:image/og:url use absolute URLs since some
-         crawlers (e.g. WhatsApp) don't reliably resolve relative paths. -->
+    <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="The 3D Bible" />
-    <meta property="og:title" content="The 3D Bible: History and Architecture" />
-    <meta property="og:url" content="https://ritchieolthuis.github.io/the3d-bible/" />
+    <meta property="og:site_name" content="De Bijbel Online | The 3D Bible" />
+    <meta property="og:title" content="De Bijbel Online | De Bijbel Lezen &amp; Verkennen in 3D (Online Bijbel)" />
+    <meta property="og:url" content="https://desamenkomst.nl/3dBijbel/" />
     <meta
       property="og:description"
-      content="Explore the structures of the Bible. Biblical buildings in interactive 3D — study each structure, read the Scripture, and understand how God's people worshipped."
+      content="De Bijbel online lezen en beleven. Ontdek de Bijbel, Bijbelteksten, de Statenvertaling en Bijbelse bouwwerken in interactief 3D."
     />
-    <meta property="og:image" content="https://ritchieolthuis.github.io/the3d-bible/og-cover.jpg" />
+    <meta property="og:image" content="https://desamenkomst.nl/3dBijbel/og-cover.jpg" />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="An illustrated painting of the young Jesus teaching among the elders in the temple, set on aged parchment with a map of Galilee, Samaria, and Judea, beside the words The 3D Bible." />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:image:alt" content="De Bijbel Online — De Heilige Schrift en Bijbelse geschiedenis in interactief 3D." />
+    <meta property="og:locale" content="nl_NL" />
+    <meta property="og:locale:alternate" content="en_US" />
 
+    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="The 3D Bible: History and Architecture" />
+    <meta name="twitter:title" content="De Bijbel Online | De Bijbel in 3D (The Bible Online)" />
     <meta
       name="twitter:description"
-      content="Explore the structures of the Bible. Biblical buildings in interactive 3D — study each structure, read the Scripture, and understand how God's people worshipped."
+      content="De Bijbel online lezen en ontdekken met Bijbelteksten, Statenvertaling en interactieve 3D-modellen."
     />
-    <meta name="twitter:image" content="https://ritchieolthuis.github.io/the3d-bible/og-cover.jpg" />
-    <meta name="twitter:image:alt" content="An illustrated painting of the young Jesus teaching among the elders in the temple, set on aged parchment with a map of Galilee, Samaria, and Judea, beside the words The 3D Bible." />
+    <meta name="twitter:image" content="https://desamenkomst.nl/3dBijbel/og-cover.jpg" />
+    <meta name="twitter:image:alt" content="De Bijbel Online — The 3D Bible" />
+
+    <!-- Structured Data (JSON-LD) for 100/100 Google Rankings & Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://desamenkomst.nl/3dBijbel/#website",
+          "url": "https://desamenkomst.nl/3dBijbel/",
+          "name": "De Bijbel Online | Online Bijbel (The 3D Bible)",
+          "alternateName": [
+            "De Bijbel",
+            "Bijbel Online",
+            "Online Bijbel",
+            "De Bijbel Online",
+            "Bijbel",
+            "Bible Online",
+            "Online Bible",
+            "The Bible",
+            "The Bible Online",
+            "Holy Bible",
+            "Bijbel Vers",
+            "Bijbel Tekst",
+            "Bijbelteksten",
+            "Bijbelverzen",
+            "Bijbel in Gewone Taal",
+            "Statenvertaling Online",
+            "King James Bible Online",
+            "3D Bijbel",
+            "3D Bible",
+            "The 3D Bible",
+            "De 3D Bijbel",
+            "Interactieve Bijbel",
+            "Interactive Bible",
+            "Bijbel in 3D",
+            "Bible in 3D"
+          ],
+          "description": "De complete online Bijbel om de Heilige Schrift, Bijbelverzen, Bijbelteksten en Bijbelse geschiedenis online te lezen en in 3D te verkennen volgens de Statenvertaling en King James Bible.",
+          "inLanguage": ["nl-NL", "en-US"],
+          "publisher": {
+            "@type": "Organization",
+            "name": "De Samenkomst / The 3D Bible",
+            "url": "https://desamenkomst.nl/"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://desamenkomst.nl/3dBijbel/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Book",
+          "@id": "https://desamenkomst.nl/3dBijbel/#bible",
+          "name": "De Bijbel (De Heilige Schrift / The Holy Bible)",
+          "alternateName": ["De Heilige Bijbel", "Statenvertaling", "King James Bible", "The Holy Bible", "The Scriptures"],
+          "inLanguage": ["nl", "en"],
+          "genre": "Religious Text",
+          "bookFormat": "EBook",
+          "url": "https://desamenkomst.nl/3dBijbel/"
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://desamenkomst.nl/3dBijbel/#webapp",
+          "name": "De Bijbel Online (The 3D Bible App)",
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires WebGL / WebGPU support",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR"
+          },
+          "featureList": [
+            "De Bijbel Online Lezen en Bestuderen",
+            "Statenvertaling & King James Bible Teksten en Verzen",
+            "Interactieve 3D Modellen van Bijbelse Bouwwerken en Heiligdommen",
+            "Dag en Nacht Simulatie (Tijd van de Dag)",
+            "3D Hotspots en Detailverkenning van Heilige Voorwerpen",
+            "Filmische 3D Video Animaties",
+            "Tweetalig: Nederlands en Engels (/3dBijbel en /3dBible)"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://desamenkomst.nl/3dBijbel/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://desamenkomst.nl/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "De Bijbel Online (3D Bijbel)",
+              "item": "https://desamenkomst.nl/3dBijbel/"
+            }
+          ]
+        },
+        {
+          "@type": "ItemList",
+          "@id": "https://desamenkomst.nl/3dBijbel/#structures",
+          "name": "Plaatsen en Bouwwerken in de Bijbel / Structures in the Bible",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Het Hof van Eden & De Zondeval in de Bijbel (Garden of Eden / Genesis 2-3)" },
+            { "@type": "ListItem", "position": 2, "name": "De Ark van Noach in de Bijbel (Noah's Ark / Genesis 6-9)" },
+            { "@type": "ListItem", "position": 3, "name": "De Toren van Babel in de Bijbel (Tower of Babel / Genesis 11)" },
+            { "@type": "ListItem", "position": 4, "name": "De Doortocht door de Rode Zee in de Bijbel (Parting of the Red Sea / Exodus 14)" },
+            { "@type": "ListItem", "position": 5, "name": "De Tabernakel in de Woestijn in de Bijbel (Tabernacle in the Wilderness / Exodus 25-40)" },
+            { "@type": "ListItem", "position": 6, "name": "De Muren van Jericho in de Bijbel (Walls of Jericho / Jozua 6)" },
+            { "@type": "ListItem", "position": 7, "name": "De Tempel van Salomo in de Bijbel (Solomon's Temple / 1 Koningen 6-7)" },
+            { "@type": "ListItem", "position": 8, "name": "De Tweede Tempel te Jeruzalem in de Bijbel (Herod's Temple / Markus 13, Mattheüs 27)" },
+            { "@type": "ListItem", "position": 9, "name": "De Olijfberg & Gethsémané in de Bijbel (Mount of Olives & Gethsemane / Mattheüs 26, Handelingen 1)" },
+            { "@type": "ListItem", "position": 10, "name": "Golgotha en de Kruisiging in de Bijbel (Golgotha / Mount Calvary / Johannes 19, Lukas 23)" },
+            { "@type": "ListItem", "position": 11, "name": "Het Nieuwe Jeruzalem in de Bijbel (The New Jerusalem / Openbaring 21-22)" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://desamenkomst.nl/3dBijbel/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Waar kan ik De Bijbel online gratis lezen en verkennen?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Op De Bijbel Online (The 3D Bible op desamenkomst.nl/3dBijbel) kun je gratis de Bijbel online lezen, Bijbelteksten en Bijbelverzen bestuderen volgens de Statenvertaling en King James Bible, en de historische Bijbelse bouwwerken in interactief 3D verkennen."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Wat is De Bijbel Online (The 3D Bible)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "De Bijbel Online is een interactief digitaal platform dat de Heilige Schrift combineert met 3D-visualisaties van Bijbelse architectuur, heiligdommen zoals de Tempel van Salomo, de Ark van Noach en de Tabernakel, en historische Bijbelteksten."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How can I access The 3D Bible in English?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You can access the English version directly at https://desamenkomst.nl/3dBible/ or switch the language to EN in the top bar of the application."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Welke Bijbelvertalingen zijn beschikbaar in De Bijbel Online?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "De Bijbel Online bevat de volledige authentieke teksten uit de Nederlandse Statenvertaling (SV) en de Engelse King James Version (KJV)."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "VideoObject",
+          "@id": "https://desamenkomst.nl/3dBijbel/#video-solomon",
+          "name": "De Tempel van Salomo in 3D Animatie",
+          "description": "Filmische 3D animatie van koning Salomo's Tempel te Jeruzalem met de pilaren Jachin en Boaz en het koperen wasvat.",
+          "thumbnailUrl": "https://desamenkomst.nl/3dBijbel/img/solomon_temple/hero.webp",
+          "contentUrl": "https://desamenkomst.nl/3dBijbel/videos/solomon_temple.mp4",
+          "uploadDate": "2026-08-23",
+          "inLanguage": "nl"
+        },
+        {
+          "@type": "VideoObject",
+          "@id": "https://desamenkomst.nl/3dBijbel/#video-noah",
+          "name": "De Ark van Noach in 3D Animatie",
+          "description": "Filmische 3D animatie van de Ark van Noach tijdens de Zondvloed volgens Genesis 6-9.",
+          "thumbnailUrl": "https://desamenkomst.nl/3dBijbel/img/noahs_ark/hero.webp",
+          "contentUrl": "https://desamenkomst.nl/3dBijbel/videos/noahs_ark.mp4",
+          "uploadDate": "2026-08-23",
+          "inLanguage": "nl"
+        },
+        {
+          "@type": "VideoObject",
+          "@id": "https://desamenkomst.nl/3dBijbel/#video-tabernacle",
+          "name": "De Tabernakel in de Woestijn in 3D Animatie",
+          "description": "3D weergave van het heiligdom der Israëlieten met de Ark des Verbonds en de Menorah.",
+          "thumbnailUrl": "https://desamenkomst.nl/3dBijbel/img/tabernacle/hero.webp",
+          "contentUrl": "https://desamenkomst.nl/3dBijbel/videos/tabernacle.mp4",
+          "uploadDate": "2026-08-23",
+          "inLanguage": "nl"
+        }
+      ]
+    }
+    </script>
 
     <meta name="theme-color" content="#3C5E70" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -52,10 +245,15 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
-    <title>The 3D Bible: History and Architecture</title>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="font-family: sans-serif; padding: 2rem; max-width: 800px; margin: 0 auto;">
+        <h1>De Bijbel Online — De Heilige Schrift &amp; Bijbelteksten (The Bible Online)</h1>
+        <p>Schakel JavaScript in om de interactieve 3D Bijbel te verkennen op <a href="https://desamenkomst.nl/3dBijbel/">desamenkomst.nl/3dBijbel</a> (Nederlands) of <a href="https://desamenkomst.nl/3dBible/">desamenkomst.nl/3dBible</a> (English).</p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

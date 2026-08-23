@@ -115,12 +115,30 @@
 .library-scroll::-webkit-scrollbar { display: none; }
 .library-scroll { scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 
-/* ── Viewer stage: the parchment the dwelling stands on ─────────────
-   Painted here rather than in the scene so it keeps the exact palette of
-   the surrounding UI  -  a rendered backdrop would get tone-mapped grey. */
+/* ── Viewer stage: dynamic sky & starry night background ─────────── */
 .viewer-stage {
-  background:
-    radial-gradient(120% 90% at 50% 38%, #ffffff 0%, #f7f9fa 42%, #eef2f4 78%, #e2e9ec 100%);
+  background: #060913;
+  overflow: hidden;
+}
+
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: var(--star-opacity, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    opacity: calc(var(--star-opacity, 0.7) * 0.25);
+    transform: scale(0.65);
+  }
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #ffffff;
+  pointer-events: none;
+  animation: star-twinkle var(--twinkle-dur, 3s) ease-in-out infinite;
+  animation-delay: var(--twinkle-delay, 0s);
 }
 /* Fullscreen fallback for browsers with no Fullscreen API on plain elements
    (iOS Safari). Pins the stage over the full viewport with a fixed overlay -
@@ -206,9 +224,8 @@
 }
 .hs-pin.is-active .core { background: var(--terracotta-deep); }
 .hs-pin.is-active .pulse { animation-duration: 2.4s; }
-.hs-pin.is-dim { opacity: 0.35; }
-/* hidden behind the building  -  a faint ghost, and not clickable */
-.hs-pin.is-occluded { opacity: 0.16; pointer-events: none; }
+/* hidden behind the building  -  a faint ghost, still clickable on touch/click */
+.hs-pin.is-occluded { opacity: 0.35; }
 .hs-pin.is-occluded .pulse { animation: none; opacity: 0; }
 
 /* hover annotation  -  the only thing that ever covers the model */
@@ -228,6 +245,11 @@
   z-index: 40;
   transform-origin: 50% 100%;
   transition: opacity 0.18s ease;
+}
+@media (hover: none) {
+  .hs-tip {
+    display: none !important;
+  }
 }
 .hs-tip.is-shown { opacity: 1; }
 /* the little pointer aimed back at the pin */
@@ -288,18 +310,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 11px 4px;
+  gap: 3px;
+  padding: 6px 2px;
   width: 100%;
-  border-radius: 14px;
+  border-radius: 12px;
   color: var(--slate-icon);
   transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
 }
-.tool-btn svg { width: 24px; height: 24px; }
+.tool-btn svg { width: 20px; height: 20px; }
 .tool-btn span {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
   color: var(--ink-soft);
 }
 .tool-btn:hover { background: var(--paper-deep); }
@@ -350,6 +373,9 @@
 }
 
 /* ── Structure library cards ───────────────────────────────────────── */
+.library-scroll {
+  scroll-behavior: smooth;
+}
 .structure-card {
   position: relative;
   display: flex;
@@ -360,28 +386,21 @@
   padding: 12px 14px 12px 12px;
   border-radius: 16px;
   border: 1px solid transparent;
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
-  /* iOS Safari can otherwise treat a tap inside this scrolling list as an
-     ambiguous scroll/gesture and drop the click entirely */
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   touch-action: manipulation;
 }
-/* no x-shift on hover: the list clips its own overflow, so sliding the card
-   sideways sheared the rounded corner off the active row */
-.structure-card:hover { background: #eef2f4; }
-.structure-card.is-active {
-  background: var(--cream);
-  border-color: var(--line-strong);
-  box-shadow: 0 2px 6px rgb(29 43 51 / 0.06), 0 10px 24px -10px rgb(29 43 51 / 0.14);
-}
 .structure-card .thumb-frame {
-  width: 80px; height: 80px;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
 }
 .structure-card .thumb {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 .structure-card .heart { opacity: 0; transition: opacity 0.25s ease, transform 0.25s ease; }
-.structure-card:hover .heart, .structure-card.is-active .heart, .structure-card .heart.is-fav { opacity: 1; }
+.structure-card:hover .heart, .structure-card[aria-selected="true"] .heart, .structure-card .heart.is-fav { opacity: 1; }
 
 /* ── Inline description links ──────────────────────────────────── */
 .description-link {
@@ -445,15 +464,29 @@
 .bottom-card img { transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
 .bottom-card:hover img { transform: scale(1.035); }
 
-/* ── Nav ────────────────────────────────────────────────────────── */
 .nav-item {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 10px 18px;
-  border-radius: 11px;
-  font-size: 0.95rem;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  font-size: 0.84rem;
   font-weight: 500;
   color: var(--ink-soft);
   transition: background 0.25s ease, color 0.25s ease;
+  white-space: nowrap;
+}
+@media (min-width: 1280px) {
+  .nav-item {
+    gap: 6px;
+    padding: 8px 10px;
+    font-size: 0.88rem;
+  }
+}
+@media (min-width: 1536px) {
+  .nav-item {
+    gap: 8px;
+    padding: 9px 15px;
+    font-size: 0.93rem;
+  }
 }
 .nav-item svg { width: 18px; height: 18px; color: var(--slate-icon); transition: color 0.25s ease; }
 .nav-item:hover { background: var(--paper-deep); color: var(--ink); }
@@ -543,3 +576,27 @@
 }
 .rm .hs-pin .pulse, .rm .loading-compass, .rm .scroll-cue { animation: none !important; }
 .rm * { transition-duration: 0.01ms !important; }
+
+/* ── Mobile clean video overrides ────────────────────────────────── */
+video::-webkit-media-controls {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+video::-webkit-media-controls-panel {
+  display: none !important;
+}
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+}
+

@@ -12,7 +12,9 @@ export const noahs_ark: Structure = {
   ],
   modelPath: "/models/noahs_ark.glb",
   modelVariants: [
-    { id: "default", label: "Standaard", path: "/models/noahs_ark.glb" },
+    { id: "default", label: "Standaard", path: "/models/noahs_ark.glb",
+      anchors: { stories: null },
+    },
     { id: "inside", label: "Binnenkant", path: "/models/noahs_ark_inside.glb",
       // A separate export of the interior; the exterior-only hotspots (deur,
       // venster, bepekking) do not exist as distinct fittings here. "stories"
@@ -61,12 +63,12 @@ export const noahs_ark: Structure = {
     },
     {
       id: "door",
-      title: "De Deur",
-      short: "Gezet in haar zijde",
-      detail: "En de deur der ark zult gij in haar zijde zetten (Genesis 6:16).",
+      title: "De Deur in Haar Zijde",
+      short: "En de deur der ark zult gij in haar zijde zetten",
+      detail: "En de deur der ark zult gij in haar zijde zetten (Genesis 6:16 SV). De enige ingang waardoor Noach, zijn gezin en alle dieren binnengingen, waarna de Heere Zelf de deur achter hen toesloot (Genesis 7:16).",
       category: "entrance",
-      anchor: [0.88,0.35,0.5],
-      snap: "wall",
+      anchor: [0.42, 0.53, 0.78],
+      snap: "none",
     },
     {
       id: "stories",

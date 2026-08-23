@@ -11,7 +11,6 @@ const DEV_MODE =
   import.meta.env.DEV && typeof window !== "undefined" && new URLSearchParams(window.location.search).get("dev") === "1";
 import {
   RotateIcon,
-  RotateCcwIcon,
   ZoomInIcon,
   ZoomOutIcon,
   FullscreenIcon,
@@ -32,12 +31,28 @@ import {
   MoonIcon,
 } from "./icons";
 
+const STARS = Array.from({ length: 95 }, (_, i) => {
+  let seed = (i + 1) * 7919;
+  const rand = () => {
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
+  return {
+    id: i,
+    x: Number((rand() * 99).toFixed(2)),
+    y: Number((rand() * 88).toFixed(2)),
+    size: Number((0.8 + rand() * 1.8).toFixed(1)),
+    opacity: Number((0.35 + rand() * 0.65).toFixed(2)),
+    twinkleDuration: Number((2.0 + rand() * 3.5).toFixed(2)),
+    twinkleDelay: Number((rand() * 4).toFixed(2)),
+  };
+});
+
 interface ViewerProps {
   structure: Structure; // the structure the viewer should display
   onSwap: (e: Structure) => void; // called mid-transition: panels should update
   reducedMotion: boolean;
   animating: boolean;
-  onToggleAnimate?: () => void;
   focusHotspot: string | null;
   onFocusHandled: () => void;
   onArtifacts: () => void;
@@ -53,7 +68,6 @@ export const Viewer = memo(function Viewer({
   onSwap,
   reducedMotion,
   animating,
-  onToggleAnimate,
   focusHotspot,
   onFocusHandled,
   onArtifacts,
@@ -100,12 +114,26 @@ export const Viewer = memo(function Viewer({
   const [layers, setLayers] = useState({ labels: true, grid: false, wire: false, xray: false });
   const [tipVisible, setTipVisible] = useState(true);
   const [activeVariantId, setActiveVariantId] = useState<string | null>(null);
-  /* each structure remembers its own hour so switching dwellings doesn't
-     reset a night scene someone set up, or drag a night look onto the next
-     one they open for the first time. */
+  const STRUCTURE_DEFAULT_HOURS: Record<string, number> = {
+    golgotha: 18.0,
+    mount_of_olives: 16.5,
+    tower_babel: 6.5,
+  };
   const DEFAULT_HOUR = 14;
   const [timeByStructure, setTimeByStructure] = useState<Record<string, number>>({});
-  const timeOfDay = timeByStructure[structure.id] ?? DEFAULT_HOUR;
+  const defaultHour = STRUCTURE_DEFAULT_HOURS[structure.id] ?? DEFAULT_HOUR;
+  const timeOfDay = timeByStructure[structure.id] ?? defaultHour;
+
+  const { dayFactor, duskFactor, nightFactor } = useMemo(() => {
+    const t = (((timeOfDay % 24) + 24) % 24) / 24;
+    const angle = (t - 0.25) * Math.PI * 2;
+    const sunHeight = Math.sin(angle);
+    const day = Math.max(0, sunHeight);
+    const dusk = Math.max(0, 1 - Math.abs(sunHeight) / 0.35);
+    const night = Math.max(0, -sunHeight);
+    return { dayFactor: day, duskFactor: dusk, nightFactor: night };
+  }, [timeOfDay]);
+
   const requestRef = useRef(0);
   const loadingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -306,7 +334,8 @@ export const Viewer = memo(function Viewer({
       // each structure remembers its own hour; prime it before the handover
       // so the transition's own re-tint picks up the incoming dwelling's
       // hour instead of leaving the outgoing one's in place
-      engine.primeTimeOfDay(timeByStructure[next.id] ?? DEFAULT_HOUR);
+      const nextDefaultHour = STRUCTURE_DEFAULT_HOURS[next.id] ?? DEFAULT_HOUR;
+      engine.primeTimeOfDay(timeByStructure[next.id] ?? nextDefaultHour);
 
       // the engine drives the exchange; panels flip at the handover so copy
       // and geometry change on the same beat
@@ -413,7 +442,70 @@ export const Viewer = memo(function Viewer({
           e.preventDefault();
         }}
       >
-        <canvas ref={canvasRef} className="block h-full w-full touch-none" aria-label={t.canvasAria(structure.dwelling)} />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden select-none">
+          {/* Daytime sky gradient */}
+          <div
+            className="absolute inset-0 transition-opacity duration-700 ease-out"
+            style={{
+              opacity: dayFactor > 0.05 ? 1 : 0,
+              background: "radial-gradient(120% 90% at 50% 38%, #ffffff 0%, #f7f9fa 42%, #eef2f4 78%, #e2e9ec 100%)",
+            }}
+          />
+
+          {/* Sunset / Dusk warm horizon gradient */}
+          <div
+            className="absolute inset-0 transition-opacity duration-700 ease-out"
+            style={{
+              opacity: duskFactor * Math.max(0, 1 - dayFactor * 0.7),
+              background: "radial-gradient(120% 90% at 50% 45%, #ffd29d 0%, #f09554 30%, #7e3e5c 65%, #1b1730 100%)",
+            }}
+          />
+
+          {/* Deep starry night gradient */}
+          <div
+            className="absolute inset-0 transition-opacity duration-700 ease-out"
+            style={{
+              opacity: nightFactor,
+              background: "radial-gradient(120% 90% at 50% 25%, #182342 0%, #0d1426 48%, #050811 100%)",
+            }}
+          />
+
+          {/* Starfield with twinkling stars (fades in smoothly as night falls) */}
+          <div
+            className="absolute inset-0 transition-opacity duration-1000 ease-out"
+            style={{
+              opacity: Math.max(0, (nightFactor - 0.08) / 0.92),
+            }}
+          >
+            {/* Subtle celestial milky-way nebular glow */}
+            <div
+              className="absolute -top-1/4 -right-1/4 h-[120%] w-[120%] opacity-40 blur-3xl pointer-events-none"
+              style={{
+                background: "radial-gradient(ellipse at center, rgba(140, 170, 240, 0.25) 0%, rgba(90, 110, 190, 0.12) 40%, transparent 70%)",
+                transform: "rotate(-25deg)",
+              }}
+            />
+
+            {STARS.map((s) => (
+              <div
+                key={s.id}
+                className="star"
+                style={{
+                  left: `${s.x}%`,
+                  top: `${s.y}%`,
+                  width: `${s.size}px`,
+                  height: `${s.size}px`,
+                  boxShadow: s.size > 1.8 ? "0 0 3px rgba(255,255,255,0.8)" : undefined,
+                  "--star-opacity": s.opacity,
+                  "--twinkle-dur": `${s.twinkleDuration}s`,
+                  "--twinkle-delay": `${s.twinkleDelay}s`,
+                } as React.CSSProperties}
+              />
+            ))}
+          </div>
+        </div>
+
+        <canvas ref={canvasRef} className="relative z-10 block h-full w-full touch-none" aria-label={t.canvasAria(structure.dwelling)} />
         {/* holds the outgoing frame still while the next dwelling takes its
             place underneath, so a swap dissolves instead of blinking */}
       </div>
@@ -452,7 +544,7 @@ export const Viewer = memo(function Viewer({
           bottom edge. */}
       <div className="pointer-events-auto absolute left-3 top-1/2 z-30 max-h-[calc(100%-16px)] -translate-y-1/2" role="toolbar" aria-label={t.toolsAria} aria-orientation="vertical">
         {/* px keeps the active pill clear of the rail's own edges */}
-        <div className="bible-card flex h-full max-h-full w-[84px] flex-col items-center gap-1 overflow-y-auto !rounded-2xl px-2.5 py-3">
+        <div className="bible-card flex h-full max-h-full w-[76px] flex-col items-center gap-0.5 overflow-y-auto !rounded-2xl px-1.5 py-2">
           <button className={`tool-btn ${tool === "rotate" ? "is-on" : ""}`} onClick={() => setTool("rotate")} aria-pressed={tool === "rotate"}>
             <RotateIcon />
             <span>{t.rotate}</span>
@@ -514,20 +606,13 @@ export const Viewer = memo(function Viewer({
         </div>
       </div>
 
-      {/* ── 3D-model accuracy disclaimer  -  top-right corner of the stage ── */}
-      <div className="bible-card pointer-events-auto absolute top-4 right-4 z-20 w-[220px] !rounded-2xl border border-line-strong bg-[#eef2f4]/95 p-3 shadow-card backdrop-blur-sm">
-        <p className="font-serif text-[0.78rem] leading-snug text-ink-soft">
-          {t.disclaimer}
-        </p>
-      </div>
-
       {/* ── Model Variant Toggle (Top Center) ──
           max-w caps the row at the stage width minus the tool rail and its
           own margins, so three-plus variants (e.g. noahs_ark's "Na de
           Vloed") wrap their pill instead of pushing the row past the
           card's right edge. */}
       {structure.modelVariants && structure.modelVariants.length > 1 && (
-        <div className="pointer-events-auto absolute top-4 left-1/2 z-30 max-w-[calc(100%-72px)] -translate-x-1/2">
+        <div className="pointer-events-auto absolute top-3.5 left-1/2 z-30 max-w-[calc(100%-80px)] -translate-x-1/2">
           <div className="flex flex-wrap items-center justify-center gap-1 rounded-full border border-line-strong bg-white/95 p-1 shadow-card backdrop-blur-md">
             {structure.modelVariants.map((v) => {
               const isActive = activeVariantId === v.id;
@@ -551,53 +636,27 @@ export const Viewer = memo(function Viewer({
         </div>
       )}
 
-      {/* ── Auto rotate + Time of day floating pills ──
-          Sits bottom-left under the tool rail at every width, matching
-          desktop  -  the whole overlay wrapper scales down on phones instead
-          of this element getting its own compact layout. */}
+      {/* ── Time of day floating pill ──
+          Positioned in the bottom-left corner directly under the vertical tool rail */}
       {/* Hidden on small screens when hotspot card is active to prevent overlap */}
-      <div className={`pointer-events-auto absolute bottom-4 left-3 z-30 flex items-end gap-2 transition-opacity duration-200 ${activeHs ? "opacity-0 pointer-events-none sm:opacity-100 sm:pointer-events-auto" : ""}`}>
-        <button
-          type="button"
-          onClick={onToggleAnimate}
-          className="bible-card group flex items-center gap-2.5 !rounded-full border border-line-strong bg-white/95 px-3.5 py-1.5 shadow-card backdrop-blur-md transition-all hover:bg-white hover:shadow-md active:scale-[0.98]"
-          aria-label={t.autoRotate}
-          aria-pressed={animating}
-        >
-          <RotateCcwIcon className="h-4 w-4 text-ink transition-transform duration-500 group-hover:-rotate-45" />
-          <span className="font-serif text-[0.88rem] font-medium text-ink select-none">
-            {t.autoRotate}
-          </span>
-          <div
-            className={`relative h-5 w-9 rounded-full transition-colors duration-200 ${
-              animating ? "bg-[#5B9BD5]" : "bg-[#c5ced3]"
-            }`}
-          >
-            <div
-              className={`absolute top-[2.5px] h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform duration-200 ${
-                animating ? "translate-x-[18px]" : "translate-x-[2.5px]"
-              }`}
-            />
-          </div>
-        </button>
-
+      <div className={`pointer-events-auto absolute bottom-3.5 left-[26px] z-30 flex items-end gap-2 transition-opacity duration-200 ${activeHs ? "opacity-0 pointer-events-none sm:opacity-100 sm:pointer-events-auto" : ""}`}>
         <div className="relative" ref={timeOfDayRef}>
           <button
             type="button"
             onClick={() => setTimeOfDayOpen((v) => !v)}
-            className="bible-card group flex h-[38px] w-[38px] items-center justify-center !rounded-full border border-line-strong bg-white/95 shadow-card backdrop-blur-md transition-all hover:bg-white hover:shadow-md active:scale-[0.98]"
+            className="bible-card group flex h-12 w-12 items-center justify-center !rounded-full border border-line-strong bg-white/95 shadow-card backdrop-blur-md transition-all hover:bg-white hover:shadow-md active:scale-[0.98]"
             aria-label={t.timeOfDayAria}
             aria-expanded={timeOfDayOpen}
             aria-haspopup="true"
           >
             {timeOfDay >= 6.5 && timeOfDay < 18.5 ? (
-              <SunIcon className="h-4 w-4 text-terracotta" />
+              <SunIcon className="h-[22px] w-[22px] text-terracotta transition-transform duration-300 group-hover:scale-110" />
             ) : (
-              <MoonIcon className="h-4 w-4 text-slateblue" />
+              <MoonIcon className="h-[22px] w-[22px] text-slateblue transition-transform duration-300 group-hover:scale-110" />
             )}
           </button>
           {timeOfDayOpen && (
-            <div className="bible-card absolute bottom-[46px] left-0 z-40 w-[240px] !rounded-2xl border border-line-strong bg-white/95 p-4 shadow-card backdrop-blur-md">
+            <div className="bible-card absolute bottom-[56px] left-0 z-40 w-[260px] !rounded-2xl border border-line-strong bg-white/95 p-4 shadow-card backdrop-blur-md">
               <div className="mb-2 flex items-center justify-between">
                 <span className="font-serif text-[0.82rem] font-medium text-ink-soft">{t.timeOfDay}</span>
                 <span className="font-display text-[0.95rem] font-bold text-ink tabular-nums">
@@ -619,6 +678,41 @@ export const Viewer = memo(function Viewer({
                 <span>12:00</span>
                 <span>24:00</span>
               </div>
+              <div className="mt-3 flex items-center gap-1.5 border-t border-line-warm pt-2.5">
+                <button
+                  type="button"
+                  onClick={() => handleTimeChange(14)}
+                  className={`flex-1 rounded-lg py-1 text-center text-[0.72rem] font-medium transition-colors ${
+                    timeOfDay >= 10 && timeOfDay <= 16
+                      ? "bg-terracotta text-white"
+                      : "bg-paper text-ink-muted hover:bg-paper-deep hover:text-ink"
+                  }`}
+                >
+                  {locale === "nl" ? "Dag" : "Day"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTimeChange(19.25)}
+                  className={`flex-1 rounded-lg py-1 text-center text-[0.72rem] font-medium transition-colors ${
+                    (timeOfDay > 17 && timeOfDay < 21) || (timeOfDay > 5 && timeOfDay < 8)
+                      ? "bg-terracotta text-white"
+                      : "bg-paper text-ink-muted hover:bg-paper-deep hover:text-ink"
+                  }`}
+                >
+                  {locale === "nl" ? "Schemer" : "Dusk"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleTimeChange(23)}
+                  className={`flex-1 rounded-lg py-1 text-center text-[0.72rem] font-medium transition-colors ${
+                    timeOfDay >= 21 || timeOfDay <= 4
+                      ? "bg-terracotta text-white"
+                      : "bg-paper text-ink-muted hover:bg-paper-deep hover:text-ink"
+                  }`}
+                >
+                  {locale === "nl" ? "Nacht ★" : "Night ★"}
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -627,21 +721,21 @@ export const Viewer = memo(function Viewer({
       {/* ── active hotspot detail card ── */}
       {activeHs && (
         <div
-          className="bible-card pointer-events-auto absolute bottom-4 left-1/2 z-30 w-[min(430px,calc(100%-140px))] -translate-x-1/2 !rounded-2xl p-4"
+          className="bible-card pointer-events-auto absolute bottom-3 sm:bottom-4 left-1/2 z-40 w-[min(430px,calc(100%-28px))] sm:w-[min(430px,calc(100%-140px))] -translate-x-1/2 !rounded-2xl p-3.5 sm:p-4 shadow-xl border border-line-warm bg-white/98 backdrop-blur-md max-h-[calc(100%-24px)] overflow-y-auto"
           role="dialog"
           aria-label={activeHs.title}
         >
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="kicker !text-[0.62rem] !text-terracotta">{catLabel[activeHs.category]}</div>
-              <h3 className="font-display mt-0.5 text-[1.25rem] font-bold leading-tight text-ink">{activeHs.title}</h3>
+              <h3 className="font-display mt-0.5 text-[1.15rem] sm:text-[1.25rem] font-bold leading-tight text-ink">{activeHs.title}</h3>
             </div>
             <button className="rounded-md p-1 text-ink-muted transition-colors hover:bg-paper-deep hover:text-ink" onClick={() => setActiveId(null)} aria-label={t.closeDetail}>
               <CloseIcon className="h-4.5 w-4.5 h-[18px] w-[18px]" />
             </button>
           </div>
-          <p className="font-serif mt-2 text-[0.98rem] leading-snug text-ink-muted">{activeHs.short}</p>
-          <p className="mt-2 text-[0.86rem] leading-relaxed text-ink-soft">{activeHs.detail}</p>
+          <p className="font-serif mt-2 text-[0.92rem] sm:text-[0.98rem] leading-snug text-ink-muted">{activeHs.short}</p>
+          <p className="mt-2 text-[0.82rem] sm:text-[0.86rem] leading-relaxed text-ink-soft">{activeHs.detail}</p>
         </div>
       )}
 

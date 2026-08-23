@@ -47,8 +47,8 @@ export const eden_fall: Structure = {
       short: "More subtil than any beast of the field",
       detail: "Now the serpent was more subtil than any beast of the field which the LORD God had made. And he said unto the woman, Yea, hath God said, Ye shall not eat of every tree of the garden? (Genesis 3:1).",
       category: "artifact-zone",
-      /* on the green serpent coiled around the trunk, below the canopy */
-      anchor: [0.51,0.15,0.5],
+      /* on the green serpent coiled around the tree branch */
+      anchor: [0.571, 0.631, 0.328],
       snap: "none",
     },
     {

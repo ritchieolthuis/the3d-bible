@@ -29,5 +29,11 @@ export function withBase(path: string): string {
  *  calls this right at the point of an actual network fetch, so none of
  *  that matching logic needs to know the on-disk extension differs. */
 export function toFetchPath(path: string): string {
-  return path.endsWith(".glb") ? path.slice(0, -4) + ".model" : path;
+  // Some structures' modelPath carries a cache-busting query string
+  // ("/models/tabernacle.glb?v=2"), so a plain endsWith(".glb") check misses
+  // them entirely - the ".glb" is followed by "?v=2", not the end of the
+  // string. Split it off first and reattach it after rewriting the
+  // extension, the same way toMobilePath (engine.ts) already has to.
+  const [base, query] = path.split(/(?=\?)/);
+  return base.endsWith(".glb") ? base.slice(0, -4) + ".model" + (query || "") : path;
 }

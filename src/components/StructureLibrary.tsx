@@ -38,8 +38,8 @@ export const StructureLibrary = memo(function StructureLibrary({ structures, act
   };
 
   return (
-    <aside className="flex h-full w-full flex-col gap-3 overflow-hidden !rounded-2xl bg-terracotta p-3" aria-label="Bible Library">
-      <div className="flex flex-none items-center justify-between px-1 pt-1">
+    <aside className="flex h-full w-full flex-col gap-2.5 overflow-hidden !rounded-2xl bg-terracotta p-2.5 sm:p-3" aria-label="Bible Library">
+      <div className="flex flex-none items-center justify-between px-1.5 pt-0.5">
         <span className="kicker !text-[0.78rem] !text-white/60">{t.kicker}</span>
         <BookmarkIcon className="h-[18px] w-[18px] text-white/60" aria-hidden />
       </div>
@@ -63,14 +63,6 @@ export const StructureLibrary = memo(function StructureLibrary({ structures, act
                 if (ev.pointerType === "touch") touchStart.current = { x: ev.clientX, y: ev.clientY };
               }}
               onPointerUp={(ev) => {
-                // iOS Safari can silently drop the synthetic `click` event on
-                // a button inside a scrollable list right after a scroll
-                // gesture; pointerup fires reliably regardless, so use it as
-                // the primary trigger there and let onClick cover mouse/kbd.
-                // But pointerup also fires at the end of a scroll drag, so
-                // only treat it as a selection if the finger barely moved -
-                // otherwise every scroll would select whatever card the
-                // finger happened to lift over.
                 if (ev.pointerType !== "touch") return;
                 const start = touchStart.current;
                 touchStart.current = null;
@@ -79,14 +71,20 @@ export const StructureLibrary = memo(function StructureLibrary({ structures, act
                 const dy = ev.clientY - start.y;
                 if (Math.hypot(dx, dy) <= TAP_MOVE_THRESHOLD) onSelect(e.id);
               }}
-              className={`structure-card !border-transparent hover:!bg-white/8 ${active ? "!bg-white/10 !border-white/15" : ""}`}
+              className={`structure-card !border-transparent hover:!bg-white/8 ${
+                active ? "!bg-white/10 !border-white/15" : ""
+              }`}
             >
               <span className="thumb-frame block flex-none overflow-hidden rounded-[14px] border border-white/15 bg-white/6">
-                <img className="thumb" src={structureImages(e).thumbnail} alt={t.illustrationAlt(e.dwelling)} loading="lazy" draggable={false} />
+                <img className="thumb" alt={t.illustrationAlt(e.dwelling)} loading="lazy" draggable={false} src={structureImages(e).thumbnail} />
               </span>
               <span className="min-w-0 flex-1 leading-tight">
-                <span className="font-display block text-[1.18rem] font-bold leading-[1.2] text-white">{e.name}</span>
-                <span className="mt-1 block truncate text-[0.92rem] text-white/55">{e.dwelling}</span>
+                <span className="font-display block text-[1.18rem] font-bold leading-[1.2] text-white">
+                  {e.name}
+                </span>
+                <span className="mt-1 block truncate text-[0.92rem] text-white/55">
+                  {e.dwelling}
+                </span>
               </span>
               <span
                 role="button"

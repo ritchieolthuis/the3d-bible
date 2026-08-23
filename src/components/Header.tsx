@@ -40,7 +40,7 @@ export const Header = memo(function Header({ onSearchOpen, onMenuOpen, onNav, ac
       {/* the nav and the structure library live in a drawer below lg */}
       <button
         onClick={onMenuOpen}
-        className="flex h-10 w-10 flex-none items-center justify-center rounded-xl border border-line-warm bg-surface text-slateblue transition-colors hover:border-line-strong xl:hidden"
+        className="flex h-10 w-10 flex-none items-center justify-center rounded-xl border border-line-warm bg-surface text-slateblue transition-colors hover:border-line-strong lg:hidden"
         aria-label={t.header.openMenu}
         aria-haspopup="dialog"
       >
@@ -49,17 +49,17 @@ export const Header = memo(function Header({ onSearchOpen, onMenuOpen, onNav, ac
 
       {/* Logo: on a narrow phone the header only has room for the icon (the
           library drawer carries the full wordmark instead, see App.tsx) */}
-      <div className="flex min-w-0 flex-none items-center gap-5">
+      <div className="flex min-w-0 flex-none items-center gap-2.5 sm:gap-4">
         <TempleIcon className="h-9 w-9 flex-none text-terracotta sm:h-10 sm:w-10" aria-hidden />
         <img
           src={withBase("/img/brand/3d-bible-logo.webp")}
           alt={t.brand.name}
-          className="hidden h-8 w-auto flex-none -translate-y-0.5 sm:block sm:h-9"
+          className="hidden h-7 w-auto flex-none -translate-y-0.5 sm:block sm:h-9"
         />
       </div>
 
       {/* Nav */}
-      <nav className="ml-12 hidden items-center gap-1 xl:flex" aria-label="Primary">
+      <nav className="ml-1.5 hidden min-w-0 flex-shrink items-center gap-0.5 lg:flex xl:ml-3 2xl:ml-6 2xl:gap-1" aria-label="Primary">
         {NAV.map((n) => (
           <button
             key={n.id}
@@ -73,11 +73,11 @@ export const Header = memo(function Header({ onSearchOpen, onMenuOpen, onNav, ac
         ))}
       </nav>
 
-      <div className="flex-1" />
+      <div className="flex-1 min-w-[8px]" />
 
       {/* Language switcher */}
       <div
-        className="hidden items-center gap-0.5 rounded-full border border-line-warm bg-surface p-0.5 sm:flex"
+        className="hidden flex-none items-center gap-0.5 rounded-full border border-line-warm bg-surface p-0.5 sm:flex"
         role="group"
         aria-label={t.languageSwitcher.label}
       >
@@ -100,17 +100,17 @@ export const Header = memo(function Header({ onSearchOpen, onMenuOpen, onNav, ac
       {/* Search */}
       <button
         onClick={onSearchOpen}
-        className="group hidden h-10 w-[min(300px,26vw)] items-center gap-2.5 rounded-full border border-line-warm bg-surface px-4 text-left transition-colors hover:border-line-strong md:flex"
+        className="group hidden h-10 w-44 min-w-[150px] max-w-[260px] flex-shrink items-center gap-2 rounded-full border border-line-warm bg-surface px-3.5 text-left transition-colors hover:border-line-strong md:flex lg:w-52 xl:w-60"
         aria-label={t.header.searchAria}
       >
         <SearchIcon className="h-4 w-4 flex-none text-ink-muted" />
-        <span className="flex-1 truncate text-[0.84rem] italic text-ink-muted">{t.header.searchPlaceholder}</span>
-        <kbd className="hidden rounded border border-line-warm bg-paper px-1.5 py-0.5 text-[0.62rem] font-medium text-ink-muted xl:block">⌘K</kbd>
+        <span className="min-w-0 flex-1 truncate text-[0.84rem] italic text-ink-muted">{t.header.searchPlaceholder}</span>
+        <kbd className="hidden rounded border border-line-warm bg-paper px-1.5 py-0.5 text-[0.62rem] font-medium text-ink-muted 2xl:block">⌘K</kbd>
       </button>
       {/* compact search (mobile) */}
       <button
         onClick={onSearchOpen}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-line-warm bg-surface text-ink-muted transition-colors hover:border-line-strong md:hidden"
+        className="flex h-10 w-10 flex-none items-center justify-center rounded-full border border-line-warm bg-surface text-ink-muted transition-colors hover:border-line-strong md:hidden"
         aria-label={t.header.searchAria}
       >
         <SearchIcon className="h-4 w-4" />

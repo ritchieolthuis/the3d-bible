@@ -139,8 +139,14 @@ export const ArrowRightIcon = (p: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 export const PlayIcon = (p: SVGProps<SVGSVGElement>) => (
-  <svg {...base} {...p}>
-    <path d="M7 5l12 7-12 7V5z" />
+  <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" {...p}>
+    <path d="M7.5 5.5l11 6.5-11 6.5v-13z" />
+  </svg>
+);
+export const PauseIcon = (p: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" {...p}>
+    <rect x="6.5" y="5" width="3.5" height="14" rx="1.75" />
+    <rect x="14" y="5" width="3.5" height="14" rx="1.75" />
   </svg>
 );
 export const QuizIcon = (p: SVGProps<SVGSVGElement>) => (

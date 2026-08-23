@@ -12,7 +12,9 @@ export const noahs_ark: Structure = {
   ],
   modelPath: "/models/noahs_ark.glb",
   modelVariants: [
-    { id: "default", label: "Outside", path: "/models/noahs_ark.glb" },
+    { id: "default", label: "Outside", path: "/models/noahs_ark.glb",
+      anchors: { stories: null },
+    },
     { id: "inside", label: "Inside", path: "/models/noahs_ark_inside.glb",
       // A separate export of the interior; the exterior-only hotspots
       // (pitch, window, door) do not exist as distinct fittings here.
@@ -61,12 +63,12 @@ export const noahs_ark: Structure = {
     },
     {
       id: "door",
-      title: "The Door",
-      short: "Set in the side thereof",
-      detail: "And the door of the ark shalt thou set in the side thereof (Genesis 6:16).",
+      title: "The Door in the Side",
+      short: "The door of the ark shalt thou set in the side thereof",
+      detail: "And the door of the ark shalt thou set in the side thereof (Genesis 6:16 KJV). The single entrance through which Noah, his family, and all the animals entered, after which the LORD shut him in (Genesis 7:16).",
       category: "entrance",
-      anchor: [0.88,0.35,0.5],
-      snap: "wall",
+      anchor: [0.42, 0.53, 0.78],
+      snap: "none",
     },
     {
       id: "stories",

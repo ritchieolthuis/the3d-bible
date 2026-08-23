@@ -47,8 +47,8 @@ export const eden_fall: Structure = {
       short: "Listiger dan al het gedierte des velds",
       detail: "De slang nu was listiger dan al het gedierte des velds, hetwelk de Heere God gemaakt had; en zij zeide tot de vrouw: Is het ook dat God gezegd heeft: Gijlieden zult niet eten van allen boom dezes hofs? (Genesis 3:1).",
       category: "artifact-zone",
-      /* on the green serpent coiled around the trunk, below the canopy */
-      anchor: [0.51,0.15,0.5],
+      /* on the green serpent coiled around the tree branch */
+      anchor: [0.571, 0.631, 0.328],
       snap: "none",
     },
     {

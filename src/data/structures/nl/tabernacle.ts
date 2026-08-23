@@ -8,23 +8,24 @@ export const tabernacle: Structure = {
   description: "De draagbare aardse woonplaats des Heeren, door Mozes gebouwd in de woestijn naar het voorbeeld dat hem op den berg getoond werd, met Bezaleël als hoofdambachtsman en de ark der getuigenis in het heilige der heiligen. SV-tekst: \"En zij zullen Mij een heiligdom maken, dat Ik in het midden van hen wone.\", Exodus 25:8 (SV)",
   modelPath: "/models/tabernacle.glb?v=2",
   modelVariants: [
-    { id: "default", label: "Standaard", path: "/models/tabernacle.glb?v=2" },
-    { id: "inside", label: "Binnenkant", path: "/models/tabernacle_inside.glb?v=3",
-      // A separate export, turned a quarter turn and framed on the court, so
-      // the default anchors land in the wrong places here. Measured against
-      // this model's own geometry.
-      // The default exterior azimuth (-45) shows the back of this reoriented
-      // export; +135 (a half turn from -45) faces the front/entrance side instead.
-      camera: { azimuth: 135, elevation: 25, dist: 0.75, targetY: 0.3 },
+    { id: "default", label: "Standaard", path: "/models/tabernacle.glb?v=2",
       anchors: {
-        curtains: [0.428, 0.96, 0.346],
-        brazen_altar: [0.685, 0.30, 0.635],
-        laver: [0.421, 0.29, 0.529],
-        // the gate screen and the perimeter fence are exterior-only
-        // features of the court; this cutaway is framed on the tent's
-        // interior, so both are hidden here rather than mis-pinned
+        ark_testimony: null,
+        menorah: null,
+        showbread_table: null,
+      },
+    },
+    { id: "inside", label: "Binnenkant", path: "/models/tabernacle_inside.glb?v=3",
+      camera: { azimuth: 28, elevation: 24, dist: 1.05, targetY: 0.35 },
+      anchors: {
+        curtains: null,
+        brazen_altar: null,
+        laver: [0.42, 0.29, 0.53],
         court_gate: null,
         court_hangings: null,
+        ark_testimony: [0.21, 0.56, 0.46],
+        menorah: [0.63, 0.44, 0.62],
+        showbread_table: [0.68, 0.40, 0.46],
       },
     }
   ],
@@ -97,6 +98,33 @@ export const tabernacle: Structure = {
       category: "court",
       // on the long north hanging, well away from the gate screen
       anchor: [0.02, 0.20, 0.45],
+      snap: "none",
+    },
+    {
+      id: "ark_testimony",
+      title: "De Ark der Getuigenis",
+      short: "In het Heilige der Heiligen",
+      detail: "En gij zult het verzoendeksel boven op de ark zetten; en in de ark zult gij de getuigenis leggen, die Ik u geven zal (Exodus 25:21 SV). De gouden cherubim overschaduwden met hun vleugels het verzoendeksel.",
+      category: "artifact-zone",
+      anchor: [0.21, 0.56, 0.46],
+      snap: "none",
+    },
+    {
+      id: "menorah",
+      title: "De Gouden Kandelaar",
+      short: "Zeven lampen van gelouterd goud",
+      detail: "Gij zult ook een kandelaar van louter goud maken; van dicht werk zal deze kandelaar gemaakt worden (Exodus 25:31 SV). De zeven lampen brandden voortdurend met zuivere olijfolie om het Heilige te verlichten.",
+      category: "artifact-zone",
+      anchor: [0.51, 0.50, 0.65],
+      snap: "none",
+    },
+    {
+      id: "showbread_table",
+      title: "De Tafel der Toonbroden",
+      short: "Twaalf broden voor het aangezicht des Heeren",
+      detail: "Gij zult ook een tafel van sittimhout maken... en gij zult op de tafel het toonbrood leggen, voor Mijn aangezicht geduriglijk (Exodus 25:23, 30 SV). Elke sabbat werden twaalf verse broden geschikt met zuivere wierook.",
+      category: "artifact-zone",
+      anchor: [0.68, 0.44, 0.46],
       snap: "none",
     },
   ],
