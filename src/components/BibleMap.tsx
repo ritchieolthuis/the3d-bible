@@ -27,22 +27,25 @@ const PINS: MapPin[] = [
   { id: "new_jerusalem",   coords: [31.778, 35.235], offset: [0, -30] },
 ];
 
-const HISTORICAL_LABELS = [
-  { text: "KONINKRIJK JUDA", coords: [31.4, 35.0], color: "#c4a35a", size: "12px" },
-  { text: "KONINKRIJK ISRAËL", coords: [32.3, 35.2], color: "#3C5E70", size: "12px" },
-  { text: "MOAB", coords: [31.5, 35.8], color: "#9aa7af", size: "11px" },
-  { text: "EDOM", coords: [30.4, 35.4], color: "#9aa7af", size: "11px" },
-  { text: "AMMON", coords: [31.9, 36.1], color: "#9aa7af", size: "11px" },
-  { text: "FILISTIJNEN", coords: [31.5, 34.5], color: "#9aa7af", size: "10px" },
-  { text: "ARAM", coords: [33.5, 36.3], color: "#9aa7af", size: "11px" },
-  { text: "EGYPTE", coords: [29.0, 31.0], color: "#3C5E70", size: "16px" },
-  { text: "BABYLONIË", coords: [32.0, 45.0], color: "#c4a35a", size: "16px" },
-  { text: "ASSYRIË", coords: [35.0, 43.0], color: "#9aa7af", size: "14px" },
-];
+function getHistoricalLabels(locale: string) {
+  const isNl = locale === "nl";
+  return [
+    { text: isNl ? "KONINKRIJK JUDA" : "KINGDOM OF JUDAH", coords: [31.4, 35.0], color: "#c4a35a", size: "12px" },
+    { text: isNl ? "KONINKRIJK ISRAËL" : "KINGDOM OF ISRAEL", coords: [32.3, 35.2], color: "#3C5E70", size: "12px" },
+    { text: "MOAB", coords: [31.5, 35.8], color: "#9aa7af", size: "11px" },
+    { text: "EDOM", coords: [30.4, 35.4], color: "#9aa7af", size: "11px" },
+    { text: "AMMON", coords: [31.9, 36.1], color: "#9aa7af", size: "11px" },
+    { text: isNl ? "FILISTIJNEN" : "PHILISTIA", coords: [31.5, 34.5], color: "#9aa7af", size: "10px" },
+    { text: "ARAM", coords: [33.5, 36.3], color: "#9aa7af", size: "11px" },
+    { text: isNl ? "EGYPTE" : "EGYPT", coords: [29.0, 31.0], color: "#3C5E70", size: "16px" },
+    { text: isNl ? "BABYLONIË" : "BABYLONIA", coords: [32.0, 45.0], color: "#c4a35a", size: "16px" },
+    { text: isNl ? "ASSYRIË" : "ASSYRIA", coords: [35.0, 43.0], color: "#9aa7af", size: "14px" },
+  ];
+}
 
 function createCustomIcon(isHeavenly: boolean, offset: [number, number] = [0, 0]) {
   return L.divIcon({
-    className: 'custom-bible-pin',
+    className: 'custom-bible-pin antique-tiles',
     html: `
       <div style="
         width: 14px; 
@@ -80,10 +83,14 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     });
 
     // Add TileLayer (Antique/Historical Base)
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', { className: 'antique-tiles' }).addTo(map);
+    // We use World_Shaded_Relief for terrain detail. The CSS class handles the antique coloring.
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', { 
+        className: 'antique-tiles' 
+    }).addTo(map);
 
     // Add labels
-    HISTORICAL_LABELS.forEach(lbl => {
+    const labels = getHistoricalLabels(locale);
+    labels.forEach(lbl => {
       const icon = L.divIcon({ className: 'dummy-label-icon', html: '' });
       const marker = L.marker(lbl.coords as [number, number], { icon, interactive: false }).addTo(map);
       marker.bindTooltip(
@@ -100,12 +107,12 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       const marker = L.marker(pin.coords as [number, number], { icon: createCustomIcon(isHeavenly, pin.offset) }).addTo(map);
       
       const tooltipHtml = `
-        <div style="display:flex; gap:12px; align-items:center; padding:4px;">
-          <img src="${base}img/${pin.id}/thumbnail.webp" alt="${struct.name}" style="height:40px; width:40px; object-fit:cover; border-radius:4px; border:1px solid #ddd;" onerror="this.style.display='none'"/>
-          <div style="flex:1; overflow:hidden;">
-            <p style="margin:0; font-weight:bold; font-size:12px; color:#222; text-transform:uppercase;">${struct.name}</p>
-            <p style="margin:0; font-size:9px; font-style:italic; color:#666;">${struct.geography.regionLabel}</p>
-            <p style="margin:2px 0 0 0; font-size:9px; font-weight:bold; color:#3C5E70;">${locale === "nl" ? "Klik om te openen →" : "Click to open →"}</p>
+        <div style="display:flex; gap:12px; align-items:center; padding:6px; min-width: 220px;">
+          <img src="${base}img/${pin.id}/thumbnail.webp" alt="${struct.name}" style="height:48px; width:48px; object-fit:cover; border-radius:4px; border:1px solid #ddd;" onerror="this.style.display='none'"/>
+          <div style="flex:1;">
+            <p style="margin:0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${struct.name}</p>
+            <p style="margin:2px 0 0 0; font-size:10px; font-style:italic; color:#666;">${struct.geography.regionLabel}</p>
+            <p style="margin:4px 0 0 0; font-size:10px; font-weight:bold; color:#3C5E70;">${locale === "nl" ? "Klik om te openen →" : "Click to open →"}</p>
           </div>
         </div>
       `;
@@ -132,10 +139,10 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       <div className="relative mx-auto w-full max-w-[1000px] overflow-hidden rounded-xl border border-line-strong shadow-inner bg-paper" style={{ height: "70vh", minHeight: "500px" }}>
         
         {/* React 19 compatible raw Leaflet mount point */}
-        <div ref={mapRef} style={{ width: "100%", height: "100%", background: "#f4f6f7", zIndex: 1 }} />
+        <div ref={mapRef} style={{ width: "100%", height: "100%", background: "#e8e1d5", zIndex: 1 }} />
         
-        {/* Antique sepia blend */}
-        <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0, zIndex: 400, background: 'rgba(212, 197, 169, 0.15)', mixBlendMode: 'multiply' }}></div>
+        {/* Soft sepia blend to make water/land feel slightly warmer without washing it out completely */}
+        <div style={{ pointerEvents: 'none', position: 'absolute', inset: 0, zIndex: 400, background: 'rgba(180, 150, 100, 0.05)', mixBlendMode: 'multiply' }}></div>
       </div>
       
       <div className="hidden historical-map-label custom-map-tooltip custom-bible-pin antique-tiles"></div>
