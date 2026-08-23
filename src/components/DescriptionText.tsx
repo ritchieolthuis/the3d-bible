@@ -11,7 +11,8 @@ interface Props {
 
 type Span =
   | { start: number; end: number; kind: "internal"; link: DescriptionLink }
-  | { start: number; end: number; kind: "scripture"; url: string };
+  | { start: number; end: number; kind: "scripture"; url: string }
+  | { start: number; end: number; kind: "quote" };
 
 /** Renders `text` as plain prose, except: each `links[].text` substring
  *  becomes a clickable internal term (jumps to a section/hotspot), and
@@ -32,6 +33,12 @@ export function DescriptionText({ text, links, onLinkClick }: Props) {
   for (const ref of findScriptureReferences(text, locale)) {
     spans.push({ start: ref.start, end: ref.end, kind: "scripture", url: ref.url });
   }
+  // Find quotes
+  const quoteRegex = /«(.*?)»/g;
+  let match;
+  while ((match = quoteRegex.exec(text)) !== null) {
+    spans.push({ start: match.index, end: match.index + match[0].length, kind: "quote" });
+  }
   spans.sort((a, b) => a.start - b.start);
   const clean = spans.filter((m, i) => i === 0 || m.start >= spans[i - 1].end);
 
@@ -46,6 +53,12 @@ export function DescriptionText({ text, links, onLinkClick }: Props) {
         <button key={`l${i}`} type="button" className="description-link" onClick={() => onLinkClick(m.link.target)}>
           {text.slice(m.start, m.end)}
         </button>,
+      );
+    } else if (m.kind === "quote") {
+      nodes.push(
+        <span key={`l${i}`} className="italic text-slateblue font-serif">
+          "{text.slice(m.start + 1, m.end - 1)}"
+        </span>
       );
     } else {
       nodes.push(

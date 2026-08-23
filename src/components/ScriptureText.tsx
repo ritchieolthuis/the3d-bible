@@ -12,25 +12,44 @@ interface Props {
  *  locale (Statenvertaling for nl, KJV for en). */
 export function ScriptureText({ text }: Props) {
   const { locale } = useLocale();
-  const matches = findScriptureReferences(text, locale);
-  if (matches.length === 0) return <>{text}</>;
+  const matches = findScriptureReferences(text, locale).map(m => ({ ...m, kind: "scripture" as const }));
+  
+  const quoteRegex = /«(.*?)»/g;
+  let match;
+  while ((match = quoteRegex.exec(text)) !== null) {
+    matches.push({ start: match.index, end: match.index + match[0].length, url: "", kind: "quote" as const });
+  }
+  
+  matches.sort((a, b) => a.start - b.start);
+  const clean = matches.filter((m, i) => i === 0 || m.start >= matches[i - 1].end);
+
+  if (clean.length === 0) return <>{text}</>;
 
   const nodes: React.ReactNode[] = [];
   let pos = 0;
-  matches.forEach((m, i) => {
+  clean.forEach((m, i) => {
     if (m.start > pos) nodes.push(<Fragment key={`t${i}`}>{text.slice(pos, m.start)}</Fragment>);
-    nodes.push(
-      <a
-        key={`l${i}`}
-        href={m.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="description-link"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {text.slice(m.start, m.end)}
-      </a>,
-    );
+    
+    if (m.kind === "quote") {
+      nodes.push(
+        <span key={`l${i}`} className="italic text-slateblue font-serif">
+          "{text.slice(m.start + 1, m.end - 1)}"
+        </span>
+      );
+    } else {
+      nodes.push(
+        <a
+          key={`l${i}`}
+          href={m.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="description-link"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {text.slice(m.start, m.end)}
+        </a>
+      );
+    }
     pos = m.end;
   });
   if (pos < text.length) nodes.push(<Fragment key="tail">{text.slice(pos)}</Fragment>);

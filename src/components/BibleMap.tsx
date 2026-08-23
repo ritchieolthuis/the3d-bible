@@ -321,7 +321,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                 <div className="p-4 border-b border-line-warm bg-surface sticky top-0 z-20 flex justify-between items-center shadow-sm">
                     <button 
                         onClick={() => setIsSidebarDetailOpen(false)}
-                        className="text-sm text-slateblueblue hover:text-gold flex items-center gap-1 font-bold transition-colors"
+                        className="text-sm text-slateblue hover:text-gold flex items-center gap-1 font-bold transition-colors"
                     >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         {isNl ? "Terug naar overzicht" : "Back to list"}
@@ -352,10 +352,10 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                             <h3 className="font-bold text-ink text-xs uppercase mb-3">{isNl ? "Genoemd in o.a." : "Mentioned in"}</h3>
                             <div className="flex flex-wrap gap-2">
                                 {activeItemData.verses.slice(0, 15).map((v: string, i: number) => (
-                                    <span key={i} className="px-2 py-1 bg-surface text-slateblueblue border border-line-warm text-[10px] rounded shadow-sm">{v}</span>
+                                    <span key={i} className="px-2 py-1 bg-surface text-slateblue border border-line-warm text-[10px] rounded shadow-sm">{v}</span>
                                 ))}
                                 {activeItemData.verses.length > 15 && (
-                                    <span className="px-2 py-1 bg-surface text-slateblueblue border border-line-warm text-[10px] rounded shadow-sm">+{activeItemData.verses.length - 15} more...</span>
+                                    <span className="px-2 py-1 bg-surface text-slateblue border border-line-warm text-[10px] rounded shadow-sm">+{activeItemData.verses.length - 15} more...</span>
                                 )}
                             </div>
                         </div>
@@ -370,8 +370,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                                 onSelectStructure(activeItemData.id);
                                 onClose();
                             }}
-                            className="w-full py-3 text-white rounded shadow-md font-bold text-sm uppercase flex items-center justify-center gap-2 transition-transform hover:scale-[1.02] hover:shadow-lg"
-                            style={{ background: 'linear-gradient(90deg, #efcd41 0%, #9cc330 33%, #48aaea 66%, #3c5e70 100%)', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
+                            className="w-full py-3 bg-slateblue text-white rounded shadow font-bold text-sm uppercase flex items-center justify-center gap-2 transition-colors hover:bg-terracotta"
                         >
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                             {isNl ? "Open 3D Model" : "Open 3D Model"}
