@@ -2,134 +2,175 @@ import { useState } from "react";
 import { useLocale } from "@/i18n/locale";
 import { structuresFor } from "@/data";
 import { ModalShell } from "./ModalShell";
+import { MapContainer, TileLayer, Marker, Tooltip, useMap } from "react-leaflet";
+import L from "leaflet";
+import 'leaflet/dist/leaflet.css';
 
+// Coordinates [lat, lng]
 interface MapPin {
   id: string;
-  x: number; // left %
-  y: number; // top %
-  offsetX?: number;
-  offsetY?: number;
+  coords: [number, number];
+  offset?: [number, number]; // For clustering Jerusalem
 }
 
-// Highly accurate coordinates mapped to the original vertical image
 const PINS: MapPin[] = [
   // Babylon/Mesopotamia
-  { id: "eden_fall",       x: 88, y: 45 },
-  { id: "tower_babel",     x: 84, y: 35 },
-  { id: "noahs_ark",       x: 75, y: 12 },
+  { id: "eden_fall",       coords: [31.000, 47.000] },
+  { id: "noahs_ark",       coords: [39.700, 44.300] },
+  { id: "tower_babel",     coords: [32.536, 44.420] },
   
   // Egypt & Sinai
-  { id: "parting_sea",     x: 28, y: 68 },
-  { id: "tabernacle",      x: 35, y: 78 },
+  { id: "parting_sea",     coords: [29.800, 32.550] },
+  { id: "tabernacle",      coords: [28.539, 33.975] },
   
   // Canaan / Israel
-  { id: "walls_jericho",   x: 48, y: 52 },
+  { id: "walls_jericho",   coords: [31.870, 35.444] },
   
-  // Jerusalem Cluster
-  { id: "solomon_temple",  x: 46, y: 55, offsetX: -16, offsetY: 0 },
-  { id: "herods_temple",   x: 46, y: 55, offsetX: -6, offsetY: 16 },
-  { id: "ezekiel_temple",  x: 46, y: 55, offsetX: -6, offsetY: -16 },
-  { id: "mount_of_olives", x: 46, y: 55, offsetX: 16, offsetY: 0 },
-  { id: "golgotha",        x: 46, y: 55, offsetX: -28, offsetY: -8 },
-  { id: "new_jerusalem",   x: 46, y: 55, offsetX: 0, offsetY: -32 },
+  // Jerusalem Cluster (Spread out pixel-wise in Leaflet using DivIcon HTML/CSS)
+  { id: "solomon_temple",  coords: [31.778, 35.235], offset: [-15, -15] },
+  { id: "herods_temple",   coords: [31.778, 35.235], offset: [15, -15] },
+  { id: "ezekiel_temple",  coords: [31.778, 35.235], offset: [-15, 15] },
+  { id: "mount_of_olives", coords: [31.778, 35.235], offset: [15, 15] },
+  { id: "golgotha",        coords: [31.778, 35.235], offset: [-30, 0] },
+  { id: "new_jerusalem",   coords: [31.778, 35.235], offset: [0, -30] },
 ];
+
+const HISTORICAL_LABELS = [
+  { text: "KONINKRIJK JUDA", coords: [31.4, 35.0], color: "#c4a35a", size: "12px" },
+  { text: "KONINKRIJK ISRAËL", coords: [32.3, 35.2], color: "#3C5E70", size: "12px" },
+  { text: "MOAB", coords: [31.5, 35.8], color: "#9aa7af", size: "11px" },
+  { text: "EDOM", coords: [30.4, 35.4], color: "#9aa7af", size: "11px" },
+  { text: "AMMON", coords: [31.9, 36.1], color: "#9aa7af", size: "11px" },
+  { text: "FILISTIJNEN", coords: [31.5, 34.5], color: "#9aa7af", size: "10px" },
+  { text: "ARAM", coords: [33.5, 36.3], color: "#9aa7af", size: "11px" },
+  { text: "EGYPTE", coords: [29.0, 31.0], color: "#3C5E70", size: "16px" },
+  { text: "BABYLONIË", coords: [32.0, 45.0], color: "#c4a35a", size: "16px" },
+  { text: "ASSYRIË", coords: [35.0, 43.0], color: "#9aa7af", size: "14px" },
+];
+
+// Custom DivIcon generator to match the app's clean Ivory/Slate Blue style
+function createCustomIcon(isHeavenly: boolean, offset: [number, number] = [0, 0]) {
+  return L.divIcon({
+    className: 'custom-bible-pin',
+    html: `
+      <div style="
+        width: 14px; 
+        height: 14px; 
+        background: ${isHeavenly ? '#FFD700' : '#3C5E70'}; 
+        border: 2px solid ${isHeavenly ? '#ffffff' : '#f4f6f7'}; 
+        border-radius: 50%; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+        transform: translate(${offset[0]}px, ${offset[1]}px);
+      ">
+        ${isHeavenly ? `<div style="position:absolute; inset:-6px; border: 1px solid #FFD700; border-radius:50%; animation: pulse 2s infinite;"></div>` : ''}
+      </div>
+    `,
+    iconSize: [14, 14],
+    iconAnchor: [7, 7]
+  });
+}
+
+// Invisible icon for text labels
+const labelIcon = L.divIcon({ className: 'dummy-label-icon', html: '', iconSize: [0,0] });
 
 export default function BibleMap({ onSelectStructure, onClose }: { onSelectStructure: (id: string) => void, onClose: () => void }) {
   const { locale } = useLocale();
   const structures = structuresFor(locale);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
   const base = import.meta.env.BASE_URL || "/";
 
   return (
     <ModalShell
       title={locale === "nl" ? "Interactieve Bijbelkaart" : "Interactive Bible Map"}
-      kicker={locale === "nl" ? "Bijbelse Locaties" : "Biblical Locations"}
+      kicker={locale === "nl" ? "Historische Wereld" : "Historical World"}
       onClose={onClose}
       wide={true}
     >
-      <div className="relative mx-auto w-full max-w-[627px] overflow-hidden rounded-xl border border-line-warm bg-paper shadow-inner" style={{ aspectRatio: '627/1024', maxHeight: "75vh" }}>
+      <div className="relative mx-auto w-full max-w-[1000px] overflow-hidden rounded-xl border border-line-strong shadow-inner bg-paper" style={{ height: "70vh", minHeight: "500px" }}>
         
-        {/* We use your exact detailed original image map */}
-        <img 
-          src={`${base}img/bible-map.png`}
-          alt="Historical Bible Map"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-
-        {/* Interactive Pins */}
-        {PINS.map((pin) => {
-          const struct = structures.find((s) => s.id === pin.id);
-          if (!struct) return null;
+        <MapContainer 
+          center={[31.8, 36.5]} 
+          zoom={6} 
+          minZoom={4}
+          maxZoom={12}
+          style={{ height: "100%", width: "100%", background: "#f4f6f7" }}
+          attributionControl={false}
+        >
+          {/* Extremely clean, label-free historical basemap (ArcGIS Canvas Light Gray) */}
+          <TileLayer
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+          />
           
-          const isHeavenly = pin.id === "new_jerusalem";
-          const isHovered = hoveredId === pin.id;
+          {/* Add beautiful antique sepia blend to make it look old-fashioned */}
+          <div className="leaflet-layer-blend" style={{ pointerEvents: 'none', position: 'absolute', inset: 0, zIndex: 400, background: 'rgba(212, 197, 169, 0.15)', mixBlendMode: 'multiply' }}></div>
 
-          return (
-            <div 
-              key={pin.id}
-              className="absolute z-10"
-              style={{ 
-                  left: `calc(${pin.x}% + ${pin.offsetX || 0}px)`, 
-                  top: `calc(${pin.y}% + ${pin.offsetY || 0}px)`,
-                  transform: 'translate(-50%, -50%)'
-              }}
-              onMouseEnter={() => setHoveredId(pin.id)}
-              onMouseLeave={() => setHoveredId(null)}
-            >
-              {/* Elegant dot instead of Emoji */}
-              <button
-                onClick={() => { onSelectStructure(pin.id); onClose(); }}
-                className="group relative flex items-center justify-center focus:outline-none"
+          {/* Historical Kingdom Labels */}
+          {HISTORICAL_LABELS.map((lbl, idx) => (
+            <Marker key={`lbl-${idx}`} position={lbl.coords as [number, number]} icon={labelIcon}>
+              <Tooltip 
+                permanent 
+                direction="center" 
+                className="historical-map-label"
               >
-                <div 
-                  className={`h-4 w-4 rounded-full border-[2.5px] transition-all duration-300 ${
-                    isHeavenly 
-                      ? "border-[#FFD700] bg-surface shadow-[0_0_15px_rgba(255,215,0,0.6)]" 
-                      : "border-surface bg-[#3C5E70] shadow-md"
-                  } ${isHovered ? "scale-150" : "scale-100"}`}
-                />
-                
-                {/* Hover Ring */}
-                {isHovered && (
-                  <div 
-                    className={`absolute inset-[-8px] rounded-full border transition-all duration-500 animate-ping opacity-40 ${
-                      isHeavenly ? "border-[#FFD700]" : "border-[#3C5E70]"
-                    }`}
-                  />
-                )}
+                <span style={{ 
+                  color: lbl.color, 
+                  fontSize: lbl.size, 
+                  fontFamily: 'serif', 
+                  fontWeight: 'bold', 
+                  letterSpacing: '2px',
+                  textShadow: '0 0 5px #f4f6f7, 0 0 10px #f4f6f7'
+                }}>
+                  {lbl.text}
+                </span>
+              </Tooltip>
+            </Marker>
+          ))}
 
-                {/* Custom Tooltip matching the UI */}
-                <div 
-                  className={`pointer-events-none absolute bottom-full left-1/2 mb-3 w-56 -translate-x-1/2 rounded-xl border border-line-strong bg-surface p-3 text-left shadow-2xl transition-all duration-200 ${
-                    isHovered ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
-                  }`}
-                >
-                  <div className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-b border-r border-line-strong bg-surface"></div>
-                  <div className="relative z-10 flex gap-3">
+          {/* Interactive Pins */}
+          {PINS.map((pin) => {
+            const struct = structures.find((s) => s.id === pin.id);
+            if (!struct) return null;
+            
+            const isHeavenly = pin.id === "new_jerusalem";
+
+            return (
+              <Marker 
+                key={pin.id} 
+                position={pin.coords as [number, number]} 
+                icon={createCustomIcon(isHeavenly, pin.offset)}
+                eventHandlers={{
+                  click: () => {
+                    onSelectStructure(pin.id);
+                    onClose();
+                  }
+                }}
+              >
+                <Tooltip direction="top" offset={[pin.offset?.[0] || 0, (pin.offset?.[1] || 0) - 10]} className="custom-map-tooltip">
+                  <div className="flex gap-3 items-center p-1">
                     <img 
                       src={`${base}img/${pin.id}/thumbnail.webp`} 
                       alt={struct.name}
-                      className="h-12 w-12 flex-none rounded-md object-cover border border-line"
+                      className="h-10 w-10 flex-none rounded-sm object-cover border border-line"
                       onError={(e) => (e.currentTarget.style.display = 'none')}
                     />
                     <div className="flex-1 overflow-hidden">
-                      <p className="font-display truncate text-sm font-bold text-ink">{struct.name}</p>
-                      <p className="truncate text-[10px] italic text-ink-muted">{struct.geography.regionLabel}</p>
-                      <p className="mt-1 text-[10px] font-semibold" style={{ color: "#3C5E70" }}>
+                      <p className="font-display truncate text-xs font-bold text-ink m-0">{struct.name}</p>
+                      <p className="truncate text-[9px] italic text-ink-muted m-0 leading-tight">{struct.geography.regionLabel}</p>
+                      <p className="mt-0.5 text-[9px] font-semibold m-0" style={{ color: "#3C5E70" }}>
                         {locale === "nl" ? "Klik om te openen →" : "Click to open →"}
                       </p>
                     </div>
                   </div>
-                </div>
-              </button>
-            </div>
-          );
-        })}
+                </Tooltip>
+              </Marker>
+            );
+          })}
+        </MapContainer>
       </div>
+      
       <p className="mt-4 text-center text-xs italic text-ink-muted">
         {locale === "nl" 
-          ? "Beweeg over een locatie voor een preview. Klik om te openen." 
-          : "Hover over a location for a preview. Click to open."}
+          ? "Sleep om de kaart te verplaatsen. Scroll om in te zoomen. Klik op een locatie om te openen." 
+          : "Drag to pan. Scroll to zoom. Click a location to open."}
       </p>
     </ModalShell>
   );
