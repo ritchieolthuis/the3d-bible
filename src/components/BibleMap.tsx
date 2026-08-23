@@ -169,7 +169,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     
     leafletMapInstance.current = map;
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
 
     L.polyline(EXODUS_ROUTE, {
         color: '#3C5E70',
