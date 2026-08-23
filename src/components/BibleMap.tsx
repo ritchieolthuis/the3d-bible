@@ -25,7 +25,7 @@ const PINS: MapPin[] = [
   { id: "ezekiel_temple",  coords: [31.778, 35.235], offset: [-15, 15] },
   { id: "mount_of_olives", coords: [31.778, 35.235], offset: [15, 15] },
   { id: "golgotha",        coords: [31.778, 35.235], offset: [-30, 0] },
-  { id: "new_jerusalem",   coords: [31.778, 35.235], hideOnMap: true }, // In index, but hidden on map
+  { id: "new_jerusalem",   coords: [31.778, 35.235], hideOnMap: true }, // In index, but invisible on physical Earth map
 ];
 
 // 2. Map-Only Context Places (No 3D models, just map pins & info)
@@ -71,7 +71,10 @@ const EXODUS_ROUTE: [number, number][] = [
 ];
 
 function createCustomIcon(isHeavenly: boolean, isSelected: boolean = false, offset: [number, number] = [0, 0], isMapOnly: boolean = false) {
-  const bgColor = isMapOnly ? '#8B5CF6' : (isHeavenly ? '#FFD700' : '#3C5E70');
+  // Use brand consistent colors (Slate Blue / Gold / Ivory)
+  const bgColor = isMapOnly ? '#f4f6f7' : (isHeavenly ? '#FFD700' : '#3C5E70');
+  const borderColor = isMapOnly ? '#3C5E70' : (isHeavenly ? '#ffffff' : '#f4f6f7');
+  
   const size = isMapOnly ? (isSelected ? '16px' : '10px') : (isSelected ? '20px' : '14px');
   const anchorOffset = isMapOnly ? (isSelected ? 8 : 5) : (isSelected ? 10 : 7);
 
@@ -82,14 +85,15 @@ function createCustomIcon(isHeavenly: boolean, isSelected: boolean = false, offs
         width: ${size}; 
         height: ${size}; 
         background: ${bgColor}; 
-        border: ${isMapOnly ? '1.5px' : '2px'} solid ${isHeavenly ? '#ffffff' : '#f4f6f7'}; 
+        border: ${isMapOnly ? '2px' : '2px'} solid ${borderColor}; 
         border-radius: 50%; 
         box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         transform: translate(${offset[0]}px, ${offset[1]}px);
         transition: all 0.2s ease-in-out;
       ">
         ${isHeavenly ? `<div style="position:absolute; inset:-6px; border: 1px solid #FFD700; border-radius:50%; animation: pulse 2s infinite;"></div>` : ''}
-        ${isSelected && !isMapOnly ? `<div style="position:absolute; inset:-8px; border: 2px solid ${bgColor}; border-radius:50%; opacity: 0.5;"></div>` : ''}
+        ${isSelected && !isMapOnly ? `<div style="position:absolute; inset:-8px; border: 2px solid #3C5E70; border-radius:50%; opacity: 0.5;"></div>` : ''}
+        ${isSelected && isMapOnly ? `<div style="position:absolute; inset:-4px; background: #3C5E70; border-radius:50%; opacity: 0.2;"></div>` : ''}
       </div>
     `,
     iconSize: [parseInt(size), parseInt(size)],
@@ -198,9 +202,9 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
     L.polyline(EXODUS_ROUTE, {
-        color: '#8B5CF6',
+        color: '#3C5E70', // Brand Slate Blue
         weight: 3,
-        opacity: 0.5,
+        opacity: 0.6,
         dashArray: '5, 10',
         lineCap: 'round',
     }).addTo(map);
@@ -323,8 +327,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                             {item.isStructure ? (
                                 <img src={`${base}img/${item.id}/thumbnail.webp`} alt="" className="w-8 h-8 object-cover rounded flex-none" />
                             ) : (
-                                <div className="w-8 h-8 rounded flex items-center justify-center bg-[#8B5CF6] bg-opacity-20 flex-none border border-[#8B5CF6]">
-                                    <span className="text-[#8B5CF6] font-bold text-xs">P</span>
+                                <div className="w-8 h-8 rounded flex items-center justify-center bg-surface flex-none border-2 border-slate">
+                                    <span className="text-slate font-bold text-xs">P</span>
                                 </div>
                             )}
                             <div className="flex-1 overflow-hidden">
@@ -355,6 +359,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         </div>
 
       </div>
+      <div className="hidden custom-map-tooltip custom-bible-pin historical-map-label"></div>
     </ModalShell>
   );
 }
