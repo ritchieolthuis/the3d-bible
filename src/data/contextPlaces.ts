@@ -370,6 +370,68 @@ Hebron ("Friendship" or "Alliance") is theologically the place of deeply rooted 
       },
       verses: ["Genesis 11:9", "2 Koningen 25:1", "Psalm 137:1", "Openbaring 18:2"]
     }
+
+    ,
+    {
+      id: "sea_of_galilee",
+      coords: [32.818, 35.589],
+      name: { nl: "Meer van Galilea", en: "Sea of Galilee" },
+      region: { nl: "Galilea", en: "Galilee" },
+      desc: { nl: "Het toneel van vele wonderen van Jezus.", en: "The scene of many miracles by Jesus." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nHet Meer van Galilea (ook wel Meer van Tiberias of Meer Gennesareth) is een groot zoetwatermeer in het noorden van Israël, gelegen op ruim 200 meter onder zeeniveau. In de oudheid werd het omringd door bloeiende visserijsteden.\n\n**Culturele en geografische context**\nVanwege de unieke ligging in de vallei is het meer berucht om plotselinge, zeer zware en levensgevaarlijke stormen die vanaf de omliggende heuvels neerstorten.\n\n**Theologische betekenis**\nDit meer is het kloppend hart van Jezus' bediening. Hier riep Hij Zijn eerste discipelen (vissers) om vissers van mensen te worden. Op dit water wandelde Hij in de nacht, en met één enkel machtswoord ("Zwijg, wees stil!") kalmeerde Hij de elementen, wat Zijn goddelijke heerschappij over de schepping demonstreert. Ook na Zijn opstanding verscheen Hij hier aan Zijn discipelen bij de wonderbaarlijke visvangst.`,
+        en: `**Archaeological and historical significance**\nThe Sea of Galilee (also known as the Sea of Tiberias or Lake Gennesaret) is a large freshwater lake in northern Israel, situated over 200 meters below sea level. In ancient times, it was surrounded by thriving fishing towns.\n\n**Cultural and geographical context**\nDue to its unique position in the valley, the lake is notorious for sudden, very severe and life-threatening storms that sweep down from the surrounding hills.\n\n**Theological significance**\nThis lake is the beating heart of Jesus' ministry. Here He called His first disciples (fishermen) to become fishers of men. He walked on this water in the dead of night, and with a single word of power ("Peace, be still!"), He calmed the raging elements, demonstrating His divine lordship over creation. After His resurrection, He also appeared here to His disciples during the miraculous catch of fish.`
+      },
+      verses: ["Mattheüs 4:18", "Markus 4:39", "Mattheüs 14:25", "Johannes 21:1"]
+    },
+    {
+      id: "jordan_river",
+      coords: [31.8415, 35.5471],
+      name: { nl: "Rivier de Jordaan", en: "Jordan River" },
+      region: { nl: "Kanaän", en: "Canaan" },
+      desc: { nl: "De grensrivier en plaats van Jezus' doop.", en: "The border river and place of Jesus' baptism." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nDe Jordaan is de belangrijkste rivier in de regio. Hij stroomt vanuit de berg Hermon, door het Meer van Galilea, diep door de Riftvallei naar het laagste punt op aarde: de Dode Zee.\n\n**Culturele en geografische context**\nDe rivier vormde een zware natuurlijke grens voor iedereen die vanuit het oosten het Beloofde Land wilde binnentrekken.\n\n**Theologische betekenis**\nDe Jordaan staat in de Bijbel symbool voor overgang en geestelijke doorbraak. Jozua leidde het volk dwars door het wonderbaarlijk drooggevallen rivierbed het Beloofde Land in. Eeuwen later preekte Johannes de Doper hier een doop van bekering. De theologische climax vond plaats toen Jezus Zelf in dit water werd gedoopt, de hemel scheurde en de Drie-eenheid zich onthulde: de stem van de Vader, de Zoon in het water, en de Geest als een duif.`,
+        en: `**Archaeological and historical significance**\nThe Jordan is the most important river in the region. It flows from Mount Hermon, through the Sea of Galilee, deep down the Rift Valley to the lowest point on earth: the Dead Sea.\n\n**Cultural and geographical context**\nThe river formed a formidable natural border for anyone seeking to enter the Promised Land from the east.\n\n**Theological significance**\nIn the Bible, the Jordan is a symbol of transition and spiritual breakthrough. Joshua led the people right through the miraculously dried riverbed into the Promised Land. Centuries later, John the Baptist preached a baptism of repentance here. The theological climax occurred when Jesus Himself was baptized in this water; the heavens tore open and the Trinity was revealed: the voice of the Father, the Son in the water, and the Spirit descending like a dove.`
+      },
+      verses: ["Jozua 3:17", "2 Koningen 5:14", "Mattheüs 3:13", "Markus 1:9"]
+    },
+    {
+      id: "damascus",
+      coords: [33.5138, 36.2765],
+      name: { nl: "Damascus", en: "Damascus" },
+      region: { nl: "Syrië", en: "Syria" },
+      desc: { nl: "Plaats van Paulus' radicale bekering.", en: "Place of Paul's radical conversion." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nDamascus is een van de oudste continu bewoonde steden ter wereld, gelegen in een oase die gevoed wordt door de rivier Barada. In de Romeinse tijd was het een zeer welvarende en cruciale handelsstad (Decapolis-regio).\n\n**Culturele en geografische context**\nGelegen ten noorden van Israël, herbergde de stad een aanzienlijke Joodse populatie met meerdere synagogen. Na de marteldood van Stefanus vluchtten veel christenen hierheen.\n\n**Theologische betekenis**\nDamascus is de plek van misschien wel de meest onverwachte en theologische invloedrijke bekering uit de wereldgeschiedenis. Saulus van Tarsus, ademend van dreiging en moord tegen de kerk, werd net buiten de stadspoorten verblind door het hemelse licht van de verheerlijkte Christus. Van de felste vervolger werd hij de grootste zendeling (de apostel Paulus). Dit illustreert de absolute en onweerstaanbare soevereiniteit van Gods reddende genade.`,
+        en: `**Archaeological and historical significance**\nDamascus is one of the oldest continuously inhabited cities in the world, situated in an oasis fed by the Barada River. During the Roman era, it was a highly prosperous and crucial commercial center.\n\n**Cultural and geographical context**\nLocated north of Israel, the city housed a significant Jewish population with multiple synagogues. After the martyrdom of Stephen, many Christians fled here.\n\n**Theological significance**\nDamascus is the site of perhaps the most unexpected and theologically influential conversion in world history. Saul of Tarsus, breathing threats and murder against the church, was blinded just outside the city gates by the heavenly light of the glorified Christ. From the fiercest persecutor, he was transformed into the greatest missionary (the Apostle Paul). This powerfully illustrates the absolute and irresistible sovereignty of God's saving grace.`
+      },
+      verses: ["Genesis 15:2", "Handelingen 9:3", "Handelingen 22:6", "Galaten 1:17"]
+    },
+    {
+      id: "antioch",
+      coords: [36.2021, 36.1606],
+      name: { nl: "Antiochië", en: "Antioch" },
+      region: { nl: "Syrië", en: "Syria" },
+      desc: { nl: "Waar volgelingen voor het eerst Christenen werden genoemd.", en: "Where followers were first called Christians." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nAntiochië aan de Orontes was na Rome en Alexandrië de derde grootste en belangrijkste metropool van het Romeinse Rijk. Het was een knooppunt van handel, cultuur en diverse filosofieën.\n\n**Culturele en geografische context**\nDe stad kende een bruisende smeltkroes van culturen. Tot op dat moment werd het evangelie voornamelijk aan Joden verkondigd, maar in Antiochië braken Hellenistische (Griekse) gelovigen door die barrière en plantten de eerste grote, multiculturele gemeente.\n\n**Theologische betekenis**\nAntiochië is theologically het bruggenhoofd voor de wereldwijde zending. Hier werden de discipelen voor het allereerst "Christenen" genoemd (Hand. 11:26). De gemeente van Antiochië zond, onder leiding van de Heilige Geest, Paulus en Barnabas uit op hun baanbrekende zendingsreizen naar de heidense wereld. Het representeert de overgang van een lokale Joodse beweging naar een universele, wereldwijde Kerk.`,
+        en: `**Archaeological and historical significance**\nAntioch on the Orontes was the third largest and most important metropolis of the Roman Empire, after Rome and Alexandria. It was a major hub of commerce, culture, and diverse philosophies.\n\n**Cultural and geographical context**\nThe city was a vibrant melting pot of cultures. Until that point, the gospel had primarily been preached to Jews, but in Antioch, Hellenistic (Greek) believers broke through that barrier and planted the first major multicultural church.\n\n**Theological significance**\nTheologically, Antioch is the bridgehead for global missions. It was here that the disciples were first called "Christians" (Acts 11:26). Driven by the Holy Spirit, the church of Antioch commissioned and sent out Paul and Barnabas on their groundbreaking missionary journeys to the Gentile world. It represents the crucial transition of Christianity from a localized Jewish movement to a universal, worldwide Church.`
+      },
+      verses: ["Handelingen 11:26", "Handelingen 13:1", "Galaten 2:11"]
+    },
+    {
+      id: "rome",
+      coords: [41.8902, 12.4922],
+      name: { nl: "Rome", en: "Rome" },
+      region: { nl: "Italië", en: "Italy" },
+      desc: { nl: "Hoofdstad van het Rijk, bloedbad der martelaren.", en: "Capital of the Empire, bloodshed of martyrs." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nRome, de Stad op de Zeven Heuvelen, was het kloppend hart en de onbetwiste supermacht van de antieke wereld. Keizerlijke fora, het Colosseum en machtige tempels domineerden de horizon.\n\n**Culturele en geografische context**\nAls hoofdstad trok het mensen van over de hele bekende wereld. Ondanks wrede vervolgingen door keizers als Nero, die christenen als levende fakkels gebruikte, groeide de ondergrondse huisgemeente in Rome exponentieel.\n\n**Theologische betekenis**\nRome is de climax van het boek Handelingen. Paulus schreef zijn absolute theologische meesterwerk (de Romeinenbrief) aan deze gemeente. Paulus (als staatsburger onthoofd) en Petrus (ondersteboven gekruisigd) stierven hier allebei de marteldood voor hun Verlosser. Het toont hoe het Koninkrijk van God onstuitbaar is: het kruipt uit de catacomben en overwint uiteindelijk zelfs het bloeddorstige hart van het Romeinse rijk door het bloed van het Lam.`,
+        en: `**Archaeological and historical significance**\nRome, the City on Seven Hills, was the beating heart and undisputed superpower of the ancient world. Imperial forums, the Colosseum, and mighty temples dominated its skyline.\n\n**Cultural and geographical context**\nAs the capital, it attracted people from all over the known world. Despite horrific persecutions by emperors like Nero, who used Christians as living torches, the underground house churches in Rome grew exponentially.\n\n**Theological significance**\nRome serves as the dramatic climax to the book of Acts. Paul wrote his absolute theological masterpiece (the Epistle to the Romans) to this church. Both Paul (beheaded as a citizen) and Peter (crucified upside down) died their martyr's death for their Savior here. It stands as the ultimate proof that the Kingdom of God is unstoppable: creeping out from the catacombs, it ultimately conquered even the bloodthirsty heart of the Roman Empire through the blood of the Lamb.`
+      },
+      verses: ["Handelingen 28:14", "Romeinen 1:7", "Romeinen 1:15", "2 Timotheüs 1:17"]
+    }
 ];
 
 export default CONTEXT_PLACES;

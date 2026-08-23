@@ -78,7 +78,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   
   
   const [searchQuery, setSearchQuery] = useState("");
-  const [openBiblePlaces, setOpenBiblePlaces] = useState<{n: string, c: [number, number]}[]>([]);
+  const [openBiblePlaces, setOpenBiblePlaces] = useState<{n: string, c: [number, number], v?: string}[]>([]);
 
   const [activeMapId, setActiveMapId] = useState<string | null>(null);
   const [isSidebarDetailOpen, setIsSidebarDetailOpen] = useState(false);
@@ -233,8 +233,12 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         interactive: true
       });
       
-      marker.bindTooltip(p.n, {
-        className: 'text-xs font-serif',
+      const tooltipContent = p.v 
+        ? `<div class="text-center font-serif"><strong>${p.n}</strong><div class="text-[10px] opacity-75 max-w-[150px] whitespace-normal mt-1 leading-tight">${p.v}</div></div>`
+        : `<div class="text-center font-serif"><strong>${p.n}</strong></div>`;
+        
+      marker.bindTooltip(tooltipContent, {
+        className: 'custom-openbible-tooltip',
         direction: 'top'
       });
       
