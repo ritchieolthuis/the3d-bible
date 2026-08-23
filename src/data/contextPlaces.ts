@@ -9,6 +9,26 @@ export interface ContextPlace {
 }
 
 const CONTEXT_PLACES: ContextPlace[] = [
+    {
+      id: "promised_land",
+      coords: [31.500, 35.000],
+      name: { nl: "Het Beloofde Land", en: "The Promised Land" },
+      region: { nl: "Kanaän", en: "Canaan" },
+      desc: { nl: "Het land dat God aan Abraham en zijn nageslacht beloofde.", en: "The land promised by God to Abraham and his descendants." },
+      story: {
+        nl: `**Geografische en historische context**
+Het kerngebied van het Beloofde Land ligt geografisch strategisch tussen de Middellandse Zee (westen) en de Jordaanvallei, begrensd door de Syrische woestijn in het oosten, het Libanongebergte in het noorden en de Negev-woestijn in het zuiden. Historisch en geografisch omvat dit gebied het huidige Israël, de Palestijnse gebieden, en grote delen van Jordanië, Libanon en Syrië. Omdat het fungeerde als enige landbrug tussen de twee grootmachten van de oudheid (Egypte en Mesopotamië), had het een immense economische en militaire waarde.
+
+**De grenzen van de belofte**
+De exacte geografische grenzen van het land verschillen per bijbelboek en periode. In Genesis 15:18 krijgt Abraham de "brede definitie" (de landbelofte) toegezegd: een enorm uitgestrekt gebied vanaf de "Rivier van Egypte" (waarschijnlijk de Wadi El-Arish in het Sinaï-schiereiland) tot aan de Eufraat (in het huidige Syrië/Irak). Later, in Numeri 34, wanneer het volk Kanaän daadwerkelijk gaat verdelen, krijgen zij de "specifieke grenzen" toegewezen: een compacter gebied met in het zuiden de Zin-woestijn, in het westen de Middellandse Zee, in het noorden de berg Hor, en in het oosten de rivier de Jordaan (hoewel er later gebieden ten oosten van de Jordaan aan werden toegevoegd).
+
+**Theologische betekenis**
+Het Beloofde Land is veel meer dan een stuk geografisch onroerend goed; het is het tastbare bewijs van Gods onwankelbare verbondstrouw aan Abraham, Isaäk en Jakob. God gaf dit specifieke, kwetsbare land (volledig afhankelijk van regen, in tegenstelling tot Egypte) zodat Zijn volk in dagelijkse afhankelijkheid van Hem zou leven. Het is bedoeld als een 'licht voor de volken' en wijst in het Nieuwe Testament (bijv. Hebreeën 4) vooruit naar de eeuwige rust en de herstelde schepping.`,
+        en: `**Geographical and historical context**
+The Promised Land sits strategically between the Mediterranean Sea...`
+      },
+      verses: ["Genesis 15:18", "Numeri 34:1", "Jozua 1:4"]
+    },
     { 
       id: "jerusalem", 
       coords: [31.7767, 35.2342], 

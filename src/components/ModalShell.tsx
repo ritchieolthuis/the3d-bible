@@ -20,13 +20,20 @@ export function ModalShell({ title, kicker, onClose, children, wide, allowFullsc
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
+    // Lock body scroll
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     const first = ref.current?.querySelector<HTMLElement>("button, [href], input, [tabindex]");
     first?.focus();
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = originalOverflow;
+    };
   }, [onClose]);
 
   useEffect(() => {
