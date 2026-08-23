@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { structuresFor, structureById, DEFAULT_STRUCTURE_ID } from "@/data";
 import type { Structure, DescriptionLinkTarget } from "@/types/structure";
 import { useLocale, type Locale } from "@/i18n/locale";
@@ -20,6 +20,103 @@ type ModalId = string | null;
 const mq = (q: string) => (typeof window !== "undefined" ? window.matchMedia(q).matches : false);
 
 const INTRO_SESSION_KEY = "bible-intro-shown";
+
+interface VideoConfig {
+  src: string;
+  muted?: boolean | { nl: boolean; en: boolean };
+}
+
+const STRUCTURE_VIDEOS: Record<string, VideoConfig> = {
+  noahs_ark: { src: "/videos/noahs_ark.mp4", muted: true },
+  eden_fall: { src: "/videos/eden_fall.mp4", muted: true },
+  golgotha: { src: "/videos/golgotha.mp4", muted: false },
+  parting_sea: { src: "/videos/parting_sea.mp4", muted: true },
+  mount_of_olives: { src: "/videos/mount_of_olives.mp4", muted: true },
+  walls_jericho: { src: "/videos/walls_jericho.mp4", muted: true },
+  tower_babel: {
+    src: "/videos/tower_babel.mp4",
+    muted: { nl: false, en: true },
+  },
+  new_jerusalem: { src: "/videos/new_jerusalem.mp4", muted: false },
+  tabernacle: { src: "/videos/tabernacle.mp4", muted: { nl: true, en: false } },
+};
+
+function VideoStage({
+  video,
+  locale = "nl",
+  onPlayStateChange,
+  videoRef,
+  onClose,
+}: {
+  video: VideoConfig;
+  locale?: Locale;
+  onPlayStateChange?: (playing: boolean) => void;
+  videoRef?: React.MutableRefObject<HTMLVideoElement | null>;
+  onClose: () => void;
+}) {
+  const localRef = useRef<HTMLVideoElement | null>(null);
+  const videoSrc = video.src;
+  const isMuted = typeof video.muted === "object"
+    ? (video.muted[locale] ?? false)
+    : (video.muted ?? false);
+
+  const togglePlay = () => {
+    const el = (videoRef ? videoRef.current : null) || localRef.current;
+    if (!el) return;
+    if (el.paused) {
+      el.play().catch(() => {});
+      onPlayStateChange?.(true);
+    } else {
+      el.pause();
+      onPlayStateChange?.(false);
+    }
+  };
+
+  return (
+    <div
+      className="group relative flex h-full w-full max-w-[calc((100vh-188px)*1.77)] aspect-video items-center justify-center overflow-hidden rounded-2xl bg-white shadow-xl border border-line-warm cursor-pointer select-none"
+      onClick={togglePlay}
+    >
+      <video
+        key={`${videoSrc}-${locale}-${isMuted}`}
+        ref={(el) => {
+          localRef.current = el;
+          if (videoRef) videoRef.current = el;
+        }}
+        src={withBase(videoSrc)}
+        autoPlay
+        loop
+        preload="auto"
+        muted={isMuted}
+        playsInline
+        disablePictureInPicture
+        controls={false}
+        onPlay={() => onPlayStateChange?.(true)}
+        onPause={() => onPlayStateChange?.(false)}
+        onEnded={(e) => {
+          e.currentTarget.currentTime = 0;
+          e.currentTarget.play().catch(() => {});
+          onPlayStateChange?.(true);
+        }}
+        className="h-full w-full object-contain rounded-xl pointer-events-none sm:pointer-events-auto"
+      />
+
+      {/* Return to 3D Button: bottom-right on mobile, top-right on desktop */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        className="absolute bottom-3 right-3 sm:bottom-auto sm:top-4 sm:right-4 z-30 flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold text-ink shadow-md backdrop-blur-md border border-line-warm transition-all hover:scale-105 hover:bg-terracotta hover:text-white hover:border-terracotta"
+        aria-label="Sluit video en ga terug naar 3D model"
+      >
+        <span className="text-sm sm:text-base font-bold">✕</span>
+        <span>Terug naar 3D</span>
+      </button>
+    </div>
+  );
+}
 
 export default function App() {
   const { locale, setLocale } = useLocale();
@@ -53,8 +150,24 @@ export default function App() {
     { id: "gospel", label: t.nav.gospel },
   ];
 
-  const [viewerStructure, setViewerStructure] = useState<Structure>(() => structureById(locale, DEFAULT_STRUCTURE_ID));
-  const [panelStructure, setPanelStructure] = useState<Structure>(() => structureById(locale, DEFAULT_STRUCTURE_ID));
+  const initialStructureId = useMemo(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        const s = params.get("structure") || params.get("s");
+        if (s && structuresFor("en").some((st) => st.id === s)) {
+          return s;
+        }
+      }
+    } catch {}
+    return DEFAULT_STRUCTURE_ID;
+  }, []);
+
+  const [viewerStructure, setViewerStructure] = useState<Structure>(() => structureById(locale, initialStructureId));
+  const [panelStructure, setPanelStructure] = useState<Structure>(() => structureById(locale, initialStructureId));
+  const [playingVideo, setPlayingVideo] = useState<VideoConfig | null>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const videoElementRef = useRef<HTMLVideoElement | null>(null);
   const [modal, setModal] = useState<ModalId>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [animating, setAnimating] = useState(false);
@@ -70,6 +183,30 @@ export default function App() {
       return new Set();
     }
   });
+
+  const toggleVideoPlayback = useCallback((videoConfig: VideoConfig) => {
+    if (!playingVideo || playingVideo.src !== videoConfig.src) {
+      setPlayingVideo(videoConfig);
+      setIsVideoPlaying(true);
+      if (typeof window !== "undefined" && window.innerWidth < 1024) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    } else {
+      const el = videoElementRef.current;
+      if (el) {
+        if (el.paused) {
+          el.play().catch(() => {});
+          setIsVideoPlaying(true);
+          if (typeof window !== "undefined" && window.innerWidth < 1024) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        } else {
+          el.pause();
+          setIsVideoPlaying(false);
+        }
+      }
+    }
+  }, [playingVideo]);
 
   /* Re-resolve the same dwelling's text in the new locale whenever the
      language switches, without dropping which structure is displayed. */
@@ -97,7 +234,7 @@ export default function App() {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setSearchOpen(true);
+        setSearchOpen((o) => !o);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -127,16 +264,29 @@ export default function App() {
      re-fires. */
   const hasSwapped = useRef(false);
   useEffect(() => {
-    if (!hasSwapped.current) return;
-    document.title = `${panelStructure.dwelling}  -  ${t.docTitleSuffix}`;
-  }, [panelStructure, t.docTitleSuffix]);
+    if (!hasSwapped.current && initialStructureId === DEFAULT_STRUCTURE_ID) return;
+    document.title = `${panelStructure.dwelling} (${panelStructure.name}) | ${locale === "nl" ? "De Bijbel Online" : "The 3D Bible"}`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", `${panelStructure.name} in 3D — ${panelStructure.description.slice(0, 150)}...`);
+    }
+    try {
+      if (typeof window !== "undefined") {
+        const url = new URL(window.location.href);
+        url.searchParams.set("structure", panelStructure.id);
+        window.history.replaceState({}, "", url.toString());
+      }
+    } catch {}
+  }, [panelStructure, locale, initialStructureId]);
 
   const selectStructure = useCallback(
     (id: string) => {
       const e = structureById(locale, id);
       if (e.id === viewerStructure.id) return;
+      setPlayingVideo(null);
       setAnimating(false);
       setViewerStructure(e);
+      setPanelStructure(e);
     },
     [viewerStructure.id, locale],
   );
@@ -211,6 +361,8 @@ export default function App() {
     [navigateTo],
   );
 
+  const panelVideo = STRUCTURE_VIDEOS[panelStructure.id];
+
   return (
     <div
       className="flex min-h-screen flex-col bg-paper"
@@ -220,37 +372,43 @@ export default function App() {
       {creditsOpen && <Banner onDismiss={dismissCredits} />}
       <Header onSearchOpen={() => setSearchOpen(true)} onMenuOpen={() => setMenuOpen(true)} onNav={onNav} activeNav={activeNav} />
 
-      {/* main stage  -  sized so the exploration cards below stay in view, and
-          the side panels scroll within it rather than stretching the page */}
-      <div className="flex gap-4 px-3 pb-3 pt-3 sm:min-h-[520px] sm:px-4 xl:h-[calc(100vh-188px-var(--banner-h,0px))] xl:min-h-[600px] xl:px-5">
-        <aside className="hidden w-[clamp(300px,22vw,380px)] flex-none xl:flex">
+      {/* main stage  -  exact 1:1 match with desamenkomst.nl */}
+      <div className="flex gap-4 px-3 pb-3 pt-3 sm:px-4 lg:h-[calc(100vh-188px-var(--banner-h,0px))] lg:min-h-[560px] xl:px-5">
+        <aside className="hidden w-[clamp(300px,22vw,380px)] flex-none lg:flex">
           <StructureLibrary structures={STRUCTURES} activeId={viewerStructure.id} favorites={favorites} onSelect={selectStructure} onToggleFav={toggleFav} onViewAll={() => setSearchOpen(true)} onPrefetch={prefetch} />
         </aside>
 
-        {/* the stage reads as a near-square plate rather than a wide band. The
-            side panels widen first (their clamps), and the stage keeps whatever
-            is left  -  capped so it never stretches back into a letterbox. Below
-            xl, where there's no side rail to size against, the stage sets its
-            own square-ish footprint from the viewport width instead of a small
-            vh sliver, so the dwelling reads as large on a phone as on desktop */}
+        {/* Center 3D Stage or 16:9 Cinematic Video Player */}
         <main className="flex min-w-0 flex-1 justify-center">
-          <div className="aspect-square w-full max-w-[min(100%,80vh)] xl:aspect-auto xl:h-full xl:max-w-[min(100%,calc((100vh-188px-var(--banner-h,0px))*1.3))]">
-            <Viewer
-              structure={viewerStructure}
-              onSwap={onSwap}
-              reducedMotion={reducedMotion}
-              animating={animating}
-              onToggleAnimate={() => setAnimating((v) => !v)}
-              focusHotspot={focusHotspot}
-              onFocusHandled={() => setFocusHotspot(null)}
-              onArtifacts={() => setModal("artifacts")}
-              onTimeline={() => setModal("timeline")}
-              onPrefetchReady={(fn) => { prefetchRef.current = fn; }}
+          {playingVideo ? (
+            <VideoStage
+              video={playingVideo}
+              locale={locale}
+              onPlayStateChange={setIsVideoPlaying}
+              videoRef={videoElementRef}
+              onClose={() => {
+                setPlayingVideo(null);
+                setIsVideoPlaying(false);
+              }}
             />
-          </div>
+          ) : (
+            <div className="h-full w-full max-w-full lg:max-w-[calc((100vh-188px)*1.3)] aspect-[4/3] sm:aspect-[16/10] landscape:aspect-[16/9] lg:aspect-auto">
+              <Viewer
+                structure={viewerStructure}
+                onSwap={onSwap}
+                reducedMotion={reducedMotion}
+                animating={animating}
+                focusHotspot={focusHotspot}
+                onFocusHandled={() => setFocusHotspot(null)}
+                onArtifacts={() => setModal("artifacts")}
+                onTimeline={() => setModal("timeline")}
+                onPrefetchReady={(fn) => { prefetchRef.current = fn; }}
+              />
+            </div>
+          )}
         </main>
 
-        <aside className="hidden w-[clamp(330px,25vw,480px)] flex-none xl:flex">
+        <aside className="hidden w-[clamp(320px,24vw,400px)] flex-none lg:flex">
           <InfoPanel
             structure={panelStructure}
             animating={animating}
@@ -259,13 +417,16 @@ export default function App() {
             onArtifacts={() => setModal("artifacts")}
             onQuiz={() => setModal("quiz")}
             onDescriptionLink={onDescriptionLink}
+            onPlayVideo={panelVideo ? () => toggleVideoPlayback(panelVideo) : undefined}
+            isVideoActive={Boolean(playingVideo && panelVideo && playingVideo.src === panelVideo.src)}
+            isVideoPaused={!isVideoPlaying}
           />
         </aside>
       </div>
 
-      {/* below xl the dwelling detail reads in the page flow, under the model
+      {/* below lg the dwelling detail reads in the page flow, under the model
           and above the cards, rather than hiding behind a floating button */}
-      <section className="px-3 pb-3 pt-1 sm:px-4 xl:hidden" aria-label="Selected dwelling">
+      <section className="px-3 pb-3 pt-1 sm:px-4 lg:hidden" aria-label="Selected dwelling">
         <InfoPanel
           structure={panelStructure}
           flow
@@ -275,12 +436,15 @@ export default function App() {
           onArtifacts={() => setModal("artifacts")}
           onQuiz={() => setModal("quiz")}
           onDescriptionLink={onDescriptionLink}
+          onPlayVideo={panelVideo ? () => toggleVideoPlayback(panelVideo) : undefined}
+          isVideoActive={Boolean(playingVideo && panelVideo && playingVideo.src === panelVideo.src)}
+          isVideoPaused={!isVideoPlaying}
         />
       </section>
 
       {/* exploration cards  -  a grid at every size rather than a sideways
           scroller, which hid four of the five on a phone */}
-      <section className="px-3 pb-6 pt-1 sm:px-4 xl:px-5" aria-label="Explore the dwelling">
+      <section className="px-3 pb-6 pt-1 sm:px-4 lg:px-5" aria-label="Explore the dwelling">
         <BottomCards structure={panelStructure} onOpen={(s) => setModal(s)} />
       </section>
 
@@ -289,7 +453,7 @@ export default function App() {
       {/* mobile drawer: the same structure library as the desktop rail, plus the
           primary nav that the header hides below lg */}
       {menuOpen && (
-        <div className="overlay-backdrop xl:hidden" onClick={() => setMenuOpen(false)}>
+        <div className="overlay-backdrop lg:hidden" onClick={() => setMenuOpen(false)}>
           <div
             className="safe-bottom flex h-full w-[min(320px,86vw)] flex-col bg-paper shadow-lift"
             onClick={(e) => e.stopPropagation()}
