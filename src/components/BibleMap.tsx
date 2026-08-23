@@ -1,200 +1,132 @@
-import { useState, useMemo } from "react";
-import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup, Annotation } from "react-simple-maps";
+import { useState } from "react";
 import { useLocale } from "@/i18n/locale";
 import { structuresFor } from "@/data";
 import { ModalShell } from "./ModalShell";
 
-// GeoJSON/TopoJSON map URL
-const geoUrl = import.meta.env.BASE_URL ? `${import.meta.env.BASE_URL}data/world.json` : "/data/world.json";
-
-/* ── real-world coordinates [longitude, latitude] ── */
 interface MapPin {
   id: string;
-  coords: [number, number]; 
-  icon: string;
+  x: number; // left %
+  y: number; // top %
   offsetX?: number;
   offsetY?: number;
 }
 
 const PINS: MapPin[] = [
-  // Babylon/Mesopotamia
-  { id: "eden_fall",       coords: [47.000, 31.000], icon: "🌳" }, 
-  { id: "noahs_ark",      coords: [44.300, 39.700], icon: "🚢" }, 
-  { id: "tower_babel",    coords: [44.420, 32.536], icon: "🗼" }, 
+  // Geographically accurate Web Mercator projection coordinates
+  { id: "eden_fall",       x: 94.74, y: 70.77 },
+  { id: "noahs_ark",       x: 80.53, y: 2.50 },
+  { id: "tower_babel",     x: 81.16, y: 59.23 },
+  { id: "parting_sea",     x: 18.68, y: 79.66 },
+  { id: "tabernacle",      x: 26.18, y: 88.89 },
+  { id: "walls_jericho",   x: 33.92, y: 62.00, offsetX: 10, offsetY: -10 },
   
-  // Egypt & Sinai
-  { id: "parting_sea",    coords: [32.550, 29.800], icon: "🌊" }, 
-  { id: "tabernacle",     coords: [33.975, 28.539], icon: "⛺" }, 
-  
-  // Canaan / Israel (Slightly spread out the Jerusalem ones so they don't exactly overlap)
-  { id: "walls_jericho",  coords: [35.444, 31.870], icon: "🏰", offsetX: 15, offsetY: -10 },
-  { id: "solomon_temple", coords: [35.235, 31.778], icon: "🏛️", offsetX: -20, offsetY: 0 },
-  { id: "herods_temple",  coords: [35.235, 31.775], icon: "🏛️", offsetX: -10, offsetY: 20 },
-  { id: "ezekiel_temple", coords: [35.235, 31.782], icon: "🏛️", offsetX: -10, offsetY: -20 },
-  { id: "mount_of_olives",coords: [35.245, 31.779], icon: "⛰️", offsetX: 20, offsetY: 0 },
-  { id: "golgotha",       coords: [35.229, 31.779], icon: "✝️", offsetX: -35, offsetY: -10 },
-  
-  // Heavenly
-  { id: "new_jerusalem",  coords: [35.235, 31.780], icon: "✨", offsetX: 0, offsetY: -40 },
+  // Jerusalem Cluster (Spread out pixel-wise so they don't overlap)
+  { id: "solomon_temple",  x: 32.82, y: 64.95, offsetX: -16, offsetY: 0 },
+  { id: "herods_temple",   x: 32.82, y: 64.97, offsetX: -6, offsetY: 16 },
+  { id: "ezekiel_temple",  x: 32.82, y: 64.92, offsetX: -6, offsetY: -16 },
+  { id: "mount_of_olives", x: 32.87, y: 64.94, offsetX: 16, offsetY: 0 },
+  { id: "golgotha",        x: 32.78, y: 64.94, offsetX: -28, offsetY: -8 },
+  { id: "new_jerusalem",   x: 32.82, y: 64.94, offsetX: 0, offsetY: -32 },
 ];
 
-interface BibleMapProps {
-  onSelectStructure: (id: string) => void;
-  onClose: () => void;
-}
-
-export default function BibleMap({ onSelectStructure, onClose }: BibleMapProps) {
+export default function BibleMap({ onSelectStructure, onClose }: { onSelectStructure: (id: string) => void, onClose: () => void }) {
   const { locale } = useLocale();
   const structures = structuresFor(locale);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-
-
-  // Filter out any missing structures
-  const activePins = useMemo(() => {
-    return PINS.map(pin => {
-      const struct = structures.find(s => s.id === pin.id);
-      return struct ? { ...pin, struct } : null;
-    }).filter(Boolean) as (MapPin & { struct: any })[];
-  }, [structures]);
+  const base = import.meta.env.BASE_URL || "/";
 
   return (
     <ModalShell
       title={locale === "nl" ? "Interactieve Bijbelkaart" : "Interactive Bible Map"}
-      kicker={locale === "nl" ? "Bijbelse Geografie" : "Biblical Geography"}
+      kicker={locale === "nl" ? "Exacte Geografische Locaties" : "Exact Geographic Locations"}
       onClose={onClose}
       wide={true}
     >
-      <div className="relative mx-auto w-full max-w-[1000px] overflow-hidden rounded-xl border border-line-warm shadow-inner" style={{ backgroundColor: "#22201e", height: "65vh", minHeight: "500px" }}>
+      <div className="relative mx-auto w-full max-w-[1000px] overflow-hidden rounded-xl border border-line shadow-inner bg-paper" style={{ aspectRatio: '1024/704', minHeight: "400px" }}>
         
-        <ComposableMap 
-          projection="geoMercator" 
-          projectionConfig={{ scale: 3200, center: [37.5, 31.5] }}
-          width={1000}
-          height={600}
-          style={{ width: "100%", height: "100%" }}
-        >
-          <ZoomableGroup zoom={1} minZoom={0.5} maxZoom={8}>
-            {/* The Map Geometry (Countries) */}
-            <Geographies geography={geoUrl}>
-              {({ geographies }) =>
-                geographies.map((geo) => (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill="#36312a"
-                    stroke="#595041"
-                    strokeWidth={0.5}
-                    style={{
-                      default: { outline: "none" },
-                      hover: { fill: "#423c34", outline: "none" },
-                      pressed: { fill: "#36312a", outline: "none" },
-                    }}
-                  />
-                ))
-              }
-            </Geographies>
+        {/* Real Geographic Map Background (Canvas Light Gray) */}
+        <img 
+          src={`${base}img/real-map-bg.jpg`}
+          alt="Geographic Map of the Middle East"
+          className="absolute inset-0 h-full w-full object-cover mix-blend-multiply opacity-80"
+        />
 
-            {/* Custom Labels on the Map */}
-            <Annotation subject={[34.8, 31.5]} dx={-60} dy={20} connectorProps={{ stroke: "none" }}>
-              <text x="-8" textAnchor="end" alignmentBaseline="middle" fill="#8c7d65" fontSize={14} fontWeight="bold" opacity={0.6} style={{ fontFamily: "serif", fontStyle: "italic" }}>Canaan</text>
-            </Annotation>
-            <Annotation subject={[31.0, 28.0]} dx={0} dy={0} connectorProps={{ stroke: "none" }}>
-              <text x="0" textAnchor="middle" alignmentBaseline="middle" fill="#8c7d65" fontSize={18} fontWeight="bold" opacity={0.5} style={{ fontFamily: "serif", fontStyle: "italic", letterSpacing: "4px" }}>EGYPT</text>
-            </Annotation>
-            <Annotation subject={[43.0, 33.0]} dx={0} dy={0} connectorProps={{ stroke: "none" }}>
-              <text x="0" textAnchor="middle" alignmentBaseline="middle" fill="#8c7d65" fontSize={18} fontWeight="bold" opacity={0.5} style={{ fontFamily: "serif", fontStyle: "italic", letterSpacing: "4px" }}>MESOPOTAMIA</text>
-            </Annotation>
-
-            {/* Pins */}
-            {activePins.map((pin) => {
-              const isHeavenly = pin.id === "new_jerusalem";
-              const isHovered = hoveredId === pin.id;
-
-              return (
-                <Marker 
-                  key={pin.id} 
-                  coordinates={pin.coords}
-                  onMouseEnter={() => setHoveredId(pin.id)}
-                  onMouseLeave={() => setHoveredId(null)}
-                  onClick={() => { onSelectStructure(pin.id); onClose(); }}
-                  style={{  }}
-                >
-                  <g transform={`translate(${pin.offsetX || 0}, ${pin.offsetY || 0})`}>
-                    {/* The Dot / Pin Base */}
-                    <circle 
-                      r={isHovered ? 18 : 14} 
-                      fill={isHeavenly ? "#f5ecd0" : "#c4a35a"} 
-                      stroke={isHeavenly ? "#ffffff" : "#614e24"} 
-                      strokeWidth={2}
-                      style={{ transition: "all 0.2s" }}
-                    />
-                    
-                    {/* Emoji / Icon inside pin */}
-                    <text 
-                      textAnchor="middle" 
-                      y={4} 
-                      fontSize={isHovered ? 16 : 12}
-                      style={{ transition: "all 0.2s", pointerEvents: "none" }}
-                    >
-                      {pin.icon}
-                    </text>
-
-                    {/* SVG Tooltip rendered perfectly within the vector space */}
-                    {isHovered && (
-                      <g transform="translate(0, -30)">
-                        {/* Tooltip Background */}
-                        <rect 
-                          x={-75} 
-                          y={-50} 
-                          width={150} 
-                          height={40} 
-                          rx={6} 
-                          fill="#181512" 
-                          stroke="#c4a35a" 
-                          strokeWidth={1}
-                        />
-                        {/* Tooltip Arrow */}
-                        <polygon points="-6,-10 6,-10 0,0" fill="#181512" stroke="#c4a35a" strokeWidth={1} />
-                        {/* Tooltip Arrow cover block (to hide the stroke on the top side of the arrow) */}
-                        <line x1={-5} y1={-10} x2={5} y2={-10} stroke="#181512" strokeWidth={2} />
-                        
-                        {/* Tooltip Text */}
-                        <text 
-                          textAnchor="middle" 
-                          y={-32} 
-                          fill="#e8e0d4" 
-                          fontSize={12} 
-                          fontWeight="bold"
-                          fontFamily="sans-serif"
-                        >
-                          {pin.struct.name}
-                        </text>
-                        <text 
-                          textAnchor="middle" 
-                          y={-18} 
-                          fill="#999" 
-                          fontSize={9} 
-                          fontFamily="sans-serif"
-                        >
-                          {locale === "nl" ? "Klik om te openen" : "Click to open"}
-                        </text>
-                      </g>
-                    )}
-                  </g>
-                </Marker>
-              );
-            })}
-          </ZoomableGroup>
-        </ComposableMap>
-
-        {/* Floating Zoom Hints UI */}
-        <div className="pointer-events-none absolute bottom-4 left-0 right-0 text-center">
-          <span className="rounded-full border border-line-warm bg-paper/90 px-4 py-1.5 text-[11px] font-medium text-ink-muted backdrop-blur-sm">
-            {locale === "nl" 
-              ? "Scroll om in te zoomen • Sleep om te pannen" 
-              : "Scroll to zoom • Drag to pan"}
-          </span>
+        {/* Large Decorative Labels */}
+        <div className="absolute inset-0 pointer-events-none">
+            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '15%', top: '65%', fontSize: '1.5rem' }}>EGYPT</span>
+            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '38%', top: '60%', fontSize: '1.2rem' }}>CANAAN</span>
+            <span className="absolute text-ink-muted/40 font-serif italic font-bold tracking-widest" style={{ left: '60%', top: '45%', fontSize: '1.5rem' }}>MESOPOTAMIA</span>
         </div>
+
+        {/* Interactive Pins */}
+        {PINS.map((pin) => {
+          const struct = structures.find((s) => s.id === pin.id);
+          if (!struct) return null;
+          
+          const isHeavenly = pin.id === "new_jerusalem";
+          const isHovered = hoveredId === pin.id;
+
+          return (
+            <div 
+              key={pin.id}
+              className="absolute z-10"
+              style={{ 
+                  left: `calc(${pin.x}% + ${pin.offsetX || 0}px)`, 
+                  top: `calc(${pin.y}% + ${pin.offsetY || 0}px)`,
+                  transform: 'translate(-50%, -50%)'
+              }}
+              onMouseEnter={() => setHoveredId(pin.id)}
+              onMouseLeave={() => setHoveredId(null)}
+            >
+              {/* Elegant dot */}
+              <button
+                onClick={() => { onSelectStructure(pin.id); onClose(); }}
+                className="group relative flex items-center justify-center focus:outline-none"
+              >
+                <div 
+                  className={`h-4 w-4 rounded-full border-[2.5px] transition-all duration-300 ${
+                    isHeavenly 
+                      ? "border-[#FFD700] bg-surface shadow-[0_0_15px_rgba(255,215,0,0.6)]" 
+                      : "border-surface bg-[#3C5E70] shadow-md"
+                  } ${isHovered ? "scale-150" : "scale-100"}`}
+                />
+                
+                {/* Hover Ring */}
+                {isHovered && (
+                  <div 
+                    className={`absolute inset-[-8px] rounded-full border transition-all duration-500 animate-ping opacity-30 ${
+                      isHeavenly ? "border-[#FFD700]" : "border-[#3C5E70]"
+                    }`}
+                  />
+                )}
+
+                {/* Custom Tooltip matching the UI */}
+                <div 
+                  className={`pointer-events-none absolute bottom-full left-1/2 mb-3 w-56 -translate-x-1/2 rounded-xl border border-line-strong bg-surface p-3 text-left shadow-2xl transition-all duration-200 ${
+                    isHovered ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+                  }`}
+                >
+                  <div className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-b border-r border-line-strong bg-surface"></div>
+                  <div className="relative z-10 flex gap-3">
+                    <img 
+                      src={`${base}img/${pin.id}/thumbnail.webp`} 
+                      alt={struct.name}
+                      className="h-12 w-12 flex-none rounded-md object-cover border border-line"
+                      onError={(e) => (e.currentTarget.style.display = 'none')}
+                    />
+                    <div className="flex-1 overflow-hidden">
+                      <p className="font-display truncate text-sm font-bold text-ink">{struct.name}</p>
+                      <p className="truncate text-[10px] italic text-ink-muted">{struct.geography.regionLabel}</p>
+                      <p className="mt-1 text-[10px] font-semibold" style={{ color: "#3C5E70" }}>
+                        {locale === "nl" ? "Klik om te openen →" : "Click to open →"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          );
+        })}
       </div>
     </ModalShell>
   );
