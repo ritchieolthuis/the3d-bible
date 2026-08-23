@@ -21,8 +21,10 @@ export function ModalShell({ title, kicker, onClose, children, wide, allowFullsc
 
   useEffect(() => {
     // Lock body scroll
-    const originalOverflow = document.body.style.overflow;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -32,7 +34,8 @@ export function ModalShell({ title, kicker, onClose, children, wide, allowFullsc
     first?.focus();
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = originalOverflow;
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
     };
   }, [onClose]);
 
