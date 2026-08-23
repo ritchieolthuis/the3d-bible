@@ -12,7 +12,6 @@ interface MapPin {
   hideOnMap?: boolean;
 }
 
-// 1. Existing 3D Structures
 const PINS: MapPin[] = [
   { id: "eden_fall",       coords: [31.000, 47.000] },
   { id: "noahs_ark",       coords: [39.700, 44.300] },
@@ -25,53 +24,102 @@ const PINS: MapPin[] = [
   { id: "ezekiel_temple",  coords: [31.778, 35.235], offset: [-15, 15] },
   { id: "mount_of_olives", coords: [31.778, 35.235], offset: [15, 15] },
   { id: "golgotha",        coords: [31.778, 35.235], offset: [-30, 0] },
-  { id: "new_jerusalem",   coords: [31.778, 35.235], hideOnMap: true }, // In index, but invisible on physical Earth map
+  { id: "new_jerusalem",   coords: [31.778, 35.235], hideOnMap: true }, 
 ];
 
-// 2. Map-Only Context Places (No 3D models, just map pins & info)
 interface ContextPlace {
     id: string;
     coords: [number, number];
     name: { nl: string; en: string };
     desc: { nl: string; en: string };
     region: { nl: string; en: string };
+    story: { nl: string; en: string };
+    verses: string[];
 }
 
 const CONTEXT_PLACES: ContextPlace[] = [
-    { id: "rameses", coords: [30.800, 31.830], name: { nl: "Rameses (Gosen)", en: "Rameses (Goshen)" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "Startpunt van de Exodus.", en: "Starting point of the Exodus." } },
-    { id: "succoth", coords: [30.550, 32.100], name: { nl: "Sukkoth", en: "Succoth" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "De eerste pleisterplaats na Rameses.", en: "The first encampment after Rameses." } },
-    { id: "etham", coords: [30.450, 32.350], name: { nl: "Etham", en: "Etham" }, region: { nl: "Woestijn", en: "Wilderness" }, desc: { nl: "Aan de rand van de woestijn.", en: "On the edge of the wilderness." } },
-    { id: "pi_hahiroth", coords: [29.800, 32.400], name: { nl: "Pi-Hachiroth", en: "Pi-Hahiroth" }, region: { nl: "Rode Zee", en: "Red Sea" }, desc: { nl: "Kampement voor de doortocht.", en: "Encampment before the crossing." } },
-    { id: "migdol", coords: [30.850, 32.350], name: { nl: "Migdol", en: "Migdol" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "Egyptisch fort / wachttoren.", en: "Egyptian fort / watchtower." } },
-    { id: "baal_zephon", coords: [31.100, 32.500], name: { nl: "Baäl-Zefon", en: "Baal-Zephon" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "Plaats aan de overkant van Pi-Hachiroth.", en: "Place opposite Pi-Hahiroth." } },
-    { id: "marah", coords: [29.350, 32.950], name: { nl: "Mara", en: "Marah" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Plaats van het bittere water.", en: "Place of bitter water." } },
-    { id: "elim", coords: [29.100, 33.100], name: { nl: "Elim", en: "Elim" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Oase met 12 waterbronnen en 70 palmbomen.", en: "Oasis with 12 springs and 70 palm trees." } },
-    { id: "rephidim", coords: [28.700, 33.700], name: { nl: "Rafidim", en: "Rephidim" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Water uit de rots; strijd tegen Amalek.", en: "Water from the rock; battle with Amalek." } },
-    { id: "ur", coords: [30.960, 46.100], name: { nl: "Ur der Chaldeeën", en: "Ur of the Chaldeans" }, region: { nl: "Mesopotamië", en: "Mesopotamia" }, desc: { nl: "De geboorteplaats van Abraham.", en: "The birthplace of Abraham." } },
-    { id: "haran", coords: [36.860, 39.030], name: { nl: "Haran", en: "Haran" }, region: { nl: "Mesopotamië", en: "Mesopotamia" }, desc: { nl: "Waar Abraham verbleef voordat hij naar Kanaän ging.", en: "Where Abraham stayed before entering Canaan." } },
-    { id: "shechem", coords: [32.213, 35.282], name: { nl: "Sichem", en: "Shechem" }, region: { nl: "Kanaän", en: "Canaan" }, desc: { nl: "God beloofde hier het land aan Abrahams nageslacht.", en: "God promised the land to Abraham's offspring here." } },
-    { id: "hebron", coords: [31.532, 35.099], name: { nl: "Hebron", en: "Hebron" }, region: { nl: "Juda", en: "Judah" }, desc: { nl: "Rustplaats van Abraham, Isaäk en Jakob.", en: "Resting place of Abraham, Isaac, and Jacob." } },
-    { id: "beersheba", coords: [31.250, 34.790], name: { nl: "Beër-Sjeba", en: "Beersheba" }, region: { nl: "Kanaän", en: "Canaan" }, desc: { nl: "Zuidelijke grens van Israël, put van de eed.", en: "Southern border of Israel, well of the oath." } },
-    { id: "damascus", coords: [33.513, 36.292], name: { nl: "Damascus", en: "Damascus" }, region: { nl: "Aram", en: "Aram" }, desc: { nl: "Oude stad; Paulus kwam hier tot bekering.", en: "Ancient city; Paul was converted here." } },
-    { id: "nineveh", coords: [36.360, 43.150], name: { nl: "Ninevé", en: "Nineveh" }, region: { nl: "Assyrië", en: "Assyria" }, desc: { nl: "Hoofdstad van Assyrië, bezocht door Jona.", en: "Capital of Assyria, visited by Jonah." } },
-    { id: "nazareth", coords: [32.700, 35.297], name: { nl: "Nazareth", en: "Nazareth" }, region: { nl: "Galilea", en: "Galilee" }, desc: { nl: "De woonplaats van Jezus waar Hij opgroeide.", en: "The hometown where Jesus grew up." } },
-    { id: "capernaum", coords: [32.880, 35.575], name: { nl: "Kafarnaüm", en: "Capernaum" }, region: { nl: "Galilea", en: "Galilee" }, desc: { nl: "Het centrum van Jezus' bediening rondom het meer.", en: "The center of Jesus' ministry around the sea." } },
+    { 
+      id: "migdol", 
+      coords: [30.850, 32.350], 
+      name: { nl: "Migdol", en: "Migdol" }, 
+      region: { nl: "Egypte", en: "Egypt" }, 
+      desc: { nl: "Egyptisch fort of wachttoren nabij de Rode Zee.", en: "Egyptian fort or watchtower near the Red Sea." },
+      story: {
+        nl: "**Archeologische & Historische Betekenis**\nHet woord 'Migdol' is een leenwoord uit het Kanaänitisch en betekent 'toren' of 'fort'. Archeologen hebben in dit grensgebied (de oostelijke Nijldelta) restanten van een keten van indrukwekkende militaire forten gevonden (de zogenaamde 'Muurs of the Ruler'). Deze dienden om de oostgrens van Egypte te bewaken tegen binnendringende nomaden en ontsnappende slaven.\n\n**Culturele & Geografische Context**\nGelegen aan de rand van de woestijn fungeerde Migdol als een duidelijk baken en grensstation. Toen Israël de opdracht kreeg om 'om te keren en zich te legeren voor Pi-Hachiroth, tussen Migdol en de zee' (Exodus 14:2), was dit militair gezien een extreem onlogische zet: het plaatste hen ingesloten tussen de zee en de zwaarbewapende Egyptische grensposten.\n\n**Theologische Betekenis**\nGod leidde het volk bewust in een fysieke 'valstrik' om Zijn ultieme verlossingskracht te tonen. Migdol (de toren/menselijke macht) stond machteloos toen God voor Zijn volk streed en de zee spleet.",
+        en: "Migdol means 'tower' or 'fort'. It represents the Egyptian military border defenses that Israel was trapped against before the crossing of the sea, highlighting God's ultimate deliverance."
+      },
+      verses: ["Exodus 14:2", "Num 33:7", "Jer 44:1", "Jer 46:14"]
+    },
+    { 
+      id: "pi_hahiroth", 
+      coords: [29.800, 32.400], 
+      name: { nl: "Pi-Hachiroth", en: "Pi-Hahiroth" }, 
+      region: { nl: "Rode Zee", en: "Red Sea" }, 
+      desc: { nl: "Kampement vlak voor de doortocht.", en: "Encampment before the crossing." },
+      story: {
+        nl: "**Geografische Context**\nPi-Hachiroth (wat in het Hebreeuws mogelijk klinkt als 'monding van de kloven', maar vermoedelijk een Egyptische naam is die 'Huis van de godin Hathor' betekent) was de exacte locatie waar Mozes en de Israëlieten hun kamp opsloegen voordat de Rode Zee spleet. Het lag ten oosten van Baäl-Zefon.\n\n**Theologische Betekenis**\nHier bereikte de wanhoop van het volk een kookpunt toen de farao naderde. Het is de plek waar Mozes de beroemde woorden sprak: 'Wees niet bevreesd, houd stand, zie het heil van de HEERE' (Exod. 14:13).",
+        en: "The encampment where the Israelites were trapped between the sea and Pharaoh's army, leading to the miraculous parting of the waters."
+      },
+      verses: ["Exodus 14:2", "Exodus 14:9", "Num 33:7", "Num 33:8"]
+    },
+    { 
+      id: "damascus", 
+      coords: [33.513, 36.292], 
+      name: { nl: "Damascus", en: "Damascus" }, 
+      region: { nl: "Aram", en: "Aram" }, 
+      desc: { nl: "Oude stad; Paulus kwam hier tot bekering.", en: "Ancient city; Paul was converted here." },
+      story: {
+        nl: "**Archeologische & Historische Betekenis**\nDamascus is een van de oudste continu bewoonde steden ter wereld. Al in Genesis wordt de stad genoemd als de woonplaats van Eliëzer, Abrahams dienaar. Tijdens de koningentijd was Damascus de machtige hoofdstad van het Aramese rijk.\n\n**Theologische Betekenis**\nIn het Nieuwe Testament krijgt Damascus een enorme betekenis. Het was op de weg naar Damascus dat de felle christenvervolger Saulus een verblindende ontmoeting had met de opgestane Jezus. Deze gebeurtenis in Damascus veranderde hem in Paulus, de grootste apostel voor de heidenen.",
+        en: "One of the oldest continuously inhabited cities. Famous in the New Testament as the location of Paul's dramatic conversion on the road to Damascus."
+      },
+      verses: ["Gen 15:2", "1 Kon 11:24", "Hand 9:2", "Hand 9:27", "2 Kor 11:32"]
+    },
+    { 
+      id: "shechem", 
+      coords: [32.213, 35.282], 
+      name: { nl: "Sichem", en: "Shechem" }, 
+      region: { nl: "Kanaän", en: "Canaan" }, 
+      desc: { nl: "God beloofde hier het land aan Abrahams nageslacht.", en: "God promised the land to Abraham's offspring here." },
+      story: {
+        nl: "**Archeologische & Historische Betekenis**\nSichem ligt strategisch in een vallei tussen de berg Ebal en de berg Gerizim. Het is de eerste stad in Kanaän die Abraham bezocht. Jozua vernieuwde later precies in deze vallei het verbond met God, waarbij het volk zegeningen en vervloekingen uitsprak vanaf de twee bergen.\n\n**Nieuwe Testament Context**\nVlakbij Sichem lag Sichar, waar Jezus de Samaritaanse vrouw ontmoette bij de put van Jakob (Johannes 4).",
+        en: "The first city Abraham visited in Canaan, and later the site where Joshua renewed the covenant between the mountains of Ebal and Gerizim."
+      },
+      verses: ["Gen 12:6", "Joz 24:1", "1 Kon 12:1", "Joh 4:5"]
+    },
+    { 
+      id: "hebron", 
+      coords: [31.532, 35.099], 
+      name: { nl: "Hebron", en: "Hebron" }, 
+      region: { nl: "Juda", en: "Judah" }, 
+      desc: { nl: "Rustplaats van Abraham, Isaäk en Jakob.", en: "Resting place of Abraham, Isaac, and Jacob." },
+      story: {
+        nl: "**Historische Context**\nHebron is een belangrijke patriarchale stad in de hooglanden van Juda. Abraham kocht hier de grot van Machpela om Sara te begraven. Later werden Abraham zelf, Isaäk, Rebekka, Jakob en Lea hier bijgezet.\n\n**Theologische Betekenis**\nDavid werd in Hebron tot koning gezalfd en regeerde de eerste zeven jaar van zijn koningschap vanuit deze stad, voordat hij Jeruzalem veroverde. Het is een symbool van Gods trouw aan de aartsvaders en de geboorte van het Davidische verbond.",
+        en: "A major patriarchal city where Abraham, Isaac, and Jacob are buried. David ruled here for seven years before conquering Jerusalem."
+      },
+      verses: ["Gen 13:18", "Gen 23:2", "2 Sam 2:1", "2 Sam 5:3"]
+    },
+    { id: "rameses", coords: [30.800, 31.830], name: { nl: "Rameses (Gosen)", en: "Rameses (Goshen)" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "Startpunt van de Exodus.", en: "Starting point of the Exodus." }, story: { nl: "De voorraadstad die door de Israëlitische slaven werd gebouwd voor de farao. Het diende als het vertrekpunt van de enorme uittocht uit Egypte.", en: "The store city built by Israelite slaves, serving as the starting point of the Exodus." }, verses: ["Exod 1:11", "Exod 12:37", "Num 33:3"] },
+    { id: "succoth", coords: [30.550, 32.100], name: { nl: "Sukkoth", en: "Succoth" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "De eerste pleisterplaats na Rameses.", en: "The first encampment after Rameses." }, story: { nl: "De naam betekent 'loofhutten'. Hier legerden de Israëlieten zich voor het eerst nadat ze Rameses hadden verlaten, voordat ze de woestijn in trokken.", en: "Meaning 'booths', this was the first encampment of the Israelites after leaving Rameses." }, verses: ["Exod 12:37", "Exod 13:20", "Num 33:5"] },
+    { id: "etham", coords: [30.450, 32.350], name: { nl: "Etham", en: "Etham" }, region: { nl: "Woestijn", en: "Wilderness" }, desc: { nl: "Aan de rand van de woestijn.", en: "On the edge of the wilderness." }, story: { nl: "Een legerplaats aan de rand van de woestijn. Vanaf hier wees de wolkkolom overdag en de vuurkolom 's nachts hen de weg.", en: "An encampment on the edge of the wilderness where the pillar of cloud and fire began to guide them." }, verses: ["Exod 13:20", "Num 33:6"] },
+    { id: "baal_zephon", coords: [31.100, 32.500], name: { nl: "Baäl-Zefon", en: "Baal-Zephon" }, region: { nl: "Egypte", en: "Egypt" }, desc: { nl: "Plaats aan de overkant van Pi-Hachiroth.", en: "Place opposite Pi-Hahiroth." }, story: { nl: "Gelegen tegenover Pi-Hachiroth. De naam verwijst waarschijnlijk naar een lokaal heiligdom van een Kanaänitische of Fenicische godheid.", en: "Located opposite Pi-Hahiroth, likely named after a local Canaanite deity's shrine." }, verses: ["Exod 14:2", "Exod 14:9", "Num 33:7"] },
+    { id: "marah", coords: [29.350, 32.950], name: { nl: "Mara", en: "Marah" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Plaats van het bittere water.", en: "Place of bitter water." }, story: { nl: "Na drie dagen in de woestijn vonden ze hier water, maar het was te bitter om te drinken. Mozes wierp een door God aangewezen stuk hout in het water, waardoor het zoet werd.", en: "The place where the bitter water was miraculously made sweet by Moses." }, verses: ["Exod 15:23", "Num 33:8"] },
+    { id: "elim", coords: [29.100, 33.100], name: { nl: "Elim", en: "Elim" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Oase met 12 waterbronnen en 70 palmbomen.", en: "Oasis with 12 springs and 70 palm trees." }, story: { nl: "Een oase van rust in de woestijn, met twaalf waterbronnen en zeventig palmbomen. Hier kon het volk fysiek en geestelijk herstellen.", en: "An oasis of rest with twelve springs and seventy palm trees." }, verses: ["Exod 15:27", "Num 33:9"] },
+    { id: "rephidim", coords: [28.700, 33.700], name: { nl: "Rafidim", en: "Rephidim" }, region: { nl: "Sinaï", en: "Sinai" }, desc: { nl: "Water uit de rots; strijd tegen Amalek.", en: "Water from the rock; battle with Amalek." }, story: { nl: "Hier murmureerde het volk wegens watertekort en sloeg Mozes op de rots. Ook bond Jozua hier de strijd aan met de Amalekieten terwijl Mozes met geheven armen op de heuvel stond.", en: "Where water flowed from the rock and Joshua fought Amalek while Moses held up his hands." }, verses: ["Exod 17:1", "Exod 17:8", "Num 33:14"] },
+    { id: "ur", coords: [30.960, 46.100], name: { nl: "Ur der Chaldeeën", en: "Ur of the Chaldeans" }, region: { nl: "Mesopotamië", en: "Mesopotamia" }, desc: { nl: "De geboorteplaats van Abraham.", en: "The birthplace of Abraham." }, story: { nl: "Een machtige en welvarende Sumerische stad. Abraham werd door God geroepen om deze hoogontwikkelde (maar afgodische) stad te verlaten.", en: "The birthplace of Abraham, from which God called him to leave." }, verses: ["Gen 11:28", "Gen 11:31", "Neh 9:7"] },
+    { id: "haran", coords: [36.860, 39.030], name: { nl: "Haran", en: "Haran" }, region: { nl: "Mesopotamië", en: "Mesopotamia" }, desc: { nl: "Waar Abraham verbleef voordat hij naar Kanaän ging.", en: "Where Abraham stayed before entering Canaan." }, story: { nl: "De stad waar Abrahams vader Terach stierf, en waar Abraham bleef totdat hij op 75-jarige leeftijd verder reisde naar het beloofde land.", en: "Where Abraham lived until his father died, before journeying to Canaan." }, verses: ["Gen 11:31", "Gen 12:4", "Hand 7:2"] },
+    { id: "beersheba", coords: [31.250, 34.790], name: { nl: "Beër-Sjeba", en: "Beersheba" }, region: { nl: "Kanaän", en: "Canaan" }, desc: { nl: "Zuidelijke grens van Israël, put van de eed.", en: "Southern border of Israel, well of the oath." }, story: { nl: "Bekend als de 'put van de eed' na een verbond tussen Abraham en Abimelech. Het stond later symbool voor de zuidelijke grens van het koninkrijk ('van Dan tot Beër-Sjeba').", en: "Known as the 'well of the oath' and marking the traditional southern boundary of Israel." }, verses: ["Gen 21:31", "Gen 26:33", "Richt 20:1"] },
+    { id: "nineveh", coords: [36.360, 43.150], name: { nl: "Ninevé", en: "Nineveh" }, region: { nl: "Assyrië", en: "Assyria" }, desc: { nl: "Hoofdstad van Assyrië, bezocht door Jona.", en: "Capital of Assyria, visited by Jonah." }, story: { nl: "Een van de oudste en grootste steden in de oudheid. God stuurde de profeet Jona naar deze bloeddorstige stad met een waarschuwing van oordeel, waarop de stad zich massaal bekeerde.", en: "The ancient capital of Assyria, to which God sent Jonah with a message of judgment." }, verses: ["Gen 10:11", "Jona 1:2", "Jona 3:2", "Nah 1:1"] },
+    { id: "nazareth", coords: [32.700, 35.297], name: { nl: "Nazareth", en: "Nazareth" }, region: { nl: "Galilea", en: "Galilee" }, desc: { nl: "De woonplaats van Jezus waar Hij opgroeide.", en: "The hometown where Jesus grew up." }, story: { nl: "Een klein, onbeduidend dorp in Galilea waar Jezus opgroeide in het timmermansgezin van Jozef en Maria. 'Kan uit Nazareth iets goeds komen?' (Joh 1:47).", en: "The small Galilean village where Jesus spent His childhood and youth." }, verses: ["Matt 2:23", "Luk 1:26", "Luk 4:16", "Joh 1:46"] },
+    { id: "capernaum", coords: [32.880, 35.575], name: { nl: "Kafarnaüm", en: "Capernaum" }, region: { nl: "Galilea", en: "Galilee" }, desc: { nl: "Het centrum van Jezus' bediening rondom het meer.", en: "The center of Jesus' ministry around the sea." }, story: { nl: "Een levendig vissersdorp aan het Meer van Galilea. Jezus maakte dit tot Zijn hoofdkwartier voor Zijn bediening. Hij verrichtte hier talloze wonderen en riep hier discipelen zoals Petrus en Mattheüs.", en: "A bustling fishing village on the Sea of Galilee that served as the headquarters of Jesus' ministry." }, verses: ["Matt 4:13", "Mark 1:21", "Luk 4:31", "Joh 6:59"] },
 ];
 
 const EXODUS_ROUTE: [number, number][] = [
-    [30.800, 31.830], // Rameses
-    [30.550, 32.100], // Succoth
-    [30.450, 32.350], // Etham
-    [29.800, 32.400], // Pi-Hahiroth
-    [29.800, 32.550], // Parting of the Sea
-    [29.350, 32.950], // Marah
-    [29.100, 33.100], // Elim
-    [28.700, 33.700], // Rephidim
-    [28.539, 33.975], // Mount Sinai
+    [30.800, 31.830], [30.550, 32.100], [30.450, 32.350], 
+    [29.800, 32.400], [29.800, 32.550], [29.350, 32.950], 
+    [29.100, 33.100], [28.700, 33.700], [28.539, 33.975]
 ];
 
 function createCustomIcon(isHeavenly: boolean, isSelected: boolean = false, offset: [number, number] = [0, 0], isMapOnly: boolean = false) {
-  // Use brand consistent colors (Slate Blue / Gold / Ivory)
   const bgColor = isMapOnly ? '#f4f6f7' : (isHeavenly ? '#FFD700' : '#3C5E70');
   const borderColor = isMapOnly ? '#3C5E70' : (isHeavenly ? '#ffffff' : '#f4f6f7');
   
@@ -112,10 +160,10 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   
   const [searchQuery, setSearchQuery] = useState("");
   const [activeMapId, setActiveMapId] = useState<string | null>(null);
+  const [isSidebarDetailOpen, setIsSidebarDetailOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const leafletMapInstance = useRef<L.Map | null>(null);
 
-  // Combine structures and map-only places for search and rendering
   const allListItems = [
     ...PINS.map(pin => {
       const s = structures.find(x => x.id === pin.id);
@@ -125,7 +173,9 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
           name: s ? s.name : pin.id,
           regionLabel: s ? s.geography.regionLabel : "",
           isStructure: true,
-          hideOnMap: pin.hideOnMap
+          hideOnMap: pin.hideOnMap,
+          story: s ? (isNl ? s.content.story : s.content.storyEn || s.content.story) : "",
+          verses: s ? s.content.scriptureRef : []
       };
     }).filter(p => structures.some(s => s.id === p.id)),
     ...CONTEXT_PLACES.map(cp => ({
@@ -134,7 +184,9 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         name: isNl ? cp.name.nl : cp.name.en,
         regionLabel: isNl ? cp.region.nl : cp.region.en,
         isStructure: false,
-        hideOnMap: false
+        hideOnMap: false,
+        story: isNl ? cp.story.nl : cp.story.en,
+        verses: cp.verses
     }))
   ];
 
@@ -144,18 +196,22 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       return item.name.toLowerCase().includes(q) || item.regionLabel.toLowerCase().includes(q);
   });
 
+  const activeItemData = allListItems.find(item => item.id === activeMapId);
+
   const handleSidebarClick = (item: typeof allListItems[0]) => {
       setActiveMapId(item.id);
+      setIsSidebarDetailOpen(true);
       
-      if (item.hideOnMap) {
-          // If the item (like New Jerusalem) does not physically exist on the Earth map,
-          // simply bypass map flight and load the 3D model directly!
-          if (item.isStructure) {
-              onSelectStructure(item.id);
-              onClose();
-          }
-      } else if (leafletMapInstance.current) {
+      if (!item.hideOnMap && leafletMapInstance.current) {
           leafletMapInstance.current.flyTo(item.coords, 10, { duration: 1.5 });
+      }
+  };
+
+  const handleMapPinClick = (id: string, coords: [number, number]) => {
+      setActiveMapId(id);
+      setIsSidebarDetailOpen(true);
+      if (leafletMapInstance.current) {
+          leafletMapInstance.current.flyTo(coords, 10, { duration: 1.0 });
       }
   };
 
@@ -189,7 +245,6 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       zoomSnap: 0.5
     });
     
-    // Bounds calculations must ignore hidden items (New Jerusalem) to prevent broken views
     const allCoords = [
         ...PINS.filter(p => !p.hideOnMap).map(p => p.coords), 
         ...CONTEXT_PLACES.map(p => p.coords)
@@ -202,7 +257,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
 
     L.polyline(EXODUS_ROUTE, {
-        color: '#3C5E70', // Brand Slate Blue
+        color: '#3C5E70',
         weight: 3,
         opacity: 0.6,
         dashArray: '5, 10',
@@ -215,21 +270,18 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     };
   }, [base, locale]);
 
-  // Render all markers dynamically
+  // Render map markers
   useEffect(() => {
       const map = leafletMapInstance.current;
       if (!map) return;
       const markers: L.Marker[] = [];
 
-      // 1. Render Structures (3D models)
       PINS.forEach(pin => {
-        if (pin.hideOnMap) return; // Do not render New Jerusalem on the Earth map!
-        
+        if (pin.hideOnMap) return; 
         const struct = structures.find(s => s.id === pin.id);
         if (!struct) return;
         
         const isSelected = activeMapId === pin.id;
-        
         const marker = L.marker(pin.coords as [number, number], { 
             icon: createCustomIcon(false, isSelected, pin.offset, false) 
         }).addTo(map);
@@ -240,26 +292,17 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
             <div style="flex:1;">
               <p style="margin:0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${struct.name}</p>
               <p style="margin:2px 0 0 0; font-size:10px; font-style:italic; color:#666;">${struct.geography.regionLabel}</p>
-              <p style="margin:4px 0 0 0; font-size:10px; font-weight:bold; color:#3C5E70;">${isNl ? "Klik om model te openen →" : "Click to open model →"}</p>
+              <p style="margin:4px 0 0 0; font-size:10px; font-weight:bold; color:#3C5E70;">${isNl ? "Lees het verhaal →" : "Read the story →"}</p>
             </div>
           </div>
         `;
         
         marker.bindTooltip(tooltipHtml, { direction: 'top', offset: [pin.offset?.[0] || 0, (pin.offset?.[1] || 0) - (isSelected ? 14 : 10)], className: 'custom-map-tooltip' });
         
-        marker.on('click', () => {
-          if (activeMapId === pin.id) {
-              onSelectStructure(pin.id);
-              onClose();
-          } else {
-              setActiveMapId(pin.id);
-              map.flyTo(pin.coords as [number, number], 10, { duration: 1.0 });
-          }
-        });
+        marker.on('click', () => handleMapPinClick(pin.id, pin.coords as [number, number]));
         markers.push(marker);
       });
 
-      // 2. Render Context Places (Map-only)
       CONTEXT_PLACES.forEach(cp => {
           const isSelected = activeMapId === cp.id;
           const marker = L.marker(cp.coords as [number, number], {
@@ -269,23 +312,19 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
           const tooltipHtml = `
             <div style="padding:6px; min-width: 180px; white-space: normal;">
               <p style="margin:0 0 4px 0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${isNl ? cp.name.nl : cp.name.en}</p>
-              <p style="margin:0; font-size:11px; color:#444;">${isNl ? cp.desc.nl : cp.desc.en}</p>
+              <p style="margin:0; font-size:11px; color:#444;">${isNl ? "Lees het verhaal →" : "Read the story →"}</p>
             </div>
           `;
 
           marker.bindTooltip(tooltipHtml, { direction: 'top', offset: [0, isSelected ? -10 : -6], className: 'custom-map-tooltip' });
-
-          marker.on('click', () => {
-             setActiveMapId(cp.id);
-             map.flyTo(cp.coords as [number, number], 10, { duration: 1.0 });
-          });
+          marker.on('click', () => handleMapPinClick(cp.id, cp.coords as [number, number]));
           markers.push(marker);
       });
 
       return () => {
           markers.forEach(m => m.remove());
       };
-  }, [base, locale, structures, activeMapId, onSelectStructure, onClose]);
+  }, [base, locale, structures, activeMapId, isSidebarDetailOpen]);
 
   return (
     <ModalShell
@@ -300,45 +339,116 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         style={isFullscreen ? { height: "100vh", width: "100vw" } : { height: "75vh", minHeight: "550px" }}
       >
         
-        {/* LEFT PANE */}
-        <div className="w-full md:w-80 h-full flex flex-col border-b md:border-b-0 md:border-r border-line-warm bg-surface">
-            <div className="p-4 border-b border-line-warm">
-                <input 
-                    type="text" 
-                    placeholder={locale === "nl" ? "Zoek plaatsen..." : "Search places..."}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full p-2 text-sm border border-line rounded bg-paper focus:outline-none focus:border-gold"
-                />
-            </div>
+        {/* LEFT PANE - Dynamic Layout */}
+        <div className="w-full md:w-80 h-full flex flex-col border-b md:border-b-0 md:border-r border-line-warm bg-surface relative">
             
-            <div className="flex-1 overflow-y-auto p-2">
-                <p className="px-2 text-xs font-bold text-ink-muted mb-2 uppercase">
-                    {filteredList.length} {locale === "nl" ? "locaties gevonden" : "locations found"}
-                </p>
-                {filteredList.map(item => {
-                    const isActive = activeMapId === item.id;
-                    return (
-                        <button
-                            key={item.id}
-                            onClick={() => handleSidebarClick(item)}
-                            className={`w-full text-left px-3 py-3 rounded-lg mb-1 flex items-center gap-3 transition-colors ${isActive ? 'bg-paper shadow-sm border border-line-warm' : 'hover:bg-paper border border-transparent'}`}
-                        >
-                            {item.isStructure ? (
-                                <img src={`${base}img/${item.id}/thumbnail.webp`} alt="" className="w-8 h-8 object-cover rounded flex-none" />
-                            ) : (
-                                <div className="w-8 h-8 rounded flex items-center justify-center bg-surface flex-none border-2 border-slate">
-                                    <span className="text-slate font-bold text-xs">P</span>
+            {/* 1. LIST VIEW */}
+            {!isSidebarDetailOpen && (
+              <>
+                <div className="p-4 border-b border-line-warm">
+                    <input 
+                        type="text" 
+                        placeholder={locale === "nl" ? "Zoek plaatsen..." : "Search places..."}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full p-2 text-sm border border-line rounded bg-paper focus:outline-none focus:border-gold"
+                    />
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-2">
+                    <p className="px-2 text-xs font-bold text-ink-muted mb-2 uppercase">
+                        {filteredList.length} {locale === "nl" ? "locaties gevonden" : "locations found"}
+                    </p>
+                    {filteredList.map(item => {
+                        return (
+                            <button
+                                key={item.id}
+                                onClick={() => handleSidebarClick(item)}
+                                className={`w-full text-left px-3 py-3 rounded-lg mb-1 flex items-center gap-3 transition-colors hover:bg-paper border border-transparent`}
+                            >
+                                {item.isStructure ? (
+                                    <img src={`${base}img/${item.id}/thumbnail.webp`} alt="" className="w-8 h-8 object-cover rounded flex-none" />
+                                ) : (
+                                    <div className="w-8 h-8 rounded flex items-center justify-center bg-[#3C5E70] bg-opacity-10 flex-none border border-[#3C5E70]/30">
+                                        <span className="text-[#3C5E70] font-bold text-xs">P</span>
+                                    </div>
+                                )}
+                                <div className="flex-1 overflow-hidden">
+                                    <p className="truncate text-sm font-bold text-ink">{item.name}</p>
+                                    <p className="truncate text-[10px] text-ink-light">{item.regionLabel}</p>
                                 </div>
-                            )}
-                            <div className="flex-1 overflow-hidden">
-                                <p className={`truncate text-sm font-bold ${isActive ? 'text-ink' : 'text-ink-muted'}`}>{item.name}</p>
-                                <p className="truncate text-[10px] text-ink-light">{item.regionLabel}</p>
+                            </button>
+                        )
+                    })}
+                </div>
+              </>
+            )}
+
+            {/* 2. DETAIL VIEW (The "Prism Story" panel) */}
+            {isSidebarDetailOpen && activeItemData && (
+              <div className="flex-1 overflow-y-auto flex flex-col bg-paper absolute inset-0 z-10 animate-in fade-in slide-in-from-right-4 duration-300">
+                <div className="p-4 border-b border-line-warm bg-surface sticky top-0 z-20 flex justify-between items-center shadow-sm">
+                    <button 
+                        onClick={() => setIsSidebarDetailOpen(false)}
+                        className="text-sm text-slate hover:text-gold flex items-center gap-1 font-bold transition-colors"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        {isNl ? "Terug naar overzicht" : "Back to list"}
+                    </button>
+                </div>
+                
+                <div className="p-5 flex-1">
+                    {activeItemData.isStructure && (
+                        <img src={`${base}img/${activeItemData.id}/thumbnail.webp`} alt="" className="w-full h-32 object-cover rounded-lg mb-4 border border-line-warm shadow-sm" />
+                    )}
+                    
+                    <h2 className="text-xl font-bold text-ink uppercase mb-1 font-serif">{activeItemData.name}</h2>
+                    <p className="text-xs font-bold text-gold uppercase tracking-wider mb-6">{activeItemData.regionLabel}</p>
+                    
+                    {/* Rich text formatting */}
+                    <div className="prose prose-sm prose-slate max-w-none text-ink-muted leading-relaxed">
+                        {activeItemData.story.split('\n').map((paragraph, idx) => {
+                            // Bold formatting parser
+                            if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
+                                return <h3 key={idx} className="font-bold text-ink text-sm mt-4 mb-2 uppercase">{paragraph.replace(/\*\*/g, '')}</h3>;
+                            }
+                            if (paragraph.trim() === '') return null;
+                            return <p key={idx} className="mb-3">{paragraph}</p>;
+                        })}
+                    </div>
+
+                    {activeItemData.verses && activeItemData.verses.length > 0 && (
+                        <div className="mt-6 pt-6 border-t border-line-warm">
+                            <h3 className="font-bold text-ink text-xs uppercase mb-3">{isNl ? "Genoemd in o.a." : "Mentioned in"}</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {activeItemData.verses.slice(0, 15).map((v, i) => ( // Cap at 15 for UI layout
+                                    <span key={i} className="px-2 py-1 bg-surface text-slate border border-line text-[10px] rounded shadow-sm">{v}</span>
+                                ))}
+                                {activeItemData.verses.length > 15 && (
+                                    <span className="px-2 py-1 bg-surface text-slate border border-line text-[10px] rounded shadow-sm">+{activeItemData.verses.length - 15} more...</span>
+                                )}
                             </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Fixed bottom action for 3D Structures */}
+                {activeItemData.isStructure && (
+                    <div className="p-4 border-t border-line-warm bg-surface mt-auto sticky bottom-0">
+                        <button 
+                            onClick={() => {
+                                onSelectStructure(activeItemData.id);
+                                onClose();
+                            }}
+                            className="w-full py-3 bg-slate text-white hover:bg-gold transition-colors rounded shadow font-bold text-sm uppercase flex items-center justify-center gap-2"
+                        >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                            {isNl ? "Open 3D Model" : "Open 3D Model"}
                         </button>
-                    )
-                })}
-            </div>
+                    </div>
+                )}
+              </div>
+            )}
         </div>
 
         {/* RIGHT PANE */}
