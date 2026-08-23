@@ -334,7 +334,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                     )}
                     
                     <h2 className="text-xl font-bold text-ink uppercase mb-1 font-serif">{activeItemData.name}</h2>
-                    <p className="text-xs font-bold text-gold uppercase tracking-wider mb-6">{activeItemData.regionLabel}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider mb-6" style={{ color: "#9cc330" }}>{activeItemData.regionLabel}</p>
                     
                     {/* Rich text formatting */}
                     <div className="prose prose-sm prose-slate max-w-none text-ink-muted leading-relaxed">

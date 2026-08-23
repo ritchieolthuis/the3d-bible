@@ -297,7 +297,7 @@ export const TikTokIcon = (p: SVGProps<SVGSVGElement>) => (
 export const MapIcon = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base} {...p}>
     <path d="M3 12l2-4 4-1 3 2 3-4 5 2 1 7-4 5-5 2-6-2-3-7z" strokeLinejoin="round" />
-    <path d="M13 10c0 2-3 5-3 5s-3-3-3-5a3 3 0 1 1 6 0z" />
-    <circle cx="10" cy="10" r="1" />
+    <path d="M17 10c0 2-3 5-3 5s-3-3-3-5a3 3 0 1 1 6 0z" />
+    <circle cx="14" cy="10" r="1" />
   </svg>
 );
