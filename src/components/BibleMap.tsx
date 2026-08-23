@@ -1,143 +1,49 @@
-import { useEffect, useRef, useCallback } from "react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { useState } from "react";
 import { useLocale } from "@/i18n/locale";
 import { structuresFor } from "@/data";
 import { ModalShell } from "./ModalShell";
 
-/* ── real-world coordinates [lat, lng] ── */
+/* ── pin positions (percentages from top-left) ── */
 interface MapPin {
   id: string;
-  lat: number;
-  lng: number;
+  x: number; // left %
+  y: number; // top %
   icon: string;
 }
 
 const PINS: MapPin[] = [
-  // Babylon/Mesopotamia
-  { id: "eden_fall",       lat: 31.000, lng: 47.000, icon: "🌳" }, // Confluence of Tigris/Euphrates
-  { id: "noahs_ark",      lat: 39.700, lng: 44.300, icon: "🚢" }, // Mount Ararat
-  { id: "tower_babel",    lat: 32.536, lng: 44.420, icon: "🗼" }, // Babylon
+  // Babylon/Mesopotamia (placed on the eastern/northern edge of the map)
+  { id: "eden_fall",       x: 90, y: 45, icon: "🌳" },
+  { id: "noahs_ark",      x: 75, y: 12, icon: "🚢" },
+  { id: "tower_babel",    x: 88, y: 25, icon: "🗼" },
   
   // Egypt & Sinai
-  { id: "parting_sea",    lat: 29.800, lng: 32.550, icon: "🌊" }, // Gulf of Suez / Pi-Hahiroth
-  { id: "tabernacle",     lat: 28.539, lng: 33.975, icon: "⛺" }, // Near Mt Sinai
+  { id: "parting_sea",    x: 32, y: 64, icon: "🌊" },
+  { id: "tabernacle",     x: 46, y: 79, icon: "⛺" },
   
-  // Canaan / Israel
-  { id: "walls_jericho",  lat: 31.870, lng: 35.444, icon: "🏰" },
-  { id: "solomon_temple", lat: 31.778, lng: 35.235, icon: "🏛️" },
-  { id: "ezekiel_temple", lat: 31.782, lng: 35.236, icon: "🏛️" },
-  { id: "herods_temple",  lat: 31.777, lng: 35.235, icon: "🏛️" },
-  { id: "mount_of_olives",lat: 31.779, lng: 35.245, icon: "⛰️" },
-  { id: "golgotha",       lat: 31.779, lng: 35.229, icon: "✝️" },
+  // Canaan / Israel (Jerusalem cluster spread slightly so they don't overlap entirely)
+  { id: "walls_jericho",  x: 65, y: 58, icon: "🏰" },
+  { id: "solomon_temple", x: 62.5, y: 61, icon: "🏛️" },
+  { id: "herods_temple",  x: 61.5, y: 62.5, icon: "🏛️" },
+  { id: "ezekiel_temple", x: 63.5, y: 63, icon: "🏛️" },
+  { id: "mount_of_olives",x: 64, y: 61, icon: "⛰️" },
+  { id: "golgotha",       x: 61, y: 60.5, icon: "✝️" },
   
-  // Heavenly
-  { id: "new_jerusalem",  lat: 31.780, lng: 35.240, icon: "✨" },
+  // Heavenly (hovering above)
+  { id: "new_jerusalem",  x: 62.5, y: 55, icon: "✨" },
 ];
 
-/* ── component ── */
 interface BibleMapProps {
   onSelectStructure: (id: string) => void;
   onClose: () => void;
 }
 
 export default function BibleMap({ onSelectStructure, onClose }: BibleMapProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
   const { locale } = useLocale();
   const structures = structuresFor(locale);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  const handlePin = useCallback(
-    (id: string) => {
-      onSelectStructure(id);
-      onClose();
-    },
-    [onSelectStructure, onClose],
-  );
-
-  useEffect(() => {
-    if (!containerRef.current || mapRef.current) return;
-
-    // Standard coordinate system (EPSG:3857)
-    const map = L.map(containerRef.current, {
-      minZoom: 4,
-      maxZoom: 12,
-      zoomControl: false,
-    });
-
-    // Start centered on Israel, zoomed out to see Egypt and Mesopotamia
-    map.setView([31.7, 35.2], 5);
-
-    // Use a clean physical base map with antique CSS filters applied via index.css
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
-      subdomains: 'abcd',
-      maxZoom: 20
-    }).addTo(map);
-
-    /* zoom control bottom-right */
-    L.control.zoom({ position: "bottomright" }).addTo(map);
-
-    /* markers */
-    const base = import.meta.env.BASE_URL || "/";
-    for (const pin of PINS) {
-      const struct = structures.find((s) => s.id === pin.id);
-      if (!struct) continue;
-
-      const isHeavenly = pin.id === "new_jerusalem";
-      const markerIcon = L.divIcon({
-        className: "bible-map-marker",
-        html: `
-          <div class="bm-pin ${isHeavenly ? "bm-pin--heavenly" : ""}">
-            <span class="bm-pin__icon">${pin.icon}</span>
-          </div>
-        `,
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -42],
-      });
-
-      const marker = L.marker([pin.lat, pin.lng], { icon: markerIcon }).addTo(map);
-
-      const popupContent = `
-        <div class="bm-popup">
-          <img
-            src="${base}img/${pin.id}/thumbnail.webp"
-            alt="${struct.name}"
-            class="bm-popup__img"
-            onerror="this.style.display='none'"
-          />
-          <div class="bm-popup__body">
-            <strong class="bm-popup__name">${struct.name}</strong>
-            <p class="bm-popup__region">${struct.geography.regionLabel}</p>
-            <button class="bm-popup__btn" data-id="${pin.id}">
-              ${locale === "nl" ? "Verken in 3D →" : "Explore in 3D →"}
-            </button>
-          </div>
-        </div>
-      `;
-
-      marker.bindPopup(popupContent, {
-        className: "bm-popup-wrapper",
-        maxWidth: 260,
-        minWidth: 200,
-      });
-    }
-
-    /* click handler for popup buttons (event delegation) */
-    map.getContainer().addEventListener("click", (e) => {
-      const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-id]");
-      if (btn?.dataset.id) handlePin(btn.dataset.id);
-    });
-
-    mapRef.current = map;
-
-    return () => {
-      map.remove();
-      mapRef.current = null;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const base = import.meta.env.BASE_URL || "/";
 
   return (
     <ModalShell
@@ -146,13 +52,80 @@ export default function BibleMap({ onSelectStructure, onClose }: BibleMapProps) 
       onClose={onClose}
       wide={true}
     >
-      <div 
-        ref={containerRef} 
-        className="bm-leaflet w-full rounded-xl border border-line-warm bg-surface shadow-inner"
-        style={{ height: "65vh", minHeight: "500px" }}
-      />
+      <div className="relative mx-auto w-full max-w-[700px] overflow-hidden rounded-xl border border-line-warm bg-surface shadow-inner" style={{ aspectRatio: '627/1024', maxHeight: '75vh' }}>
+        
+        {/* Static Map Image */}
+        <img 
+          src={`${base}img/bible-map.png`}
+          alt="Bible Map"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+
+        {/* Interactive Pins */}
+        {PINS.map((pin) => {
+          const struct = structures.find((s) => s.id === pin.id);
+          if (!struct) return null;
+          
+          const isHeavenly = pin.id === "new_jerusalem";
+          const isHovered = hoveredId === pin.id;
+
+          return (
+            <div 
+              key={pin.id}
+              className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
+              style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
+              onMouseEnter={() => setHoveredId(pin.id)}
+              onMouseLeave={() => setHoveredId(null)}
+            >
+              {/* The Pin */}
+              <button
+                onClick={() => { onSelectStructure(pin.id); onClose(); }}
+                className={`group relative flex h-10 w-10 items-center justify-center rounded-full border-2 shadow-lg transition-transform hover:scale-110 hover:z-50 focus:outline-none ${
+                  isHeavenly 
+                    ? "border-[#f5ecd0] bg-gradient-to-br from-[#e8d5a0] to-[#c4a35a]" 
+                    : "border-[#d4b96a] bg-gradient-to-br from-[#c4a35a] to-[#a68832]"
+                }`}
+                style={{
+                  boxShadow: isHeavenly ? '0 0 15px rgba(245,236,208,0.6)' : '0 4px 12px rgba(0,0,0,0.4)'
+                }}
+              >
+                <span className="text-lg">{pin.icon}</span>
+                
+                {/* Custom Tooltip */}
+                <div 
+                  className={`pointer-events-none absolute bottom-full left-1/2 mb-3 w-56 -translate-x-1/2 rounded-xl border border-line-warm bg-paper p-3 text-left shadow-2xl transition-all duration-200 ${
+                    isHovered ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+                  }`}
+                >
+                  {/* Tooltip Triangle */}
+                  <div className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-b border-r border-line-warm bg-paper"></div>
+                  
+                  <div className="relative z-10 flex gap-3">
+                    <img 
+                      src={`${base}img/${pin.id}/thumbnail.webp`} 
+                      alt={struct.name}
+                      className="h-12 w-12 flex-none rounded-md object-cover border border-line-subtle"
+                      onError={(e) => (e.currentTarget.style.display = 'none')}
+                    />
+                    <div className="flex-1 overflow-hidden">
+                      <p className="font-display truncate text-sm font-bold text-ink">{struct.name}</p>
+                      <p className="truncate text-[10px] italic text-ink-muted">{struct.geography.regionLabel}</p>
+                      <p className="mt-1 text-[10px] font-semibold text-accent">
+                        {locale === "nl" ? "Klik om te openen →" : "Click to open →"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-4 text-center text-xs italic text-ink-muted">
+        {locale === "nl" 
+          ? "Beweeg over een locatie voor een preview. Klik om het 3D-model te openen." 
+          : "Hover over a location for a preview. Click to open the 3D model."}
+      </p>
     </ModalShell>
   );
 }
-// NOTE for CSS checker: dynamically used classes
-// className="bm-leaflet bible-map-marker bm-pin bm-pin__icon bm-pin--heavenly bm-popup-wrapper bm-popup bm-popup__img bm-popup__body bm-popup__name bm-popup__region bm-popup__btn"

@@ -671,16 +671,8 @@ video::-webkit-media-controls-overlay-play-button {
 .bm-popup__btn:hover { opacity: .85; }
 
 /* ── Leaflet overrides ── */
-.bm-leaflet .leaflet-control-zoom a {
   background: hsl(220 20% 15%) !important;
   color: #c4a35a !important;
   border-color: hsl(220 15% 25%) !important;
 }
-.bm-leaflet .leaflet-control-zoom a:hover { background: hsl(220 20% 22%) !important; }
 /* Make the standard map tiles look like an antique parchment map */
-.bm-leaflet .leaflet-tile {
-  filter: sepia(0.65) contrast(1.05) brightness(0.95) hue-rotate(-10deg);
-}
-.bm-leaflet {
-  background: #d4c5a9 !important; /* Parchment base color */
-}
