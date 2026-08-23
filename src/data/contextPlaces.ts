@@ -209,6 +209,80 @@ The Promised Land sits strategically between the Mediterranean Sea...`
       },
       verses: ["Genesis 13:18", "Genesis 23:2", "2 Samuël 2:1", "2 Samuël 5:3"]
     }
+
+    ,
+    {
+      id: "sodom",
+      coords: [31.3325, 35.5463],
+      name: { nl: "Sodom en Gomorra", en: "Sodom and Gomorrah" },
+      region: { nl: "Vlakte van de Jordaan", en: "Plain of the Jordan" },
+      desc: { nl: "Verwoest door vuur en zwavel vanwege hun zonde.", en: "Destroyed by fire and brimstone due to their sin." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nHoewel de exacte locatie vaak debatteerd wordt, plaatsen veel historici en archeologen de steden van de vlakte onder of nabij de ondiepe zuidelijke wateren van de huidige Dode Zee.\n\n**Culturele en geografische context**\nDe steden Sodom en Gomorra lagen in een vruchtbare vallei, die in de dagen van Abraham "waterrijk was als de hof des Heeren" (Genesis 13:10). Lot koos ervoor hier zijn tenten op te slaan vanwege de rijkdom van het land, hoewel de mannen van Sodom zeer slecht waren.\n\n**Theologische betekenis**\nVanwege de hemeltergende en onbekeerlijke verdorvenheid liet de Heere vuur en zwavel regenen op deze steden. Sodom en Gomorra dienen in de hele Schrift als een waarschuwingsbeeld van Gods heilige toorn en Zijn onafwendbare eindgericht over de zonde, en als contrast voor de reddende genade die Lot uit het verderf trok.`,
+        en: `**Archaeological and historical significance**\nThe exact location is debated...`
+      },
+      verses: ["Genesis 13:10", "Genesis 19:24", "Lukas 17:29", "Judas 1:7"]
+    },
+    {
+      id: "bethlehem",
+      coords: [31.7049, 35.2016],
+      name: { nl: "Bethlehem", en: "Bethlehem" },
+      region: { nl: "Juda", en: "Judah" },
+      desc: { nl: "Geboorteplaats van koning David en de Heere Jezus.", en: "Birthplace of King David and the Lord Jesus." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nBethlehem (Huis van het Brood) is een kleine, eeuwenoude stad in het bergland van Juda, zo'n tien kilometer ten zuiden van Jeruzalem.\n\n**Culturele en geografische context**\nEerder heette het Efratha; in haar nabijheid werd Rachel begraven. In de velden van Bethlehem las de Moabitische Ruth aren op het land van Boaz. Later werd hier David, de herdersjongen en achterkleinzoon van Ruth, geboren en door Samuël tot koning gezalfd.\n\n**Theologische betekenis**\nDe profeet Micha profeteerde dat uit deze ogenschijnlijk onbeduidende stad de Heerser van Israël zou voortkomen, Wiens uitgangen zijn van ouds, van de dagen der eeuwigheid (Micha 5:1). Dit werd heerlijk vervuld toen God in het vlees kwam en Jezus Christus, het ware Brood des levens, in Bethlehem in een kribbe werd geboren om Zijn volk te verlossen.`,
+        en: `**Archaeological and historical significance**\nBethlehem (House of Bread) is a small ancient town...`
+      },
+      verses: ["Genesis 35:19", "Ruth 4:11", "1 Samuël 16:1", "Micha 5:1", "Lukas 2:4"]
+    },
+    {
+      id: "mount_olives",
+      coords: [31.7781, 35.2419],
+      name: { nl: "De Olijfberg", en: "Mount of Olives" },
+      region: { nl: "Judea", en: "Judea" },
+      desc: { nl: "Plaats van Jezus' tranen, hemelvaart en wederkomst.", en: "Place of Jesus' tears, ascension and return." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nDe Olijfberg ligt direct ten oosten van Jeruzalem, er slechts van gescheiden door het smalle, steile dal van de beek Kidron. De hellingen waren in de oudheid dicht begroeid met olijfbomen.\n\n**Culturele en geografische context**\nKoning David vluchtte huilend, blootsvoets en met bedekt hoofd over de Olijfberg toen zijn zoon Absalom de troon trachtte te roven. Jezus en Zijn discipelen trokken zich hier regelmatig terug. Aan de voet ligt de hof van Gethsemané (Olijfpers).\n\n**Theologische betekenis**\nDe berg heeft een buitengewoon theologische lading. Hier bad Christus in doodsangst voor Zijn kruisiging en nam de beker van Gods toorn vrijwillig aan. Vanaf deze berg is Hij veertig dagen na Zijn opstanding triomfantelijk ten hemel gevaren (Hand. 1:12). De profetie in Zacharia 14:4 garandeert dat bij Zijn definitieve wederkomst en koningschap Zijn voeten exact hier weer op de Olijfberg zullen staan.`,
+        en: `**Archaeological and historical significance**\nThe Mount of Olives lies directly east of Jerusalem...`
+      },
+      verses: ["2 Samuël 15:30", "Zacharia 14:4", "Lukas 22:39", "Handelingen 1:12"]
+    },
+    {
+      id: "mount_sinai",
+      coords: [28.5393, 33.9749],
+      name: { nl: "De Berg Sinaï (Horeb)", en: "Mount Sinai (Horeb)" },
+      region: { nl: "Sinaïwoestijn", en: "Sinai Desert" },
+      desc: { nl: "De berg waar God de wet aan Mozes gaf.", en: "The mountain where God gave the Law to Moses." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nDe berg Sinaï (vaak geïdentificeerd met Jebel Musa in het zuiden van het Sinaï-schiereiland) is de formidabele granieten berg in de wildernis waar het volk Israël maandenlang verbleef na de uittocht uit Egypte.\n\n**Culturele en geografische context**\nHet is een dor en woest gebied, ook Horeb genoemd ("De berg Gods"). Hier verscheen de Heere voor het eerst aan Mozes in de brandende doornstruik die niet verteerde.\n\n**Theologische betekenis**\nTheologisch markeert Sinaï het moment waarop het Oude Verbond werd gesloten. Onder donder, bliksem, dikke rook en bazuingeschal daalde de Heere Zelf neer in vuur en openbaarde Zijn absolute, onkreukbare heiligheid. Hij gaf de Tien Geboden en de gedetailleerde blauwdrukken voor de tabernakel en het priesterschap. Het toont de majesteit van Gods wet, die door haar strengheid (waar de berg niet eens aangeraakt mocht worden) het volk deed uitzien naar de genade die in Christus zou komen.`,
+        en: `**Archaeological and historical significance**\nMount Sinai is the formidable granite mountain...`
+      },
+      verses: ["Exodus 3:1", "Exodus 19:18", "Deuteronomium 4:11", "Hebreeën 12:18"]
+    },
+    {
+      id: "jericho",
+      coords: [31.8703, 35.4444],
+      name: { nl: "Jericho", en: "Jericho" },
+      region: { nl: "Jordaanvallei", en: "Jordan Valley" },
+      desc: { nl: "De palmstad, als eerste veroverd door Jozua.", en: "The city of palms, first conquered by Joshua." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nJericho, gelegen in een oase nabij de Jordaan, behoort tot de oudste continu bewoonde en ommuurde steden ter wereld, dankzij de overvloedige zoetwaterbron (later de bron van Elisa genoemd).\n\n**Culturele en geografische context**\nNa veertig jaar woestijnreis stak het volk Israël de Jordaan over en stond direct voor deze onneembare grensstad van de Kanaänieten. Het was de eerste grote overwinning in het Beloofde Land.\n\n**Theologische betekenis**\nDe muren van Jericho vielen niet door wapengeweld, maar door stil gehoorzaam rondom te trekken en op het commandowoord te juichen; een machtig getuigenis dat het Beloofde Land enkel door geloof en Gods ingrijpen verkregen wordt (Hebr. 11:30). In het oordeel werd alleen Rachab de hoer met haar huis gered vanwege haar geloof in Israëls God. God sprak een vloek uit over degene die de stad zou herbouwen, een vloek die exact in vervulling ging ten tijde van koning Achab.`,
+        en: `**Archaeological and historical significance**\nJericho is one of the oldest inhabited cities...`
+      },
+      verses: ["Jozua 6:2", "Jozua 6:26", "1 Koningen 16:34", "Hebreeën 11:30"]
+    },
+    {
+      id: "babylon",
+      coords: [32.5422, 44.4210],
+      name: { nl: "Babel (Babylon)", en: "Babylon" },
+      region: { nl: "Mesopotamië", en: "Mesopotamia" },
+      desc: { nl: "Zinnebeeld van de wereld, plaats van ballingschap.", en: "Symbol of the world, place of exile." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nBabel, gebouwd langs de Eufraat, vindt haar vroegste oorsprong bij de torenbouw in Sinear (Gen. 11). Eeuwen later bouwde koning Nebukadnezar het uit tot de absolute grootmacht en prachtstad van het Nabije Oosten, compleet met gigantische muren en hangende tuinen.\n\n**Culturele en geografische context**\nToen Juda hardnekkig Gods wetten bleef overtreden, gebruikte God Babylon als een 'gouden beker in Zijn hand' om Zijn oordeel te voltrekken. In 586 v.Chr. verwoestte Nebukadnezar Jeruzalem en de Tempel, en voerde hij het volk Juda als ballingen mee naar Babylon.\n\n**Theologische betekenis**\nBabylon is in de theologie het ultieme, profetische archetype van de heidense, hoogmoedige mens die zich tegen God verheft. Waar Jeruzalem de stad van God is, vertegenwoordigt Babylon de goddeloze wereld. De Psalmen getuigen van het verdriet van het volk: "Aan de rivieren van Babel, daar zaten wij, ook weenden wij" (Ps. 137). Uiteindelijk profeteert Openbaring over de definitieve en vernietigende ondergang van het geestelijke Babylon.`,
+        en: `**Archaeological and historical significance**\nBabylon finds its earliest roots in the tower of Shinar...`
+      },
+      verses: ["Genesis 11:9", "2 Koningen 25:1", "Psalm 137:1", "Openbaring 18:2"]
+    }
 ];
 
 export default CONTEXT_PLACES;
