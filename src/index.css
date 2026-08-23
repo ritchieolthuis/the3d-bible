@@ -604,47 +604,6 @@ video::-webkit-media-controls-overlay-play-button {
 /* ═══════════════════════════════════════════════════
    Bible Map
    ═══════════════════════════════════════════════════ */
-.bm-overlay {
-  position: fixed; inset: 0; z-index: 200;
-  background: rgba(0,0,0,.75);
-  backdrop-filter: blur(6px);
-  display: flex; align-items: center; justify-content: center;
-  padding: 1rem;
-  animation: fadeIn .25s ease-out;
-}
-.bm-container {
-  width: 100%; max-width: 1200px;
-  height: 85vh; max-height: 800px;
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: 1rem;
-  display: flex; flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 25px 60px rgba(0,0,0,.5);
-}
-.bm-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: .75rem 1.25rem;
-  border-bottom: 1px solid hsl(var(--border));
-}
-.bm-title {
-  font-family: var(--font-display, 'Poppins', sans-serif);
-  font-size: 1.15rem; font-weight: 700;
-  color: hsl(var(--foreground));
-  margin: .15rem 0 0;
-}
-.bm-close {
-  width: 2.25rem; height: 2.25rem;
-  display: grid; place-items: center;
-  border-radius: 50%;
-  border: 1px solid hsl(var(--border));
-  background: transparent;
-  color: hsl(var(--muted-foreground));
-  font-size: .9rem; cursor: pointer;
-  transition: background .15s, color .15s;
-}
-.bm-close:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
-.bm-leaflet { flex: 1; background: hsl(220 25% 8%); }
 
 /* ── custom pins ── */
 .bible-map-marker { background: none !important; border: none !important; }

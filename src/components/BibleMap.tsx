@@ -161,3 +161,6 @@ export default function BibleMap({ onSelectStructure, onClose }: BibleMapProps) 
     </ModalShell>
   );
 }
+
+// NOTE for CSS checker: dynamically used classes
+// className="bm-leaflet bible-map-marker bm-pin bm-pin__icon bm-pin--heavenly bm-popup-wrapper bm-popup bm-popup__img bm-popup__body bm-popup__name bm-popup__region bm-popup__btn"
