@@ -600,3 +600,121 @@ video::-webkit-media-controls-overlay-play-button {
   display: none !important;
 }
 
+
+/* ═══════════════════════════════════════════════════
+   Bible Map
+   ═══════════════════════════════════════════════════ */
+.bm-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  animation: fadeIn .25s ease-out;
+}
+.bm-container {
+  width: 100%; max-width: 1200px;
+  height: 85vh; max-height: 800px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 1rem;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,.5);
+}
+.bm-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem 1.25rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+.bm-title {
+  font-family: var(--font-display, 'Poppins', sans-serif);
+  font-size: 1.15rem; font-weight: 700;
+  color: hsl(var(--foreground));
+  margin: .15rem 0 0;
+}
+.bm-close {
+  width: 2.25rem; height: 2.25rem;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid hsl(var(--border));
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  font-size: .9rem; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.bm-close:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
+.bm-leaflet { flex: 1; background: hsl(220 25% 8%); }
+
+/* ── custom pins ── */
+.bible-map-marker { background: none !important; border: none !important; }
+.bm-pin {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; cursor: pointer;
+}
+.bm-pin::after {
+  content: ''; position: absolute;
+  bottom: -4px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #c4a35a;
+}
+.bm-pin__icon {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #c4a35a 0%, #a68832 100%);
+  border: 2px solid #d4b96a;
+  border-radius: 50%;
+  box-shadow: 0 3px 12px rgba(0,0,0,.45);
+  transition: transform .2s, box-shadow .2s;
+}
+.bm-pin:hover .bm-pin__icon {
+  transform: scale(1.2);
+  box-shadow: 0 4px 20px rgba(196,163,90,.6);
+}
+.bm-pin--heavenly .bm-pin__icon {
+  background: linear-gradient(135deg, #e8d5a0 0%, #f5ecd0 50%, #c4a35a 100%);
+  border-color: #f5ecd0;
+  box-shadow: 0 0 18px rgba(245,236,208,.5);
+}
+.bm-pin--heavenly::after { border-top-color: #f5ecd0; }
+
+/* ── popups ── */
+.bm-popup-wrapper .leaflet-popup-content-wrapper {
+  background: hsl(220 20% 12%);
+  border: 1px solid hsl(220 15% 22%);
+  border-radius: .75rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,.5);
+  padding: 0; color: #e8e0d4;
+}
+.bm-popup-wrapper .leaflet-popup-tip { background: hsl(220 20% 12%); }
+.bm-popup-wrapper .leaflet-popup-close-button { color: #999 !important; top: 6px !important; right: 8px !important; }
+.bm-popup { display: flex; gap: .65rem; padding: .5rem; }
+.bm-popup__img {
+  width: 70px; height: 70px;
+  border-radius: .5rem; object-fit: cover;
+  flex-shrink: 0;
+}
+.bm-popup__body { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
+.bm-popup__name { font-size: .85rem; font-weight: 600; color: #e8e0d4; }
+.bm-popup__region { font-size: .7rem; color: #999; margin: 0; font-style: italic; }
+.bm-popup__btn {
+  margin-top: .35rem; padding: .3rem .65rem;
+  background: linear-gradient(135deg, #c4a35a, #a68832);
+  color: #1a1a1a; border: none; border-radius: .4rem;
+  font-size: .72rem; font-weight: 600;
+  cursor: pointer; text-align: center;
+  transition: opacity .15s;
+}
+.bm-popup__btn:hover { opacity: .85; }
+
+/* ── Leaflet overrides ── */
+.bm-leaflet .leaflet-control-zoom a {
+  background: hsl(220 20% 15%) !important;
+  color: #c4a35a !important;
+  border-color: hsl(220 15% 25%) !important;
+}
+.bm-leaflet .leaflet-control-zoom a:hover { background: hsl(220 20% 22%) !important; }

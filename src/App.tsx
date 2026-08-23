@@ -13,6 +13,7 @@ import { Footer } from "@/components/Footer";
 import { LessonModal, QuizModal, ArtifactsModal, TimelineModal, GospelModal, SectionModal, SearchOverlay } from "@/components/modals";
 import { CloseIcon } from "@/components/icons";
 import { IntroScreen } from "@/components/IntroScreen";
+import BibleMap from "@/components/BibleMap";
 import { withBase } from "@/lib/utils";
 
 type ModalId = string | null;
@@ -147,6 +148,7 @@ export default function App() {
     { id: "lessons", label: t.nav.scripture },
     { id: "library", label: t.nav.library },
     { id: "notes", label: t.nav.timeline },
+    { id: "map", label: t.nav.map },
     { id: "gospel", label: t.nav.gospel },
   ];
 
@@ -322,6 +324,7 @@ export default function App() {
       if (nav === "lessons") setModal("lesson");
       else if (nav === "structures" || nav === "library") setSearchOpen(true);
       else if (nav === "notes") setModal("timeline");
+      else if (nav === "map") setModal("map");
       else if (nav === "gospel") setModal("gospel");
     },
     [],
@@ -521,6 +524,12 @@ export default function App() {
       {modal === "artifacts" && <ArtifactsModal structure={panelStructure} onClose={() => setModal(null)} />}
       {modal === "timeline" && <TimelineModal structure={panelStructure} onClose={() => setModal(null)} />}
       {modal === "gospel" && <GospelModal onClose={() => setModal(null)} />}
+      {modal === "map" && (
+        <BibleMap
+          onSelectStructure={(id) => { selectStructure(id); setPanelStructure(structureById(locale, id)); }}
+          onClose={() => setModal(null)}
+        />
+      )}
       {(modal === "interior" || modal === "floorPlan" || modal === "dailyLife" || modal === "geography" || panelStructure.extras?.some((e) => e.id === modal)) && (
         <SectionModal structure={panelStructure} section={modal!} onClose={() => setModal(null)} />
       )}

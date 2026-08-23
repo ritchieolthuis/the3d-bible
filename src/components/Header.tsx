@@ -10,6 +10,7 @@ import {
   LibraryIcon,
   NotesIcon,
   HeartIcon,
+  MapIcon,
   SearchIcon,
   MenuIcon,
 } from "./icons";
@@ -32,6 +33,7 @@ export const Header = memo(function Header({ onSearchOpen, onMenuOpen, onNav, ac
     { id: "lessons", label: t.nav.scripture, icon: LessonsIcon },
     { id: "library", label: t.nav.library, icon: LibraryIcon },
     { id: "notes", label: t.nav.timeline, icon: NotesIcon },
+    { id: "map", label: t.nav.map, icon: MapIcon },
     { id: "gospel", label: t.nav.gospel, icon: HeartIcon },
   ];
 

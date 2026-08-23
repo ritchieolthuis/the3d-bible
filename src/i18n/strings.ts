@@ -18,6 +18,7 @@ export interface UiStrings {
     scripture: string;
     library: string;
     timeline: string;
+    map: string;
     gospel: string;
   };
   header: {
@@ -173,6 +174,7 @@ export const STRINGS: Record<Locale, UiStrings> = {
       scripture: "Scripture",
       library: "Library",
       timeline: "Timeline",
+      map: "Map",
       gospel: "Gospel",
     },
     header: {
@@ -351,6 +353,7 @@ export const STRINGS: Record<Locale, UiStrings> = {
       scripture: "Schrift",
       library: "Bibliotheek",
       timeline: "Tijdlijn",
+      map: "Kaart",
       gospel: "Evangelie",
     },
     header: {
