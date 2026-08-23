@@ -39,6 +39,27 @@ interface ContextPlace {
 
 const CONTEXT_PLACES: ContextPlace[] = [
     { 
+      id: "jerusalem", 
+      coords: [31.7767, 35.2342], 
+      name: { nl: "Jeruzalem", en: "Jerusalem" }, 
+      region: { nl: "Juda", en: "Judah" }, 
+      desc: { nl: "De heilige stad en hoofdstad van Israël.", en: "The holy city and capital of Israel." },
+      story: {
+        nl: `**Archeologische en historische betekenis**
+Jeruzalem ligt op een verdedigbare heuvelrug in het Judese hoogland, met archeologische bewijzen van bewoning die dateren uit de vroege bronstijd, hoewel de stad pas echt tot bloei kwam tijdens de IJzertijd II (10e-8e eeuw v.Chr.). De Gihonbron zorgde voor essentiële watervoorziening, waardoor de locatie strategisch waardevol was; opgravingen hebben vestingwerken en administratieve structuren uit de tijd van David en de latere monarchie aan het licht gebracht, wat de rol van Jeruzalem als belangrijk administratief centrum in het oude Juda bevestigt.
+
+**Culturele en geografische context**
+Jeruzalem, gelegen op een hoogte van ongeveer 760 meter in het centrale heuvelland, beheerste cruciale handelsroutes tussen de kustgebieden en de Jordaanvallei, waardoor het gedurende de Bijbelse periode economisch en militair van groot belang was. De natuurlijke verdedigingskracht van de stad door valleien aan drie zijden (de Kidronvallei, de Hinnomvallei en de Tyropoeonvallei) maakte haar vrijwel onneembaar voor een directe aanval. Dit verklaart waarom het een Jebusitisch bolwerk bleef tot de verovering door David en waarom het de gekozen hoofdstad werd van de verenigde monarchie.
+
+**Theologische betekenis**
+Jeruzalem komt in het boek Jozua naar voren als een van de vijf Amorietische koningen die in de zuidelijke veldtocht werden verslagen, waarmee het wordt gevestigd als een veroverde, maar aanvankelijk niet-veroverde stad binnen Israëls territoriale aanspraken. De theologische betekenis van de stad neemt toe wanneer David haar verovert en vestigt als Israëls politieke en religieuze hoofdstad. Het wordt uiteindelijk de locatie van Salomo's Tempel en het middelpunt van de verbondsaanbidding – een status die Jeruzalem in de hele Schrift verheft tot de woonplaats van Gods aanwezigheid en het symbool van Zijn koninkrijk op aarde.`,
+        en: `**Archaeological and historical significance**
+Jerusalem sits on a defensible ridge in the Judean highlands...`
+      },
+      verses: ["Jozua 10:1", "2 Samuël 5:6", "1 Koningen 8:1", "Psalm 122:1", "Zacharia 8:3", "Mattheüs 23:37", "Openbaring 21:2"]
+    },
+    
+    { 
       id: "migdol", 
       coords: [30.850, 32.350], 
       name: { nl: "Migdol", en: "Migdol" }, 
@@ -249,7 +270,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     
     leafletMapInstance.current = map;
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
 
     L.polyline(EXODUS_ROUTE, {
         color: '#3C5E70',
@@ -364,7 +385,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                         placeholder={locale === "nl" ? "Zoek plaatsen..." : "Search places..."}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full p-2 text-sm border border-line rounded bg-paper focus:outline-none focus:border-gold"
+                        className="w-full p-2 text-sm border border-line-warm rounded bg-paper focus:outline-none focus:border-gold"
                     />
                 </div>
                 
@@ -403,7 +424,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                 <div className="p-4 border-b border-line-warm bg-surface sticky top-0 z-20 flex justify-between items-center shadow-sm">
                     <button 
                         onClick={() => setIsSidebarDetailOpen(false)}
-                        className="text-sm text-slate hover:text-gold flex items-center gap-1 font-bold transition-colors"
+                        className="text-sm text-slateblueblue hover:text-gold flex items-center gap-1 font-bold transition-colors"
                     >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         {isNl ? "Terug naar overzicht" : "Back to list"}
@@ -434,10 +455,10 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                             <h3 className="font-bold text-ink text-xs uppercase mb-3">{isNl ? "Genoemd in o.a." : "Mentioned in"}</h3>
                             <div className="flex flex-wrap gap-2">
                                 {activeItemData.verses.slice(0, 15).map((v: string, i: number) => (
-                                    <span key={i} className="px-2 py-1 bg-surface text-slate border border-line text-[10px] rounded shadow-sm">{v}</span>
+                                    <span key={i} className="px-2 py-1 bg-surface text-slateblueblue border border-line-warm text-[10px] rounded shadow-sm">{v}</span>
                                 ))}
                                 {activeItemData.verses.length > 15 && (
-                                    <span className="px-2 py-1 bg-surface text-slate border border-line text-[10px] rounded shadow-sm">+{activeItemData.verses.length - 15} more...</span>
+                                    <span className="px-2 py-1 bg-surface text-slateblueblue border border-line-warm text-[10px] rounded shadow-sm">+{activeItemData.verses.length - 15} more...</span>
                                 )}
                             </div>
                         </div>
@@ -452,7 +473,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                                 onSelectStructure(activeItemData.id);
                                 onClose();
                             }}
-                            className="w-full py-3 bg-slate text-white hover:bg-gold transition-colors rounded shadow font-bold text-sm uppercase flex items-center justify-center gap-2"
+                            className="w-full py-3 bg-slateblueblue text-white hover:bg-gold transition-colors rounded shadow font-bold text-sm uppercase flex items-center justify-center gap-2"
                         >
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
                             {isNl ? "Open 3D Model" : "Open 3D Model"}
@@ -464,8 +485,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         </div>
 
         {/* RIGHT PANE */}
-        <div className="relative flex-1 h-full min-h-[400px] bg-paper">
-            <div ref={mapRef} className="absolute inset-0" style={{ zIndex: 1 }} />
+        <div className="flex-1 flex flex-col min-h-[400px] bg-paper relative z-0">
+            <div ref={mapRef} className="flex-1 w-full" />
         </div>
 
       </div>
