@@ -601,12 +601,6 @@ video::-webkit-media-controls-overlay-play-button {
 }
 
 
-.historical-map-label {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    font-weight: bold;
-}
 .historical-map-label::before {
     display: none !important;
 }
@@ -621,12 +615,6 @@ video::-webkit-media-controls-overlay-play-button {
     border-top-color: var(--line-strong) !important;
 }
 
-.historical-map-label {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    font-weight: bold;
-}
 .historical-map-label::before {
     display: none !important;
 }
