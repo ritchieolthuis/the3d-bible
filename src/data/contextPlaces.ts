@@ -359,18 +359,6 @@ Hebron ("Friendship" or "Alliance") is theologically the place of deeply rooted 
       verses: ["Exodus 3:1", "Exodus 19:18", "Deuteronomium 4:11", "Hebreeën 12:18"]
     },
     {
-      id: "jericho",
-      coords: [31.8703, 35.4444],
-      name: { nl: "Jericho", en: "Jericho" },
-      region: { nl: "Jordaanvallei", en: "Jordan Valley" },
-      desc: { nl: "De palmstad, als eerste veroverd door Jozua.", en: "The city of palms, first conquered by Joshua." },
-      story: {
-        nl: `**Archeologische en historische betekenis**\nJericho, gelegen in een oase nabij de Jordaan, behoort tot de oudste continu bewoonde en ommuurde steden ter wereld, dankzij de overvloedige zoetwaterbron (later de bron van Elisa genoemd).\n\n**Culturele en geografische context**\nNa veertig jaar woestijnreis stak het volk Israël de Jordaan over en stond direct voor deze onneembare grensstad van de Kanaänieten. Het was de eerste grote overwinning in het Beloofde Land.\n\n**Theologische betekenis**\nDe muren van Jericho vielen niet door wapengeweld, maar door stil gehoorzaam rondom te trekken en op het commandowoord te juichen; een machtig getuigenis dat het Beloofde Land enkel door geloof en Gods ingrijpen verkregen wordt (Hebr. 11:30). In het oordeel werd alleen Rachab de hoer met haar huis gered vanwege haar geloof in Israëls God. God sprak een vloek uit over degene die de stad zou herbouwen, een vloek die exact in vervulling ging ten tijde van koning Achab.`,
-        en: `**Archaeological and historical significance**\nJericho is one of the oldest inhabited cities...`
-      },
-      verses: ["Jozua 6:2", "Jozua 6:26", "1 Koningen 16:34", "Hebreeën 11:30"]
-    },
-    {
       id: "babylon",
       coords: [32.5422, 44.4210],
       name: { nl: "Babel (Babylon)", en: "Babylon" },

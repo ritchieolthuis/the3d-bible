@@ -76,7 +76,10 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   const mapRef = useRef<HTMLDivElement>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   
+  
   const [searchQuery, setSearchQuery] = useState("");
+  const [openBiblePlaces, setOpenBiblePlaces] = useState<{n: string, c: [number, number]}[]>([]);
+
   const [activeMapId, setActiveMapId] = useState<string | null>(null);
   const [isSidebarDetailOpen, setIsSidebarDetailOpen] = useState(false);
   const leafletMapInstance = useRef<L.Map | null>(null);
@@ -202,6 +205,48 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       leafletMapInstance.current = null;
     };
   }, [base, locale]);
+
+
+  // Fetch OpenBible background places
+  useEffect(() => {
+    fetch(base + 'data/openbible_places.json')
+      .then(res => res.json())
+      .then(data => setOpenBiblePlaces(data))
+      .catch(err => console.error("Could not load openbible places", err));
+  }, [base]);
+
+
+  useEffect(() => {
+    if (!leafletMapInstance.current || openBiblePlaces.length === 0) return;
+    
+    // Create a feature group for the background places
+    const group = L.featureGroup();
+    
+    openBiblePlaces.forEach(p => {
+      // Small grey dot with a simple tooltip
+      const marker = L.circleMarker(p.c, {
+        radius: 3,
+        fillColor: "#9ca3af",
+        color: "transparent",
+        weight: 0,
+        fillOpacity: 0.5,
+        interactive: true
+      });
+      
+      marker.bindTooltip(p.n, {
+        className: 'text-xs font-serif',
+        direction: 'top'
+      });
+      
+      marker.addTo(group);
+    });
+    
+    group.addTo(leafletMapInstance.current);
+    
+    return () => {
+      group.remove();
+    };
+  }, [openBiblePlaces]);
 
   // Render map markers
   useEffect(() => {
