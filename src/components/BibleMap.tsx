@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React from "react";
 import { useLocale } from "@/i18n/locale";
 import { structuresFor } from "@/data";
 import { ModalShell } from "./ModalShell";
-import { MapContainer, TileLayer, Marker, Tooltip, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 
