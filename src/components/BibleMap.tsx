@@ -296,18 +296,18 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                             <button
                                 key={item.id}
                                 onClick={() => handleSidebarClick(item)}
-                                className={`w-full text-left px-3 py-3 rounded-lg mb-1 flex items-center gap-3 transition-colors hover:bg-paper border border-transparent`}
+                                className={`w-full text-left px-3 py-3 rounded-xl mb-1 flex items-center gap-4 transition-colors hover:bg-paper border border-transparent`}
                             >
                                 {item.isStructure ? (
-                                    <img src={`${base}img/${item.id}/thumbnail.webp`} alt="" className="w-8 h-8 object-cover rounded flex-none" />
+                                    <img src={`${base}img/${item.id}/thumbnail.webp`} alt="" className="w-14 h-14 object-cover rounded-md flex-none border border-line-warm shadow-sm" />
                                 ) : (
-                                    <div className="w-8 h-8 rounded flex items-center justify-center bg-paper-deep flex-none border border-line-warm shadow-sm">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-ink-muted"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    <div className="w-14 h-14 rounded-md flex items-center justify-center bg-paper-deep flex-none border border-line-warm shadow-sm">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-ink-muted"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                                     </div>
                                 )}
-                                <div className="flex-1 overflow-hidden">
-                                    <p className="truncate text-sm font-bold text-ink">{item.name}</p>
-                                    <p className="truncate text-[10px] text-ink-light">{item.regionLabel}</p>
+                                <div className="flex-1 overflow-hidden pl-1">
+                                    <p className="truncate text-[0.95rem] font-bold text-ink">{item.name}</p>
+                                    <p className="truncate text-[11px] text-ink-light mt-0.5">{item.regionLabel}</p>
                                 </div>
                             </button>
                         )
@@ -376,7 +376,14 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                             }}
                             className="btn-primary w-full !py-3 !rounded-xl !text-[0.95rem] !font-bold uppercase"
                         >
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 4 L19 8 L19 15 L12 19 L5 15 L5 8 Z" />
+                                <path d="M12 11.5 L19 8" />
+                                <path d="M12 11.5 L5 8" />
+                                <path d="M12 11.5 L12 19" />
+                                <path d="M4 18 C 8 23 16 23 20 18" />
+                                <path d="M16 18 L20 18 L20 22" />
+                            </svg>
                             {isNl ? "Open 3D Model" : "Open 3D Model"}
                         </button>
                     </div>
