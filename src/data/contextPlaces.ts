@@ -11,6 +11,43 @@ export interface ContextPlace {
 
 const CONTEXT_PLACES: ContextPlace[] = [
   {
+    "id": "tyrus",
+    "coords": [33.273333, 35.193611],
+    "name": { "nl": "Tyrus", "en": "Tyre" },
+    "region": { "nl": "Fenicië", "en": "Phoenicia" },
+    "desc": { "nl": "Machtige Fenicische handelsstad.", "en": "Powerful Phoenician trade city." },
+    "story": {
+      "nl": "Tyrus was het kloppende hart van het Fenicische zee-imperium. Koning Hiram van Tyrus was een bondgenoot van David en Salomo en leverde het beroemde cederhout en de vaklieden voor de bouw van de Eerste Tempel. Later werd Tyrus zwaar veroordeeld door de profeten vanwege haar enorme hoogmoed en afgoderij (Ezechiël 26-28).",
+      "en": "Tyre was the beating heart of the Phoenician maritime empire. King Hiram of Tyre was an ally of David and Solomon, providing the famous cedar wood and craftsmen for the construction of the First Temple. Later, Tyre was heavily condemned by the prophets for its massive pride and idolatry (Ezekiel 26-28)."
+    },
+    "eras": [4, 6]
+  },
+  {
+    "id": "alexandria",
+    "coords": [31.2, 29.916667],
+    "name": { "nl": "Alexandrië", "en": "Alexandria" },
+    "region": { "nl": "Egypte (Griekse Rijk)", "en": "Egypt (Hellenistic Empire)" },
+    "desc": { "nl": "Hoofdstad van het Grieks-Egyptische Rijk.", "en": "Capital of the Greco-Egyptian Empire." },
+    "story": {
+      "nl": "Gesticht door Alexander de Grote. Tijdens de Tweede Tempelperiode (het Griekse Rijk) woonde hier de grootste Joodse gemeenschap buiten Israël. Hier werd de Hebreeuwse Bijbel vertaald naar het Grieks (de Septuaginta), wat cruciaal was voor de verspreiding van het evangelie door de vroege kerk.",
+      "en": "Founded by Alexander the Great. During the Second Temple Period (the Hellenistic Empire), this was home to the largest Jewish community outside Israel. Here, the Hebrew Bible was translated into Greek (the Septuagint), which was crucial for the spread of the gospel by the early church."
+    },
+    "eras": [6, 7]
+  },
+  {
+    "id": "memphis",
+    "coords": [29.849722, 31.253611],
+    "name": { "nl": "Memphis", "en": "Memphis" },
+    "region": { "nl": "Oude Egypte", "en": "Ancient Egypt" },
+    "desc": { "nl": "Oude hoofdstad van het Egyptische Rijk.", "en": "Ancient capital of the Egyptian Empire." },
+    "story": {
+      "nl": "Memphis was eeuwenlang de glorieuze hoofdstad van het Egyptische wereldrijk. Tijdens de periode van de Aartsvaders en de Uittocht was dit het centrum van faraonische macht en afgoderij. De rijkdom en architectuur (zoals de nabijgelegen piramides) vormden een schril contrast met de slavernij van de Israëlieten.",
+      "en": "For centuries, Memphis was the glorious capital of the Egyptian world empire. During the time of the Patriarchs and the Exodus, it was the center of pharaonic power and idolatry. Its wealth and architecture (such as the nearby pyramids) stood in stark contrast to the slavery of the Israelites."
+    },
+    "eras": [2, 3]
+  },
+
+  {
     "id": "ararat",
     "coords": [39.701944, 44.297222],
     "name": { "nl": "Ararat Gebergte", "en": "Mount Ararat" },
