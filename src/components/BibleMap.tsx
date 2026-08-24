@@ -136,6 +136,10 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
       if (!searchQuery) return true;
       const q = searchQuery.toLowerCase();
       return item.name.toLowerCase().includes(q) || item.regionLabel.toLowerCase().includes(q);
+  }).sort((a: any, b: any) => {
+      const eraA = Math.min(...(a.eras.length ? a.eras : [99]));
+      const eraB = Math.min(...(b.eras.length ? b.eras : [99]));
+      return eraA - eraB;
   }), [allListItems, activeEra, searchQuery]);
 
   const activeItemData = allListItems.find((item: any) => item.id === activeMapId);
