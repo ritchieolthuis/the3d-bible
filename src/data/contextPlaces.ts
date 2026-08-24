@@ -170,8 +170,8 @@ const CONTEXT_PLACES: ContextPlace[] = [
       31.834217
     ],
     "name": {
-      "nl": "Rameses (Gosen)",
-      "en": "Rameses (Goshen)"
+      "nl": "Pi-Rameses",
+      "en": "Pi-Ramesses"
     },
     "region": {
       "nl": "Egypte",
