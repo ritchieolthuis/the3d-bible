@@ -38,33 +38,51 @@ const EXODUS_ROUTE: [number, number][] = [
     [29.100, 33.100], [28.700, 33.700], [28.539, 33.975]
 ];
 
-function createCustomIcon(isHeavenly: boolean, isSelected: boolean = false, offset: [number, number] = [0, 0], isMapOnly: boolean = false) {
-  const bgColor = isMapOnly ? '#f4f6f7' : (isHeavenly ? '#FFD700' : '#3C5E70');
-  const borderColor = isMapOnly ? '#3C5E70' : (isHeavenly ? '#ffffff' : '#f4f6f7');
-  
-  const size = isMapOnly ? (isSelected ? '16px' : '10px') : (isSelected ? '20px' : '14px');
-  const anchorOffset = isMapOnly ? (isSelected ? 8 : 5) : (isSelected ? 10 : 7);
+const IMPORTANT_PLACES = [
+  'babylon', 'rome', 'susa', 'alexandria', 'memphis', 'tyrus', 'mount_sinai',
+  'nazareth', 'bethlehem', 'capernaum', 'sea_of_galilee', 'damascus', 'antioch',
+  'ephesus', 'corinth', 'athens', 'megiddo', 'carmel', 'hebron', 'beersheba',
+  'sichem', 'bethel', 'goshen', 'ur', 'haran', 'nineveh', 'patmos', 'caesarea', 
+  'caesarea_philippi', 'jerusalem', 'joppa', 'ararat', 'tabor'
+];
+
+function createCustomIcon(markerType: '3d' | 'important' | 'other', isSelected: boolean = false, offset: [number, number] = [0, 0]) {
+  let bgColor = '#ffffff';
+  let borderColor = '#3C5E70';
+  let sizePx = isSelected ? 16 : 10;
+  let hasPulse = false;
+
+  if (markerType === '3d') {
+      bgColor = '#FFD700';
+      borderColor = '#ffffff';
+      sizePx = isSelected ? 22 : 16;
+      hasPulse = true;
+  } else if (markerType === 'important') {
+      bgColor = '#3C5E70';
+      borderColor = '#ffffff';
+      sizePx = isSelected ? 18 : 12;
+  }
+
+  const anchor = sizePx / 2;
 
   return L.divIcon({
     className: 'custom-bible-pin',
     html: `
       <div style="
-        width: ${size}; 
-        height: ${size}; 
+        width: ${sizePx}px; 
+        height: ${sizePx}px; 
         background: ${bgColor}; 
-        border: ${isMapOnly ? '2px' : '2px'} solid ${borderColor}; 
+        border: 2px solid ${borderColor}; 
         border-radius: 50%; 
         box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         transform: translate(${offset[0]}px, ${offset[1]}px);
         transition: all 0.2s ease-in-out;
       ">
-        ${isHeavenly ? `<div style="position:absolute; inset:-6px; border: 1px solid #FFD700; border-radius:50%; animation: pulse 2s infinite;"></div>` : ''}
-        ${isSelected && !isMapOnly ? `<div style="position:absolute; inset:-8px; border: 2px solid #3C5E70; border-radius:50%; opacity: 0.5;"></div>` : ''}
-        ${isSelected && isMapOnly ? `<div style="position:absolute; inset:-4px; background: #3C5E70; border-radius:50%; opacity: 0.2;"></div>` : ''}
+        ${hasPulse ? `<div style="position:absolute; inset:-6px; border: 1px solid #FFD700; border-radius:50%; animation: pulse 2s infinite;"></div>` : ''}
       </div>
     `,
-    iconSize: [parseInt(size), parseInt(size)],
-    iconAnchor: [anchorOffset, anchorOffset]
+    iconSize: [0, 0],
+    iconAnchor: [anchor, anchor]
   });
 }
 
@@ -246,7 +264,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         const offset = pinDef ? pinDef.offset : [0,0];
 
         const marker = L.marker(item.coords as [number, number], { 
-            icon: createCustomIcon(false, isSelected, offset as [number, number], !item.isStructure) 
+            icon: createCustomIcon(item.isStructure ? '3d' : (IMPORTANT_PLACES.includes(item.id) ? 'important' : 'other'), isSelected, offset as [number, number]) 
         }).addTo(map);
         
         const tooltipHtml = `
