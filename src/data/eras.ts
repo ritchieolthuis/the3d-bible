@@ -8,13 +8,13 @@ export interface MapEra {
 }
 
 export const MAP_ERAS: MapEra[] = [
-    { id: 1, name: { nl: "Schepping", en: "Creation" }, dates: "± 4000–2000 v.Chr." },
-    { id: 2, name: { nl: "Aartsvaders", en: "Patriarchs" }, dates: "± 2000–1700 v.Chr." },
-    { id: 3, name: { nl: "Exodus", en: "Exodus" }, dates: "± 1700–1050 v.Chr." },
-    { id: 4, name: { nl: "Koninkrijk", en: "Kingdom" }, dates: "± 1050–586 v.Chr." },
-    { id: 5, name: { nl: "Ballingschap", en: "Exile" }, dates: "586–63 v.Chr." },
-    { id: 6, name: { nl: "Rome & Jezus", en: "Rome & Jesus" }, dates: "63 v.Chr.–100 n.Chr." },
-    { id: 7, name: { nl: "Toekomst", en: "Future" }, dates: "Nieuwe Jeruzalem" }
+    { id: 1, name: { nl: "Oertijd", en: "Primeval History" }, dates: "± 4000–2000 v.Chr." },
+    { id: 2, name: { nl: "Aartsvaders", en: "Patriarchs" }, dates: "± 2000–1600 v.Chr." },
+    { id: 3, name: { nl: "Exodus & Richteren", en: "Exodus & Judges" }, dates: "± 1600–1050 v.Chr." },
+    { id: 4, name: { nl: "Koninkrijk Israël", en: "Kingdom of Israel" }, dates: "± 1050–586 v.Chr." },
+    { id: 5, name: { nl: "Ballingschap", en: "Exile & Return" }, dates: "586–332 v.Chr." },
+    { id: 6, name: { nl: "Romeinse Tijd", en: "Roman Era & Jesus" }, dates: "63 v.Chr.–100 n.Chr." },
+    { id: 7, name: { nl: "Eindtijd", en: "End Times" }, dates: "Toekomst / Future" }
 ];
 
 export const STRUCTURE_ERAS: Record<string, number[]> = {
