@@ -156,7 +156,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     const map = L.map(mapRef.current, {
       minZoom: 3,
       maxZoom: 12,
-      attributionControl: false,
+      attributionControl: true,
       zoomSnap: 0.5
     });
     
@@ -171,7 +171,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
     
     leafletMapInstance.current = map;
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', { subdomains: 'abcd', maxZoom: 19, attribution: '&copy; <a href="https://carto.com/attributions">CARTO</a> | Place data &copy; <a href="https://www.openbible.info/" target="_blank">OpenBible.info</a>, CC BY 4.0' }).addTo(map);
 
     L.polyline(EXODUS_ROUTE, {
         color: '#3C5E70',
@@ -264,9 +264,13 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
           }).addTo(map);
 
           const tooltipHtml = `
-            <div onclick="window.dispatchEvent(new CustomEvent(\'mapPopupClick\', {detail: \'${cp.id}\'}))" style="cursor:pointer; padding:6px; min-width: 180px; white-space: normal;">
-              <p style="margin:0 0 4px 0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${isNl ? cp.name.nl : cp.name.en}</p>
-              <p style="margin:0; font-size:11px; color:#444;">${isNl ? "Lees het verhaal →" : "Read the story →"}</p>
+            <div onclick="window.dispatchEvent(new CustomEvent(\'mapPopupClick\', {detail: \'${cp.id}\'}))" style="cursor:pointer; display:flex; gap:12px; align-items:center; padding:6px; min-width: 220px; white-space: normal;">
+              <img src="${base}img/${cp.id}/thumbnail.webp" alt="" style="height:48px; width:48px; object-fit:cover; border-radius:4px; border:1px solid #ddd;" onerror="this.style.display='none'"/>
+              <div style="flex:1;">
+                <p style="margin:0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${isNl ? cp.name.nl : cp.name.en}</p>
+                <p style="margin:2px 0 0 0; font-size:10px; font-style:italic; color:#666;">${isNl ? cp.region.nl : cp.region.en}</p>
+                <p style="margin:4px 0 0 0; font-size:10px; font-weight:bold; color:#3C5E70;">${isNl ? "Lees het verhaal →" : "Read the story →"}</p>
+              </div>
             </div>
           `;
 
@@ -322,13 +326,20 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                                 onClick={() => handleSidebarClick(item)}
                                 className={`w-full text-left px-3 py-3 rounded-xl mb-1 flex items-center gap-4 transition-colors hover:bg-paper border border-transparent`}
                             >
-                                {item.isStructure ? (
-                                    <img src={`${base}img/${item.id}/thumbnail.webp`} alt="" className="w-14 h-14 object-cover rounded-md flex-none border border-line-warm shadow-sm" />
-                                ) : (
-                                    <div className="w-14 h-14 rounded-md flex items-center justify-center bg-paper-deep flex-none border border-line-warm shadow-sm">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-ink-muted"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                                    </div>
-                                )}
+                                <img 
+                                    src={`${base}img/${item.id}/thumbnail.webp`} 
+                                    alt="" 
+                                    className="w-14 h-14 object-cover rounded-md flex-none border border-line-warm shadow-sm bg-paper-deep" 
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = 'none';
+                                        if (e.currentTarget.nextElementSibling) {
+                                            (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                                        }
+                                    }}
+                                />
+                                <div style={{display: 'none'}} className="w-14 h-14 rounded-md items-center justify-center bg-paper-deep flex-none border border-line-warm shadow-sm">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-ink-muted"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                </div>
                                 <div className="flex-1 overflow-hidden pl-1">
                                     <p className="truncate text-[0.95rem] font-bold text-ink">{item.name}</p>
                                     <p className="truncate text-[11px] text-ink-light mt-0.5">{item.regionLabel}</p>
@@ -357,9 +368,12 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                 </div>
                 
                 <div className="p-5 flex-1">
-                    {activeItemData.isStructure && (
-                        <img src={`${base}img/${activeItemData.id}/thumbnail.webp`} alt="" className="w-full h-auto max-h-[250px] object-contain rounded-xl mb-4 border border-line-warm shadow-sm" />
-                    )}
+                    <img 
+                        src={`${base}img/${activeItemData.id}/thumbnail.webp`} 
+                        alt="" 
+                        className="w-full h-auto max-h-[250px] object-contain rounded-xl mb-4 border border-line-warm shadow-sm bg-paper-deep" 
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
                     
                     <h2 className="font-display text-[1.5rem] font-bold leading-none text-ink">{activeItemData.name}</h2>
                     <p className="font-serif mt-0.5 mb-4 text-[1rem] italic text-terracotta">{activeItemData.regionLabel}</p>

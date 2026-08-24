@@ -432,6 +432,68 @@ Hebron ("Friendship" or "Alliance") is theologically the place of deeply rooted 
       },
       verses: ["Handelingen 28:14", "Romeinen 1:7", "Romeinen 1:15", "2 Timotheüs 1:17"]
     }
+
+    ,
+    {
+      id: "hebron",
+      coords: [31.5326, 35.0998],
+      name: { nl: "Hebron", en: "Hebron" },
+      region: { nl: "Juda", en: "Judah" },
+      desc: { nl: "Rustplaats van de aartsvaders.", en: "Resting place of the patriarchs." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nHebron, gelegen op ruim 900 meter hoogte in het Judese bergland, is een van de oudst continu bewoonde steden ter wereld. Koning Herodes bouwde later een kolossaal heiligdom over de Spelonk van Machpela, een gebouw dat er vandaag de dag nog staat.\n\n**Culturele en geografische context**\nHebron was een vruchtbaar gebied vol wijngaarden (Dal van Eskol). Abraham kocht hier een veld en een grot van Efron de Hethiet als familiegraf. Hier liggen Abraham en Sara, Izak en Rebekka, en Jakob en Lea begraven.\n\n**Theologische betekenis**\nHebron (wat "Vriendschap" of "Verbond" betekent) is theologically de plek van diepgewortelde verbondstrouw. Abraham ontving de belofte van het land en kreeg dit kleine stukje als aanbetaling. Eeuwen later werd David door God hiernaartoe geleid om als koning gezalfd te worden, eerst over Juda (voor 7,5 jaar) en later over heel Israël. Het is de bodem waaruit het messiaanse koningschap is ontkiemd.`,
+        en: `**Archaeological and historical significance**\nHebron, located at over 900 meters altitude in the Judean hill country, is one of the oldest continuously inhabited cities in the world. King Herod later built a colossal sanctuary over the Cave of Machpelah, a building that still stands today.\n\n**Cultural and geographical context**\nHebron was a fertile area full of vineyards (Valley of Eshcol). Abraham bought a field and a cave from Ephron the Hittite here as a family burial ground. Abraham and Sarah, Isaac and Rebekah, and Jacob and Leah are buried here.\n\n**Theological significance**\nHebron ("Friendship" or "Alliance") is theologically the place of deeply rooted covenant faithfulness. Abraham received the promise of the land and received this small piece as a down payment. Centuries later, David was guided by God to be anointed king in Hebron, first over Judah (for 7.5 years) and later over all Israel. It is the soil from which the messianic kingship sprouted.`
+      },
+      verses: ["Genesis 23:19", "Jozua 14:14", "2 Samuël 2:4", "2 Samuël 5:3"]
+    },
+    {
+      id: "nineveh",
+      coords: [36.3589, 43.1536],
+      name: { nl: "Ninevé", en: "Nineveh" },
+      region: { nl: "Assyrië", en: "Assyria" },
+      desc: { nl: "De machtige Assyrische hoofdstad.", en: "The mighty Assyrian capital." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nNinevé, gelegen aan de oostelijke oever van de rivier de Tigris in het huidige Irak, was een van de oudste en machtigste steden ter wereld. Later werd het de glorieuze hoofdstad van het wrede Assyrische rijk onder Sanherib.\n\n**Culturele en geografische context**\nIn haar bloeitijd was Ninevé een massieve metropool met enorme muren en paleizen. De Assyriërs stonden in de hele antieke wereld berucht om hun ongekende wreedheid en militaire terreur. Dit verklaart waarom de profeet Jona aanvankelijk weigerde hen tot bekering op te roepen.\n\n**Theologische betekenis**\nDe stad vormt het decor voor een van de grootste theologische omkeringen uit de Bijbel (het boek Jona). Het illustreert dat Gods ontzagwekkende genade zich uitstrekt tot over de grenzen van Israël, zelfs tot de meest verdorven en vijandige heidense naties, mits zij zich in zak en as bekeren. Toen de stad later toch weer verviel in wreedheid, werd zij vernietigd in vervulling van Nahums profetie (612 v.Chr.).`,
+        en: `**Archaeological and historical significance**\nNineveh, located on the eastern bank of the Tigris River in modern-day Iraq, was one of the oldest and most powerful cities in the world and later became the glorious capital of the brutal Assyrian Empire under Sennacherib.\n\n**Cultural and geographical context**\nIn its prime, Nineveh was a massive metropolis with enormous walls and palaces. The Assyrians were notorious throughout the ancient world for their unprecedented cruelty and military terror, which explains why the prophet Jonah refused to call them to repentance.\n\n**Theological significance**\nThe city forms the backdrop for one of the greatest theological turnarounds in the Bible: the book of Jonah. It illustrates that God's awe-inspiring grace extends beyond the borders of Israel, even to the most depraved and hostile pagan nations, provided they repent in sackcloth and ashes. Ultimately, when the city later reverted to cruelty, it was destroyed in fulfillment of Nahum's prophecy (612 BC).`
+      },
+      verses: ["Jona 1:2", "Jona 3:5", "Nahum 1:1", "Mattheüs 12:41"]
+    },
+    {
+      id: "beersheba",
+      coords: [31.2447, 34.7938],
+      name: { nl: "Beërseba", en: "Beersheba" },
+      region: { nl: "Negev", en: "Negev" },
+      desc: { nl: "Zuidelijke grens van het land; de bron van de eed.", en: "Southern border of the land; the well of the oath." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nBeërseba is de belangrijkste stad in de droge Negev-woestijn. Opgravingen bij Tel Beërseba hebben de overblijfselen onthuld van een versterkte Israëlitische stad met een geavanceerd watersysteem, essentieel voor overleving in deze aride regio.\n\n**Culturele en geografische context**\nDe naam betekent "Bron van de Eed" of "Bron van Zeven". Het markeerde de uiterste zuidgrens van het vruchtbare land van Israël. De beroemde uitdrukking "van Dan tot Beërseba" werd in de Bijbel gebruikt om het volledige territorium van het land aan te duiden.\n\n**Theologische betekenis**\nBeërseba was een heilige locatie voor de aartsvaders. Abraham sloot hier een vredesverbond met Abimelech, Izak ontving er een theofanie (Godsverschijning) en bouwde een altaar, en Jakob bracht er offers voordat hij afreisde naar Egypte. Het is een plaats van verbondsvernieuwing en de verzekering van Gods eeuwige beloften aan hun nageslacht.`,
+        en: `**Archaeological and historical significance**\nBeersheba is the most important city in the Negev desert. Excavations at Tel Beersheba have revealed remains of a fortified Israelite city with a sophisticated water system, essential for survival in this arid region.\n\n**Cultural and geographical context**\nThe name means "Well of the Oath" or "Well of Seven." It marked the southernmost boundary of the fertile land of Israel. The famous idiom "from Dan to Beersheba" was used in the Bible to denote the entire territory of the nation.\n\n**Theological significance**\nBeersheba was a sacred site for the patriarchs. Abraham made a covenant of peace with Abimelech here, Isaac received a manifestation of God and built an altar, and Jacob offered sacrifices before journeying down to Egypt. It is a place of covenant renewal and the assurance of God's enduring promises to their offspring.`
+      },
+      verses: ["Genesis 21:31", "Genesis 26:23", "Genesis 46:1", "Rechters 20:1"]
+    },
+    {
+      id: "nazareth",
+      coords: [32.7020, 35.2977],
+      name: { nl: "Nazareth", en: "Nazareth" },
+      region: { nl: "Galilea", en: "Galilee" },
+      desc: { nl: "De woonplaats van Jezus waar Hij opgroeide.", en: "The hometown where Jesus grew up." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nNazareth was een uiterst onbeduidend, klein agrarisch dorp in het heuvelland van Beneden-Galilea in de eerste eeuw. Archeologisch bewijs toont een nederzetting van hooguit enkele honderden inwoners, die in diepe armoede leefden.\n\n**Culturele en geografische context**\nNazareth lag in het noorden, ver weg van de theologische en politieke elite in Jeruzalem. Nathanaëls uitspraak: "Kan uit Nazareth iets goeds komen?" weerspiegelt het heersende vooroordeel van die tijd dat Galilea geestelijk en cultureel inferieur was.\n\n**Theologische betekenis**\nDit was de thuisstad waar de Zoon van God opgroeide ('de Nazarener'). Theologisch onderstreept Nazareth de ontzagwekkende vernedering en incarnatie van Christus. De Koning der koningen koos ervoor om niet op te groeien in een paleis, maar bracht bijna dertig jaar door in de absolute obscuriteit van een eenvoudige timmermanswerkplaats. Het demonstreert dat Gods majesteit zich vaak openbaart in wat de wereld veracht en gering acht.`,
+        en: `**Archaeological and historical significance**\nNazareth was an insignificant, small agricultural village in the hill country of Lower Galilee during the first century. Archaeological evidence from the time of Jesus shows a settlement of at most a few hundred inhabitants, living in deep poverty.\n\n**Cultural and geographical context**\nNazareth was located in the north, far from the theological and political elite in Jerusalem. Nathanael's expression, "Can anything good come out of Nazareth?" reflects the prevailing prejudice of the time that Galilee (and certainly Nazareth) was spiritually and culturally inferior.\n\n**Theological significance**\nThis was the hometown where the Son of God grew up ('the Nazarene'). Theologically, Nazareth underscores the humiliation and incarnation of Christ. The King of kings chose not to grow up in a palace in Jerusalem, but spent nearly thirty years in the obscurity of a simple carpenter's workshop. It demonstrates that God's majesty often reveals itself in what the world despises and considers lowly.`
+      },
+      verses: ["Mattheüs 2:23", "Lukas 1:26", "Lukas 4:16", "Johannes 1:46"]
+    },
+    {
+      id: "capernaum",
+      coords: [32.8811, 35.5750],
+      name: { nl: "Kafarnaüm", en: "Capernaum" },
+      region: { nl: "Galilea", en: "Galilee" },
+      desc: { nl: "Het epicentrum van Jezus' Galileese bediening.", en: "The epicenter of Jesus' Galilean ministry." },
+      story: {
+        nl: `**Archeologische en historische betekenis**\nKafarnaüm (Kfar Nahum, "Dorp van Troost") was een welvarend vissersdorp aan de noordwestelijke oever van het Meer van Galilea. Opgravingen hebben indrukwekkende vondsten opgeleverd, waaronder een prachtige witte kalkstenen synagoge en het huis van Petrus.\n\n**Culturele en geografische context**\nKafarnaüm lag aan de Via Maris, een belangrijke internationale handelsroute. Het beschikte over een belastingkantoor (waar de tollenaar Mattheüs werd geroepen) en een Romeins garnizoen. Het meer was extreem visrijk, wat verklaart waarom veel van Jezus' discipelen lokale vissers waren.\n\n**Theologische betekenis**\nNadat Hij uit Nazareth was verdreven, maakte Jezus Kafarnaüm tot Zijn uitvalsbasis en het "hoofdkwartier" van Zijn bediening. Nergens ter wereld deed Jezus zóveel wonderen als hier (genezingen, demonen uitdrijven, preken van het Brood des Levens). Ondanks dit felle licht weigerde de stad zich te bekeren, wat leidde tot Jezus' oordeel dat de stad tot in het dodenrijk (Hades) zou worden neergestoten. Vandaag ligt de oude stad er dan ook in ruïnes bij.`,
+        en: `**Archaeological and historical significance**\nCapernaum (Kfar Nahum, "Village of Comfort") was a prosperous fishing village on the northwestern shore of the Sea of Galilee. Excavations have yielded impressive finds, including a beautiful white limestone synagogue and the house of Peter.\n\n**Cultural and geographical context**\nCapernaum was located on the Via Maris, a major international trade route. It had a tax office (where Matthew was called) and a Roman garrison. The sea was rich in fish, explaining why many of Jesus' disciples were local fishermen.\n\n**Theological significance**\nAfter being driven out of Nazareth, Jesus made Capernaum His home base and the "headquarters" of His Galilean ministry. Nowhere in the world did Jesus perform as many miracles (healings, casting out demons, preaching the Bread of Life) as here. Despite this great light, the city refused to repent, leading to Jesus' judgment that the city would be brought down to Hades (Matthew 11:23). Today, the ancient city lies in ruins.`
+      },
+      verses: ["Mattheüs 4:13", "Mattheüs 8:5", "Mattheüs 11:23", "Markus 1:21", "Johannes 6:59"]
+    }
 ];
 
 export default CONTEXT_PLACES;
