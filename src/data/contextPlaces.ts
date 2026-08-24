@@ -37,7 +37,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       "Numeri 34:1",
       "Jozua 1:4"
     ],
-    "eras": [3, 4]
+    "eras": [2, 3]
   },
   {
     "id": "jerusalem",
@@ -70,7 +70,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       "Mattheüs 23:37",
       "Openbaring 21:2"
     ],
-    "eras": [4, 5, 6]
+    "eras": [4, 6]
   },
   {
     "id": "rephidim",
@@ -358,7 +358,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       "Genesis 26:33",
       "Richteren 20:1"
     ],
-    "eras": [2, 4]
+    "eras": [2]
   },
   {
     "id": "nineveh",
@@ -388,7 +388,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       "Jona 3:2",
       "Nahum 1:1"
     ],
-    "eras": [4, 5]
+    "eras": [4]
   },
   {
     "id": "nazareth",
@@ -478,7 +478,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       "2 Samuël 2:1",
       "2 Samuël 5:3"
     ],
-    "eras": [2, 3, 4]
+    "eras": [2, 4]
   },
   {
     "id": "sodom",
@@ -689,7 +689,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       "Handelingen 22:6",
       "Galaten 1:17"
     ],
-    "eras": [4, 6]
+    "eras": [4, 7]
   },
   {
     "id": "antioch",
@@ -718,7 +718,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       "Handelingen 13:1",
       "Galaten 2:11"
     ],
-    "eras": [6]
+    "eras": [7]
   },
   {
     "id": "rome",
@@ -748,7 +748,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       "Romeinen 1:15",
       "2 Timotheüs 1:17"
     ],
-    "eras": [6]
+    "eras": [7]
   },
   {
     "id": "sichem",
@@ -764,7 +764,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       32.213611,
       35.281944
     ],
-    "eras": [2, 3, 4],
+    "eras": [2, 4],
     "desc": {
       "nl": "De plek waar God aan Abraham het land beloofde en waar hij zijn eerste altaar bouwde.",
       "en": "The place where God promised the land to Abraham and where he built his first altar."
@@ -788,7 +788,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       31.922778,
       35.241389
     ],
-    "eras": [2, 3, 4],
+    "eras": [2],
     "desc": {
       "nl": "Huis van God; de plek waar Jakob droomde over de ladder naar de hemel.",
       "en": "House of God; the place where Jacob dreamed of the stairway to heaven."
@@ -1004,7 +1004,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       32.585278,
       35.184444
     ],
-    "eras": [4, 7],
+    "eras": [4, 8],
     "desc": {
       "nl": "Een uiterst strategische vestingstad; de Hebreeuwse naam (Har-Megiddo) leidde tot het woord 'Armageddon'.",
       "en": "An extremely strategic fortress city; its Hebrew name (Har-Megiddo) led to the word 'Armageddon'."
@@ -1052,7 +1052,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       32.054481,
       34.753039
     ],
-    "eras": [4, 6],
+    "eras": [4, 7],
     "desc": {
       "nl": "De belangrijke havenstad van waaruit Jona vluchtte, en waar Petrus Tabitha uit de dood opwekte.",
       "en": "The important port city from which Jonah fled, and where Peter raised Tabitha from the dead."
@@ -1076,7 +1076,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       32.18922,
       48.25778
     ],
-    "eras": [5],
+    "eras": [5, 6],
     "desc": {
       "nl": "De schitterende Perzische hoofdstad en het toneel van de boeken Esther, Nehemia en Daniël.",
       "en": "The magnificent Persian capital and the setting of the books of Esther, Nehemiah, and Daniel."
@@ -1172,7 +1172,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       32.5,
       34.891667
     ],
-    "eras": [6],
+    "eras": [6, 7],
     "desc": {
       "nl": "De machtige Romeinse hoofdstad van Judea, gebouwd door Herodes de Grote.",
       "en": "The mighty Roman capital of Judea, built by Herod the Great."
@@ -1196,7 +1196,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       37.939125,
       27.3407
     ],
-    "eras": [6],
+    "eras": [7],
     "desc": {
       "nl": "Een gigantische Romeinse metropool, beroemd om haar Artemistempel, waar Paulus jarenlang met succes preekte.",
       "en": "A massive Roman metropolis, famous for its Temple of Artemis, where Paul preached successfully for years."
@@ -1220,7 +1220,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       37.905785,
       22.878741
     ],
-    "eras": [6],
+    "eras": [7],
     "desc": {
       "nl": "Een welvarende, zedeloze handelsstad waar Paulus een van zijn belangrijkste, maar meest complexe gemeentes stichtte.",
       "en": "A wealthy, immoral trade city where Paul founded one of his most important but most complex churches."
@@ -1244,7 +1244,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       37.971851,
       23.726738
     ],
-    "eras": [6],
+    "eras": [7],
     "desc": {
       "nl": "Het centrum van de Griekse filosofie, waar Paulus een meesterlijke toespraak hield over de 'Onbekende God'.",
       "en": "The center of Greek philosophy, where Paul delivered a masterful speech about the 'Unknown God'."
@@ -1268,7 +1268,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       37.325,
       26.541667
     ],
-    "eras": [6],
+    "eras": [7],
     "desc": {
       "nl": "Het ruwe gevangeniseiland waar de apostel Johannes verbleef en het boek Openbaring ontving.",
       "en": "The rugged prison island where the apostle John stayed and received the book of Revelation."
