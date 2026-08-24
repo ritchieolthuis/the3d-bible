@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useLocale } from "@/i18n/locale";
 import { structuresFor } from "@/data";
 import { ModalShell } from "./ModalShell";
 import L from "leaflet";
+import { MAP_ERAS, STRUCTURE_ERAS } from '../data/eras';
 import CONTEXT_PLACES from "@/data/contextPlaces";
 import 'leaflet/dist/leaflet.css';
 
@@ -78,12 +79,13 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   
   
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeEra, setActiveEra] = useState<number | null>(null);
 
   const [activeMapId, setActiveMapId] = useState<string | null>(null);
   const [isSidebarDetailOpen, setIsSidebarDetailOpen] = useState(false);
   const leafletMapInstance = useRef<L.Map | null>(null);
 
-  const allListItems = [
+  const allListItems = useMemo(() => [
     ...PINS.map(pin => {
       const s = structures.find(x => x.id === pin.id);
       
@@ -110,7 +112,8 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
           isStructure: true,
           hideOnMap: pin.hideOnMap,
           story: buildStory(),
-          verses: [] as string[]
+          verses: [] as string[],
+          eras: STRUCTURE_ERAS[pin.id] || []
       };
     }).filter(p => structures.some(s => s.id === p.id)),
     ...CONTEXT_PLACES.map(cp => ({
@@ -121,17 +124,21 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         isStructure: false,
         hideOnMap: false,
         story: isNl ? cp.story.nl : cp.story.en,
-        verses: cp.verses
+        verses: cp.verses || [],
+        eras: cp.eras || []
     }))
-  ];
+  ], [structures, isNl]);
 
-  const filteredList = allListItems.filter(item => {
+  const filteredList = useMemo(() => allListItems.filter((item: any) => {
+      if (activeEra !== null) {
+          if (!item.eras.includes(activeEra)) return false;
+      }
       if (!searchQuery) return true;
       const q = searchQuery.toLowerCase();
       return item.name.toLowerCase().includes(q) || item.regionLabel.toLowerCase().includes(q);
-  });
+  }), [allListItems, activeEra, searchQuery]);
 
-  const activeItemData = allListItems.find(item => item.id === activeMapId);
+  const activeItemData = allListItems.find((item: any) => item.id === activeMapId);
 
   const handleSidebarClick = (item: typeof allListItems[0]) => {
       setActiveMapId(item.id);
@@ -222,69 +229,44 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
   }, [handleMapPinClick]);
 
   // Render map markers
-
   useEffect(() => {
       const map = leafletMapInstance.current;
       if (!map) return;
       const markers: L.Marker[] = [];
 
-      PINS.forEach(pin => {
-        if (pin.hideOnMap) return; 
-        const struct = structures.find(s => s.id === pin.id);
-        if (!struct) return;
+      filteredList.forEach((item: any) => {
+        if (item.hideOnMap) return;
         
-        const isSelected = activeMapId === pin.id;
-        const marker = L.marker(pin.coords as [number, number], { 
-            icon: createCustomIcon(false, isSelected, pin.offset, false) 
+        const isSelected = activeMapId === item.id;
+        const pinDef = PINS.find(p => p.id === item.id);
+        const offset = pinDef ? pinDef.offset : [0,0];
+
+        const marker = L.marker(item.coords as [number, number], { 
+            icon: createCustomIcon(false, isSelected, offset as [number, number], !item.isStructure) 
         }).addTo(map);
         
         const tooltipHtml = `
-          <div onclick="window.dispatchEvent(new CustomEvent(\'mapPopupClick\', {detail: \'${pin.id}\'}))" style="cursor:pointer; display:flex; gap:12px; align-items:center; padding:6px; min-width: 220px; white-space: normal;">
-            <img src="${base}img/${pin.id}/thumbnail.webp" alt="${struct.name}" style="height:48px; width:48px; object-fit:cover; border-radius:4px; border:1px solid #ddd;" onerror="this.style.display='none'"/>
+          <div onclick="window.dispatchEvent(new CustomEvent('mapPopupClick', {detail: '${item.id}'}))" style="cursor:pointer; display:flex; gap:12px; align-items:center; padding:6px; min-width: 220px; white-space: normal;">
+            <img src="${base}img/${item.id}/thumbnail.webp" alt="" style="height:48px; width:48px; object-fit:cover; border-radius:4px; border:1px solid #ddd;" onerror="this.style.display='none'"/>
             <div style="flex:1;">
-              <p style="margin:0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${struct.name}</p>
-              <p style="margin:2px 0 0 0; font-size:10px; font-style:italic; color:#666;">${struct.geography.regionLabel}</p>
-              <p style="margin:4px 0 0 0; font-size:10px; font-weight:bold; color:#3C5E70;">${isNl ? "Lees het verhaal →" : "Read the story →"}</p>
+              <p style="margin:0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${item.name}</p>
+              <p style="margin:2px 0 0 0; font-size:10px; font-style:italic; color:#666;">${item.regionLabel}</p>
+              <p style="margin:4px 0 0 0; font-size:10px; font-weight:bold; color:#3C5E70;">${locale === "nl" ? "Lees het verhaal →" : "Read the story →"}</p>
             </div>
           </div>
         `;
         
-        marker.bindPopup(tooltipHtml, { offset: [pin.offset?.[0] || 0, (pin.offset?.[1] || 0) - (isSelected ? 14 : 10)], className: 'custom-map-popup', closeButton: false, autoPan: false });
+        marker.bindPopup(tooltipHtml, { offset: [offset?.[0] || 0, (offset?.[1] || 0) - (isSelected ? 14 : 10)], className: 'custom-map-popup', closeButton: false, autoPan: false });
         marker.on('mouseover', (e: any) => { e.target.openPopup(); });
         
-        marker.on('click', () => handleMapPinClick(pin.id, pin.coords as [number, number]));
-        marker.on('tooltipclick', () => handleMapPinClick(pin.id, pin.coords as [number, number]));
+        marker.on('click', () => handleMapPinClick(item.id, item.coords as [number, number]));
         markers.push(marker);
-      });
-
-      CONTEXT_PLACES.forEach(cp => {
-          const isSelected = activeMapId === cp.id;
-          const marker = L.marker(cp.coords as [number, number], {
-              icon: createCustomIcon(false, isSelected, [0,0], true)
-          }).addTo(map);
-
-          const tooltipHtml = `
-            <div onclick="window.dispatchEvent(new CustomEvent(\'mapPopupClick\', {detail: \'${cp.id}\'}))" style="cursor:pointer; display:flex; gap:12px; align-items:center; padding:6px; min-width: 220px; white-space: normal;">
-              <img src="${base}img/${cp.id}/thumbnail.webp" alt="" style="height:48px; width:48px; object-fit:cover; border-radius:4px; border:1px solid #ddd;" onerror="this.style.display='none'"/>
-              <div style="flex:1;">
-                <p style="margin:0; font-weight:bold; font-size:13px; color:#222; text-transform:uppercase; line-height: 1.2;">${isNl ? cp.name.nl : cp.name.en}</p>
-                <p style="margin:2px 0 0 0; font-size:10px; font-style:italic; color:#666;">${isNl ? cp.region.nl : cp.region.en}</p>
-                <p style="margin:4px 0 0 0; font-size:10px; font-weight:bold; color:#3C5E70;">${isNl ? "Lees het verhaal →" : "Read the story →"}</p>
-              </div>
-            </div>
-          `;
-
-          marker.bindPopup(tooltipHtml, { offset: [0, isSelected ? -10 : -6], className: 'custom-map-popup', closeButton: false, autoPan: false });
-        marker.on('mouseover', (e: any) => { e.target.openPopup(); });
-          marker.on('click', () => handleMapPinClick(cp.id, cp.coords as [number, number]));
-        marker.on('tooltipclick', () => handleMapPinClick(cp.id, cp.coords as [number, number]));
-          markers.push(marker);
       });
 
       return () => {
           markers.forEach(m => m.remove());
       };
-  }, [base, locale, structures, activeMapId, isSidebarDetailOpen]);
+  }, [base, locale, structures, activeMapId, isSidebarDetailOpen, filteredList]);
 
   return (
     <ModalShell
@@ -319,7 +301,7 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
                     <p className="px-2 text-xs font-bold text-ink-muted mb-2 uppercase">
                         {filteredList.length} {locale === "nl" ? "locaties gevonden" : "locations found"}
                     </p>
-                    {filteredList.map(item => {
+                    {filteredList.map((item: any) => {
                         return (
                             <button
                                 key={item.id}
@@ -454,6 +436,28 @@ export default function BibleMap({ onSelectStructure, onClose }: { onSelectStruc
         {/* RIGHT PANE */}
         <div className="h-full min-h-[400px] bg-paper relative z-0">
             <div ref={mapRef} className="absolute inset-0" />
+            {/* Timeline Filter UI */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] w-[95%] max-w-4xl pointer-events-none">
+                <div className="flex overflow-x-auto hide-scrollbar gap-2 p-2 bg-surface/95 backdrop-blur-sm rounded-2xl shadow-xl border border-line-warm items-center pointer-events-auto">
+                    <button 
+                        onClick={() => setActiveEra(null)} 
+                        className={`flex-none px-4 py-2.5 rounded-xl whitespace-nowrap text-sm font-bold transition-all ${activeEra === null ? 'bg-terracotta text-paper shadow-md' : 'hover:bg-paper-deep text-ink-soft'}`}
+                    >
+                        {isNl ? 'Alle Tijden' : 'All Eras'}
+                    </button>
+                    <div className="w-px h-8 bg-line-warm flex-none mx-1"></div>
+                    {MAP_ERAS.map(era => (
+                        <button 
+                            key={era.id} 
+                            onClick={() => setActiveEra(era.id === activeEra ? null : era.id)}
+                            className={`flex-none px-4 py-1.5 flex flex-col items-start rounded-xl whitespace-nowrap transition-all ${activeEra === era.id ? 'bg-slate-700 text-white shadow-md scale-105' : 'hover:bg-paper-deep text-ink-soft opacity-80 hover:opacity-100'}`}
+                        >
+                            <span className="text-[13px] font-bold">{isNl ? era.name.nl : era.name.en}</span>
+                            <span className="text-[10px] opacity-75">{era.dates}</span>
+                        </button>
+                    ))}
+                </div>
+            </div>
         </div>
 
       </div>
