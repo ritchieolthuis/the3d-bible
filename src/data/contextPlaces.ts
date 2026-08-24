@@ -11,6 +11,30 @@ export interface ContextPlace {
 
 const CONTEXT_PLACES: ContextPlace[] = [
   {
+    "id": "ararat",
+    "coords": [39.701944, 44.297222],
+    "name": { "nl": "Ararat Gebergte", "en": "Mount Ararat" },
+    "region": { "nl": "Armenië", "en": "Armenia" },
+    "desc": { "nl": "De rustplaats van de Ark van Noach.", "en": "The resting place of Noah's Ark." },
+    "story": {
+      "nl": "Na maanden op het allesvernietigende vloedwater te hebben gedreven, liep de Ark van Noach vast op het gebergte van Ararat (Genesis 8:4). Vanaf deze hoogvlakte begon de mensheid opnieuw. Noach bouwde hier een altaar en God sloot het verbond van de regenboog, met de belofte de aarde nooit meer door water te vernietigen.",
+      "en": "After floating on the devastating floodwaters for months, Noah's Ark came to rest on the mountains of Ararat (Genesis 8:4). From this high plateau, humanity began anew. Noah built an altar here and God made the covenant of the rainbow, promising never to destroy the earth by water again."
+    },
+    "eras": [1]
+  },
+  {
+    "id": "tabor",
+    "coords": [32.686111, 35.39],
+    "name": { "nl": "Berg Tabor", "en": "Mount Tabor" },
+    "region": { "nl": "Galilea", "en": "Galilee" },
+    "desc": { "nl": "De traditionele berg van Jezus' verheerlijking.", "en": "The traditional mount of Jesus' transfiguration." },
+    "story": {
+      "nl": "Berg Tabor verheft zich indrukwekkend uit de vlakte van Jizreël. Theologisch en traditioneel is dit de berg der Verheerlijking, waar Jezus voor de ogen van Petrus, Jakobus en Johannes straalde van goddelijk licht. Mozes en Elia verschenen hier om met Hem te spreken over Zijn naderende vertrek (kruisiging) in Jeruzalem, wat de Wet en de Profeten samenbracht in Christus (Mattheüs 17).",
+      "en": "Mount Tabor rises impressively from the Jezreel Valley. Theologically and traditionally, this is the Mount of Transfiguration, where Jesus shone with divine light before the eyes of Peter, James, and John. Moses and Elijah appeared here to speak with Him about His upcoming departure (crucifixion) in Jerusalem, bringing the Law and the Prophets together in Christ (Matthew 17)."
+    },
+    "eras": [6]
+  },
+  {
     "id": "promised_land",
     "coords": [
       32.766667,
@@ -134,8 +158,8 @@ const CONTEXT_PLACES: ContextPlace[] = [
   {
     "id": "succoth",
     "coords": [
-      32.1966,
-      35.62118
+      30.559,
+      31.996
     ],
     "name": {
       "nl": "Sukkoth",
@@ -833,8 +857,7 @@ const CONTEXT_PLACES: ContextPlace[] = [
       "en": "Egypt"
     },
     "coords": [
-      30.79937,
-      31.834217
+       30.65, 31.75
     ],
     "eras": [2, 3],
     "desc": {
